@@ -1,0 +1,230 @@
+import React, { useEffect, useState } from 'react'
+import { limitupApi } from "@/apis";
+import { Table, Tag, DatePicker, message } from 'antd';
+import numeral from 'numeral';
+import StockPlate from '../../components/stockPlate';
+import StockKLine from '../../components/stockKLine';
+import './index.less'
+import * as dayjs from 'dayjs';
+import PlatePieChart from "../../components/platePieChart";
+
+import type { DatePickerProps } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+
+const columns: ColumnsType<any> = [
+  {
+    title: '股票代码',
+    dataIndex: '股票代码',
+    key: '股票代码',
+    render: (text: string) => {
+      const prefix = text.substring(7, 9).toLocaleLowerCase();
+      const code = text.substring(0, 6);
+      const res = prefix + code;
+      return <a target="_blank" href={`https://quote.eastmoney.com/concept/${res}.html`}>{res}</a>;
+    },
+  },
+  {
+    title: '股票名称',
+    dataIndex: '股票简称',
+    key: '股票简称',
+    render: (text) => text,
+    width: 100
+  },
+  {
+    title: '最新价',
+    dataIndex: '最新价',
+    key: '最新价',
+    render: (text) => text,
+    sorter: (a, b) => a['最新价'] - b['最新价'],
+  },
+  {
+    title: '涨停封单额',
+    dataIndex: `涨停封单额`,
+    key: `涨停封单额`,
+    render: (text, row) => {
+      const amount = row[`涨停封单量`];
+      const price = row['最新价'];
+      const res = (amount * price).toFixed(0)
+      return numeral(res).format('0,0');
+    },
+    sorter: (a: any, b: any) => {
+      const aAmount = a[`涨停封单量`];
+      const aPrice = a['最新价'];
+      const aRes = aAmount * aPrice;
+
+      const bAmount = b[`涨停封单量`];
+      const bPrice = b['最新价'];
+      const bRes = bAmount * bPrice;
+      return aRes - bRes;
+    },
+  },
+  {
+    title: '连板数',
+    dataIndex: `连续涨停天数`,
+    key: `连续涨停天数`,
+    render: (text) => text,
+    sorter: (a, b) => a[`连续涨停天数`] - b[`连续涨停天数`],
+  },
+  {
+    title: '几天几板',
+    dataIndex: `几天几板`,
+    key: `几天几板`,
+    render: (text) => text,
+  },
+  {
+    title: '涨停开板次数',
+    dataIndex: `涨停开板次数`,
+    key: `涨停开板次数`,
+    render: (text) => text,
+  },
+  {
+    title: '涨停因子排名',
+    dataIndex: `排名`,
+    key: `排名`,
+    render: (text) => text,
+    sorter: (a, b) => a[`排名`] - b[`排名`],
+  },
+  {
+    title: '最终涨停时间',
+    dataIndex: `最终涨停时间`,
+    key: `最终涨停时间`,
+    render: (text) => text,
+  },
+  {
+    title: '涨停原因类别',
+    dataIndex: `涨停原因类别`,
+    key: `涨停原因类别`,
+    render: (text) => {
+      const tags = text.split("+")
+      return (
+        <>
+          {tags.map((tag) => {
+            let color = tag.length > 5 ? 'geekblue' : 'green';
+            if (tag === 'loser') {
+              color = 'volcano';
+            }
+            return (
+              <Tag color={color} key={tag}>
+                {tag.toUpperCase()}
+              </Tag>
+            );
+          })}
+        </>
+      )
+    },
+  },
+  {
+    title: '所属板块',
+    dataIndex: `最终涨停时间`,
+    key: `最终涨停时间`,
+    render: (_: any, row: any) => {
+      const text = row['股票代码'];
+      const prefix = text.substring(7, 9);
+      const code = text.substring(0, 6);
+      return <StockPlate prefix={prefix} code={code} />
+    },
+    width: 400
+  },
+];
+
+export default function Index(): any {
+
+  const [limitUpData, setLimitUpData] = useState([]);
+
+  const [limitUpFilterData, setLimitUpFilterData] = useState([]);
+
+  const [date, setDate] = useState(dayjs());
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  useEffect(() => {
+    pageGetLimitUpData(date);
+  }, [date]);
+
+  // 获取涨停股票数量
+  const pageGetLimitUpData = async (queryDate) => {
+    const dateParam = queryDate.format('YYYYMMDD');
+    try {
+      const res = await limitupApi.getLimitUpData({
+        date: dateParam,
+        num: '0'
+      });
+      console.log(res, "数据查看")
+      if (res.code !== 200) {
+        messageApi.open({
+          type: 'error',
+          content: '当日无数据',
+        });
+      } else {
+        const firstDealData = res.data.map((ele, i) => ({ ...ele, key: ele['股票简称'] }));
+
+        setLimitUpData(firstDealData)
+
+        const secondDealData = firstDealData.slice(0).sort((a,b) => a['排名'] - b['排名']);
+
+        setLimitUpFilterData(secondDealData);
+      }
+    } catch (error) {
+      messageApi.open({
+        type: 'error',
+        content: '当日无数据',
+      });
+    }
+  }
+
+
+  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+    setDate(date)
+  };
+
+  return (
+    <div className="limitup-wrapper">
+      {contextHolder}
+      <div className="analyse-area">
+        {/* 板块情况分析 */}
+        <div className="plate-analyse-area">
+          <div>
+            板块分析：
+          </div>
+          <div>
+            <PlatePieChart data={limitUpData} />
+          </div>
+        </div>
+
+        <div className="limitup-analyse-area">
+          <div>
+            涨停因子优化选股排名：
+          </div>
+          <div>
+            {
+              limitUpFilterData.slice(0, 5).map(ele => <div>{ele['股票简称'] + ele['股票代码']}</div>)
+            }
+          </div>
+        </div>
+      </div>
+      <div className="header-wrapper">
+        {/* 涨停情况 */}
+        <div>
+          涨停数量： {limitUpData.length}
+        </div>
+
+        {/* 日历组件 */}
+        <div className="datepicker">
+          <DatePicker format="YYYYMMDD" defaultValue={date} placeholder="选择日期" onChange={onChange} />
+        </div>
+      </div>
+      <div className="table-wrapper">
+        <Table
+          key={date}
+          pagination={{
+            defaultPageSize: 100
+          }}
+          expandable={{
+            expandedRowRender: (record) => <StockKLine data={record} />,
+          }}
+          scroll={{ x: 1700 }}
+          columns={columns} dataSource={limitUpData} />
+      </div>
+    </div>
+  )
+}

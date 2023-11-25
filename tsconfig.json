@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "baseUrl": "./", // 解析非相对模块的基础地址，默认是当前目录
+    "paths": { // 路径映射，相对于baseUrl
+      "@/*": ["src/*"]
+    },
+    
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+
+  },
+  "include": ["src"],
+  "references": [{
+    "path": "./tsconfig.node.json"
+  }]
+}
