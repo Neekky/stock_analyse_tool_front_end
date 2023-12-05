@@ -6,6 +6,7 @@ import {
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import './index.less';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -29,6 +30,7 @@ const items: MenuItem[] = [
   getItem('首页', '1', <PieChartOutlined />),
   getItem('涨停分析', '2', <DesktopOutlined />),
   getItem('多板分析', '3', <DesktopOutlined />),
+  getItem('龙虎榜分析', '4', <DesktopOutlined />),
 ];
 
 const App: React.FC = (props) => {
@@ -63,6 +65,10 @@ const App: React.FC = (props) => {
         navigate('/multi-limitup-analyse');
         break;
 
+      case "4":
+        navigate('/winners-list-analyse');
+        break;
+
       default:
         navigate('/');
         break;
@@ -70,12 +76,14 @@ const App: React.FC = (props) => {
   };
 
   return (
-    <Layout  style={{ minHeight: '100vh', width: '100vw' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+    <div className="root-wrapper">
+      <div className="sider-wrapper">
         <div className="demo-logo-vertical" />
-        <Menu onSelect={onMenuSelect} theme="dark" defaultSelectedKeys={[menuKey]} mode="inline" items={items} />
-      </Sider>
-      <Layout>
+        <div className="menu-wrapper">
+          <Menu onSelect={onMenuSelect} theme="dark" defaultSelectedKeys={[menuKey]} mode="inline" items={items} />
+        </div>
+      </div>
+      <div className="content-wrapper">
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <Content style={{ margin: '0 16px' }}>
           <Breadcrumb style={{ margin: '16px 0' }}>
@@ -85,8 +93,8 @@ const App: React.FC = (props) => {
           <Outlet />
         </Content>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2023 Created by Ant UED</Footer>
-      </Layout>
-    </Layout>
+      </div>
+    </div>
   );
 };
 
