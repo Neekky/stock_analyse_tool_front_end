@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -90,7 +90,9 @@ const App: React.FC = (props) => {
             <Breadcrumb.Item>User</Breadcrumb.Item>
             <Breadcrumb.Item>Bill</Breadcrumb.Item>
           </Breadcrumb>
-          <Outlet />
+          <div className='outlet-wrapper'>
+            <Outlet />
+          </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>Ant Design ©2023 Created by Ant UED</Footer>
       </div>

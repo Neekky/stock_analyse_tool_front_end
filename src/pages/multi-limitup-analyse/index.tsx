@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message, Button } from 'antd';
 import StockPlate from '../../components/stockPlate';
@@ -23,7 +23,6 @@ const columns: ColumnsType<any> = [
       return <a style={{ width: '40px' }} target="_blank" href={`https://quote.eastmoney.com/concept/${res}.html`}>{res}</a>;
     },
     width: 10,
-    textWrap: 'word-break',
   },
   {
     title: '股票名称',
@@ -31,7 +30,6 @@ const columns: ColumnsType<any> = [
     key: '股票简称',
     render: (text: string) => text,
     width: 10,
-    textWrap: 'word-break',
 
   },
   {

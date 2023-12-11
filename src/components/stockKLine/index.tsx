@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { stockklineApi } from '@/apis';
 import { Calculate } from '@/utils';
 import * as dayjs from 'dayjs'
 import * as echarts from 'echarts';
+import { EChartsType } from 'echarts';
 
 // echarts配置
 const upColor = '#ec0000';
@@ -12,12 +13,12 @@ const downBorderColor = '#008F28';
 
 export default function Index(props: any) {
   const { data } = props;
-  const myChart = useRef(null);
+  const echartInstanceRef = useRef<EChartsType | null>(null);
 
-  const echartDom = useRef();
+  const echartDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    myChart.current = echarts.init(echartDom.current);
+    echartInstanceRef.current = echarts.init(echartDivRef.current);
     getKLineData();
   }, [])
 
@@ -46,7 +47,7 @@ export default function Index(props: any) {
         ])
       });
       const splitDataResult = Calculate.splitData(dealData);
-      const echartsOptions = {
+      const echartsOptions:any = {
         title: {
           text: '上证指数',
           left: 0
@@ -227,13 +228,13 @@ export default function Index(props: any) {
           }
         ]
       };
-      myChart.current?.setOption(echartsOptions);
+      echartInstanceRef.current?.setOption(echartsOptions);
     })
   }
 
   return (
     <div>
-      <div ref={echartDom} style={{ minHeight: "400px", width: "800px", marginTop: "10px" }}></div>
+      <div ref={echartDivRef} style={{ minHeight: "400px", width: "800px", marginTop: "10px" }}></div>
     </div>
   )
 }

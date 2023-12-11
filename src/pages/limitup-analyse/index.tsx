@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message } from 'antd';
 import numeral from 'numeral';

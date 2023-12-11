@@ -1,26 +1,26 @@
-import React, { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import * as echarts from 'echarts';
+import { EChartsType } from 'echarts';
 
 export default function Index(props: any) {
   const { data } = props;
-  const myChart = useRef(null);
 
-  const echartDom = useRef();
+  // 用于保存 echart 实例的 ref
+  const echartInstanceRef = useRef<EChartsType | null>(null);
+  // 创建一个 ref 来引用 div 元素
+  const echartDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const pieData = data.map(ele => ele['涨停原因类别']?.split('+')) || [];
     const transdata = pieData?.flat();
 
-
     const dealData = transdata.reduce(function (accumulator: any, currentValue: any) {
       return accumulator[currentValue] ? ++accumulator[currentValue] : accumulator[currentValue] = 1, accumulator
     }, {});
 
-    console.log(dealData, 'dealData')
+    const res = Object.entries(dealData)?.map(ele => ({ name: ele[0], value: ele[1] })).sort((a: any, b: any) => b.value - a.value).slice(0, 10);
 
-    const res = Object.entries(dealData)?.map(ele => ({ name: ele[0], value: ele[1] })).sort((a, b) => b.value - a.value).slice(0, 10);
-
-    const option = {
+    const option: any = {
       title: {
         text: '涨停板块分析',
         subtext: '板块数量分部',
@@ -49,14 +49,19 @@ export default function Index(props: any) {
         }
       ]
     };
+    if (echartDivRef.current) {
+      echartInstanceRef.current = echarts.init(echartDivRef.current);
+      echartInstanceRef.current?.setOption(option);
+    }
 
-    myChart.current = echarts.init(echartDom.current);
-    myChart.current?.setOption(option);
+    return () => {
+      echartInstanceRef.current?.dispose();
+    }
   }, [data])
 
   return (
     <div>
-      <div ref={echartDom} style={{ minHeight: "300px", width: "600px", marginTop: "10px" }}></div>
+      <div ref={echartDivRef} style={{ minHeight: "300px", width: "600px", marginTop: "10px" }}></div>
     </div>
   )
 }

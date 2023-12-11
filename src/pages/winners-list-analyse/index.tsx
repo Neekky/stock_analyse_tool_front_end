@@ -1,14 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { limitupApi } from "@/apis";
-import { Table, Tag, DatePicker, message, Button } from 'antd';
-import StockPlate from '../../components/stockPlate';
+import { Table, DatePicker, message } from 'antd';
 import StockKLine from '../../components/stockKLine';
-import * as dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import PlatePieChart from "../../components/platePieChart";
 
 import './index.less'
-
-import type { DatePickerProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 const columns: ColumnsType<any> = [
@@ -18,16 +15,18 @@ const columns: ColumnsType<any> = [
         key: '代码',
         render: (text: string) => text,
         width: 100,
-        textWrap: 'word-break',
     },
     {
         title: '股票名称',
         dataIndex: '名称',
         key: '名称',
-        render: (text: string) => text,
+        render: (text: string, row) => {
+            const code = row['代码']
+            const date = dayjs(row['上榜日']).format('YYYY-MM-DD');
+            const url = `https://data.eastmoney.com/stock/lhb,${date},${code}.html`;
+            return <a target="_blank" href={url}>{text}</a>
+        },
         width: 100,
-        textWrap: 'word-break',
-
     },
     {
         title: '收盘价',
@@ -35,6 +34,14 @@ const columns: ColumnsType<any> = [
         key: '收盘价',
         render: (text: string) => text,
         sorter: (a, b) => a['收盘价'] - b['收盘价'],
+        width: 20
+    },
+    {
+        title: '今日涨跌幅',
+        dataIndex: '涨跌幅',
+        key: '涨跌幅',
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text}%</div>,
+        sorter: (a, b) => a['涨跌幅'] - b['涨跌幅'],
         width: 20
     },
     {
@@ -57,43 +64,67 @@ const columns: ColumnsType<any> = [
         dataIndex: `上榜原因`,
         key: `上榜原因`,
         render: (text: string) => text,
-        width: 150
+        width: 2950
+    },
+    {
+        title: '龙虎榜买入额',
+        dataIndex: `龙虎榜买入额`,
+        key: `龙虎榜买入额`,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+        sorter: (a, b) => a['龙虎榜买入额'] - b['龙虎榜买入额'],
+    },
+    {
+        title: '龙虎榜净买额',
+        dataIndex: `龙虎榜净买额`,
+        key: `龙虎榜净买额`,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+        sorter: (a, b) => a['龙虎榜净买额'] - b['龙虎榜净买额'],
+    },
+    {
+        title: '龙虎榜卖出额',
+        dataIndex: `龙虎榜卖出额`,
+        key: `龙虎榜卖出额`,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+        sorter: (a, b) => a['龙虎榜卖出额'] - b['龙虎榜卖出额'],
+    },
+    {
+        title: '龙虎榜成交额',
+        dataIndex: `龙虎榜成交额`,
+        key: `龙虎榜成交额`,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+        sorter: (a, b) => a['龙虎榜成交额'] - b['龙虎榜成交额'],
     },
     {
         title: '上榜后1日',
         dataIndex: `上榜后1日`,
         key: `上榜后1日`,
-        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text}</div>,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
         sorter: (a, b) => a['上榜后1日'] - b['上榜后1日'],
-        winth: 10
     },
     {
         title: '上榜后2日',
         dataIndex: `上榜后2日`,
         key: `上榜后2日`,
-        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text}</div>,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
         sorter: (a, b) => a['上榜后2日'] - b['上榜后2日'],
-        winth: 10
     },
     {
         title: '上榜后5日',
         dataIndex: `上榜后5日`,
         key: `上榜后5日`,
-        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text}</div>,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
         sorter: (a, b) => a['上榜后5日'] - b['上榜后5日'],
-        winth: 10
     },
     {
         title: '上榜后10日',
         dataIndex: `上榜后10日`,
         key: `上榜后10日`,
-        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text}</div>,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
         sorter: (a, b) => a['上榜后10日'] - b['上榜后10日'],
-        winth: 10
     },
 ];
 
-export default function Index(props): any {
+export default function Index(): any {
 
     const [limitUpData, setLimitUpData] = useState([]);
 
@@ -109,8 +140,6 @@ export default function Index(props): any {
     const pageGetLimitUpData = async (queryDate: any) => {
         const dateParam = queryDate.format('YYYYMMDD');
         try {
-            console.log(111, 2321312)
-
             const res = await limitupApi.getWinnersListData({
                 start_date: dateParam,
                 end_date: dateParam
@@ -134,7 +163,7 @@ export default function Index(props): any {
     }
 
 
-    const onChange: DatePickerProps['onChange'] = (date: dayjs) => {
+    const onChange = (date: any | Dayjs) => {
         setDate(date)
     };
 
@@ -161,9 +190,10 @@ export default function Index(props): any {
                     <DatePicker format="YYYYMMDD" defaultValue={date} placeholder="选择日期" onChange={onChange} />
                 </div>
             </div>
-            <div class="multi-wrapper">
+            <div className="multi-wrapper">
                 <Table
-                    key={date}
+                    key={date.format('YYYYMMDD')}
+                    bordered
                     pagination={{
                         defaultPageSize: 100
                     }}
