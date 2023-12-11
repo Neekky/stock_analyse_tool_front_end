@@ -3,8 +3,8 @@ import { eastmoneyApi } from "@/apis";
 import { Tag } from 'antd';
 
 export default function Index(props) {
-    const [plateList, setPlateList] = useState([])
-    const [tags, setTags] = useState([])
+    const [plateList, setPlateList] = useState<any[]>([])
+    const [tags, setTags] = useState<any[]>([])
 
     const { code, prefix } = props;
 
@@ -17,7 +17,7 @@ export default function Index(props) {
     }, [])
 
     useEffect(() => {
-        const resTags = []
+        const resTags: any[] = []
         plateList.forEach((ele: any) => {
             if (!ele.BOARD_NAME.includes('含一字')) {
                 resTags.push(ele.BOARD_NAME)

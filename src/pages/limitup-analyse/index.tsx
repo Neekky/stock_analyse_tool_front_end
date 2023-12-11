@@ -6,6 +6,7 @@ import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
 import './index.less'
 import * as dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 import PlatePieChart from "../../components/platePieChart";
 
 import type { DatePickerProps } from 'antd';
@@ -41,7 +42,7 @@ const columns: ColumnsType<any> = [
     title: '涨停封单额',
     dataIndex: `涨停封单额`,
     key: `涨停封单额`,
-    render: (text, row) => {
+    render: (_text, row) => {
       const amount = row[`涨停封单量`];
       const price = row['最新价'];
       const res = (amount * price).toFixed(0)
@@ -156,7 +157,7 @@ export default function Index(): any {
           content: '当日无数据',
         });
       } else {
-        const firstDealData = res.data.map((ele, i) => ({ ...ele, key: ele['股票简称'] }));
+        const firstDealData = res.data.map((ele) => ({ ...ele, key: ele['股票简称'] }));
 
         setLimitUpData(firstDealData)
 
@@ -173,7 +174,7 @@ export default function Index(): any {
   }
 
 
-  const onChange: DatePickerProps['onChange'] = (date, dateString) => {
+  const onChange: DatePickerProps['onChange'] = (date: any | Dayjs) => {
     setDate(date)
   };
 
@@ -215,7 +216,7 @@ export default function Index(): any {
       </div>
       <div className="table-wrapper">
         <Table
-          key={date}
+          key={date.format('YYYYMMDD')}
           pagination={{
             defaultPageSize: 100
           }}

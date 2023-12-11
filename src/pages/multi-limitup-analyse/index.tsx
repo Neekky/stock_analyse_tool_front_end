@@ -4,6 +4,7 @@ import { Table, Tag, DatePicker, message, Button } from 'antd';
 import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
 import * as dayjs from 'dayjs';
+import type { Dayjs } from 'dayjs';
 import PlatePieChart from "../../components/platePieChart";
 
 import './index.less'
@@ -100,7 +101,7 @@ const columns: ColumnsType<any> = [
   },
 ];
 
-export default function Index(props): any {
+export default function Index(): any {
 
   const [limitUpData, setLimitUpData] = useState([]);
 
@@ -140,13 +141,13 @@ export default function Index(props): any {
   }
 
 
-  const onChange: DatePickerProps['onChange'] = (date: dayjs) => {
+  const onChange: DatePickerProps['onChange'] = (date: Dayjs | any) => {
     setDate(date)
   };
 
-  const updateNum = (data: string) => { 
+  const updateNum = (data: string) => {
     if (data === num) return;
-    setNum(data); 
+    setNum(data);
   }
 
   return (
@@ -177,9 +178,9 @@ export default function Index(props): any {
           <DatePicker format="YYYYMMDD" defaultValue={date} placeholder="选择日期" onChange={onChange} />
         </div>
       </div>
-      <div class="multi-wrapper">
+      <div className="multi-wrapper">
         <Table
-          key={date}
+          key={date.format('YYYYMMDD')}
           pagination={{
             defaultPageSize: 100
           }}

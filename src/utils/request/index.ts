@@ -96,6 +96,7 @@ service.interceptors.response.use(
     if (code === 200 || code === 204) {
       return Promise.resolve(res.data);
     } else {
+      console.log(msg, "错误信息")
       return Promise.reject(res.data);
     }
   },

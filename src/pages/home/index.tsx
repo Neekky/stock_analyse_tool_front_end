@@ -3,12 +3,12 @@ import {
   DesktopOutlined,
   PieChartOutlined,
 } from '@ant-design/icons';
-import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu, theme } from 'antd';
 import './index.less';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Footer } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -33,17 +33,11 @@ const items: MenuItem[] = [
   getItem('龙虎榜分析', '4', <DesktopOutlined />),
 ];
 
-const App: React.FC = (props) => {
+const App: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const location = useLocation();
-
-  const [collapsed, setCollapsed] = useState(false);
-
   const [menuKey, setMenuKey] = useState('1');
-
-
 
   const {
     token: { colorBgContainer },

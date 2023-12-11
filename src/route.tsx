@@ -1,4 +1,3 @@
-import React from "react";
 import {
     createBrowserRouter,
 } from "react-router-dom";
@@ -16,17 +15,14 @@ export const router = createBrowserRouter([
             {
                 path: "limitup-analyse",
                 element: <LimitUpAnalyse />,
-                exact: true
             },
             {
                 path: "multi-limitup-analyse",
                 element: <MultiLimitUpAnalyse />,
-                exact: true
             },
             {
                 path: "winners-list-analyse",
                 element: <WinnersListAnalyse />,
-                exact: true
             }
         ],
     },

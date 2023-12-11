@@ -1,12 +1,12 @@
 export function calculateMA(dayCount: number, data: any) {
-	var result = [];
-	for (var i = 0, len = data.values.length; i < len; i++) {
+	const result: any[] = [];
+	for (let i = 0, len = data.values.length; i < len; i++) {
 		if (i < dayCount) {
 			result.push('-');
 			continue;
 		}
-		var sum = 0;
-		for (var j = 0; j < dayCount; j++) {
+		let sum = 0;
+		for (let j = 0; j < dayCount; j++) {
 			sum += +data.values[i - j][1];
 		}
 		result.push(sum / dayCount);
@@ -16,9 +16,9 @@ export function calculateMA(dayCount: number, data: any) {
 
 // 拆分数据
 export function splitData(rawData: any) {
-	const categoryData = [];
-	const values = [];
-	for (var i = 0; i < rawData.length; i++) {
+	const categoryData: any[] = [];
+	const values: any[] = [];
+	for (let i = 0; i < rawData.length; i++) {
 		categoryData.push(rawData[i].splice(0, 1)[0]);
 		values.push(rawData[i]);
 	}

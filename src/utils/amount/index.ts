@@ -39,9 +39,9 @@ export default (number: number, type = "upper") => {
     const decimal = Number(numbers[1]) === 0 ? [] : numbers[1].split("");
 
     // 四位分级
-    const levels = integer.reverse().reduce((pre, item, idx) => {
-        let level = pre[0] && pre[0].length < 4 ? pre[0] : [];
-        let value =
+    const levels = integer.reverse().reduce((pre: any, item, idx) => {
+        const level = pre[0] && pre[0].length < 4 ? pre[0] : [];
+        const value =
             item === "0" ? conf.num[item] : conf.num[item] + conf.unit[idx % 4];
         level.unshift(value);
 
@@ -55,7 +55,7 @@ export default (number: number, type = "upper") => {
     }, []);
 
     // 整数部分
-    const _integer = levels.reduce((pre, item, idx) => {
+    const _integer = levels.reduce((pre: any, item: any, idx: number) => {
         let _level = conf.level[levels.length - idx - 1];
         let _item = item.join("").replace(/(零)\1+/g, "$1"); // 连续多个零字的部分设置为单个零字
 
@@ -73,7 +73,7 @@ export default (number: number, type = "upper") => {
     }, "");
 
     // 小数部分
-    let _decimal = decimal
+    const _decimal = decimal
         .map((item, idx) => {
             const unit = confs.decimal.unit;
             const _unit = item !== "0" ? unit[unit.length - idx - 1] : "";
