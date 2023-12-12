@@ -13,8 +13,8 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
+      uses: actions/setup-node@v4
+      with:
           node-version: '18.18.2'  # 可以指定项目所需的Node.js版本
 
     - name: Install dependencies
