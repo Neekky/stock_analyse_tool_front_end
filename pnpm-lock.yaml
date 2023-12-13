@@ -73,6 +73,9 @@ devDependencies:
   '@vitejs/plugin-react-swc':
     specifier: ^3.5.0
     version: registry.npmmirror.com/@vitejs/plugin-react-swc@3.5.0(vite@5.0.6)
+  cross-env:
+    specifier: ^7.0.3
+    version: registry.npmmirror.com/cross-env@7.0.3
   eslint:
     specifier: ^8.53.0
     version: registry.npmmirror.com/eslint@8.55.0
@@ -1875,6 +1878,16 @@ packages:
     dependencies:
       toggle-selection: registry.npmmirror.com/toggle-selection@1.0.6
     dev: false
+
+  registry.npmmirror.com/cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==, tarball: https://registry.npmmirror.com/cross-env/-/cross-env-7.0.3.tgz}
+    name: cross-env
+    version: 7.0.3
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: registry.npmmirror.com/cross-spawn@7.0.3
+    dev: true
 
   registry.npmmirror.com/cross-spawn@7.0.3:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==, tarball: https://registry.npmmirror.com/cross-spawn/-/cross-spawn-7.0.3.tgz}
