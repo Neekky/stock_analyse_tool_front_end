@@ -6,6 +6,7 @@ import path from "path";
 export default (props: any) => {
   const { mode } = props;
   return defineConfig({
+    base: loadEnv(mode, process.cwd()).VITE_APP_BASE_URL,
     plugins: [react()],
     resolve: {
       alias: {
