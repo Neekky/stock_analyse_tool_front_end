@@ -40,8 +40,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: 22
-        script: |
-          pm2 start server.js --name "stock_analyse_front" 
+        script: pm2 start server.js --name "stock_analyse_front" 
 
            
  
