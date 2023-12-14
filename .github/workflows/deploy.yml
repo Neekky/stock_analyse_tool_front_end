@@ -30,17 +30,6 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: 22  # 如有必要，更改为你的服务器SSH端口
-        source: "dist/"  # 构建输出目录
-        target: ${{ secrets.DEPLOY_PATH }},
-
-    - name: Restart Node.js application
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.ALIYUN_SERVER_IP }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        port: 22
-        script: pm2 start server.js --name "stock_analyse_front" 
-
-           
+        source: "dist/, server.js"  # 构建输出目录
+        target: ${{ secrets.DEPLOY_PATH }},           
  
