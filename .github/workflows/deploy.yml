@@ -15,7 +15,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-          node-version: '18.18.2'  # 可以指定项目所需的Node.js版本
+        node-version: '18.18.2'  # 可以指定项目所需的Node.js版本
 
     - name: Install dependencies
       run: npm install
@@ -31,5 +31,4 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: 22  # 如有必要，更改为你的服务器SSH端口
         source: "dist/"  # 构建输出目录
-        target: ${{ secrets.DEPLOY_PATH }},           
- 
+        target: ${{ secrets.DEPLOY_PATH }}
