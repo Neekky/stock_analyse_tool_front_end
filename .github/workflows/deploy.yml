@@ -41,4 +41,5 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: 22
         script: |
+          cd ${{ secrets.DEPLOY_PATH }}
           pm2 start server.js --name "stock_analyse_front_server"
