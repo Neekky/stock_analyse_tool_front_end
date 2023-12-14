@@ -30,7 +30,7 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: 22  # 如有必要，更改为你的服务器SSH端口
-        source: "dist/,server.js"  # 构建输出目录
+        source: "dist, server.js"  # 构建输出目录
         target: ${{ secrets.DEPLOY_PATH }},
 
     - name: Restart Node.js application
