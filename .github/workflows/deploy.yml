@@ -42,4 +42,4 @@ jobs:
         port: 22
         script: |
           cd ${{ secrets.DEPLOY_PATH }} # 重启服务
-          pm2 start server.js --name "stock_analyse_front_server"
+          pm2 restart server.js --name "stock_analyse_front_server"
