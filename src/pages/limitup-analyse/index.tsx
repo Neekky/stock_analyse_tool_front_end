@@ -134,7 +134,7 @@ export default function Index(): any {
 
   const [limitUpFilterData, setLimitUpFilterData] = useState([]);
 
-  const [date, setDate] = useState(dayjs());
+  const [date, setDate] = useState(dayjs().format('YYYYMMDD'));
 
   const [messageApi, contextHolder] = message.useMessage();
 
