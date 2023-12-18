@@ -3,7 +3,7 @@ import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message, Button } from 'antd';
 import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import PlatePieChart from "../../components/platePieChart";
 

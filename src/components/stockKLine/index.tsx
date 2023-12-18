@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react'
 import { stockklineApi } from '@/apis';
 import { Calculate } from '@/utils';
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import * as echarts from 'echarts';
 import { EChartsType } from 'echarts';
 
