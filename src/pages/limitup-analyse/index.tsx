@@ -5,7 +5,7 @@ import numeral from 'numeral';
 import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
 import './index.less'
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import PlatePieChart from "../../components/platePieChart";
 
@@ -134,7 +134,7 @@ export default function Index(): any {
 
   const [limitUpFilterData, setLimitUpFilterData] = useState([]);
 
-  const [date, setDate] = useState(() => dayjs());
+  const [date, setDate] = useState(dayjs(new Date()));
 
   const [messageApi, contextHolder] = message.useMessage();
 
