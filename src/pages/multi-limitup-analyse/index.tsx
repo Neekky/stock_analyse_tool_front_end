@@ -105,7 +105,7 @@ export default function Index(): any {
 
   const [limitUpData, setLimitUpData] = useState([]);
 
-  const [date, setDate] = useState(dayjs());
+  const [date, setDate] = useState(dayjs(new Date()));
 
   const [num, setNum] = useState('1');
 

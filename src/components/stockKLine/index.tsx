@@ -23,7 +23,7 @@ export default function Index(props: any) {
   }, [])
 
   const getKLineData = () => {
-    const start_date = dayjs().subtract(6, 'month').format('YYYYMMDD')
+    const start_date = dayjs(new Date()).subtract(6, 'month').format('YYYYMMDD')
     // 获取K线数据
     stockklineApi.getStockKLine({
       symbol: ('' + data.code).padStart(6, '0'),
