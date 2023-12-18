@@ -6,7 +6,7 @@ import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
 import './index.less'
 import dayjs from 'dayjs';
-import type { Dayjs } from 'dayjs';
+import type { Dayjs as Dtype } from 'dayjs';
 import PlatePieChart from "../../components/platePieChart";
 
 import type { DatePickerProps } from 'antd';
@@ -174,7 +174,7 @@ export default function Index(): any {
   }
 
 
-  const onChange: DatePickerProps['onChange'] = (date: any | Dayjs) => {
+  const onChange: DatePickerProps['onChange'] = (date: any | Dtype) => {
     setDate(date)
   };
 
