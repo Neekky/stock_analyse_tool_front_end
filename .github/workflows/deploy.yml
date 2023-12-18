@@ -30,8 +30,9 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_KEY }}
         port: 22  # 如有必要，更改为你的服务器SSH端口
-        source: "dist/, server.js"  # 构建输出目录
+        source: "dist/, server.cjs, package.json, pnpm-lock.yaml"  # 构建输出目录
         target: ${{ secrets.DEPLOY_PATH }}
+        rm: true
     
     - name: Restart server (if needed)
       uses: appleboy/ssh-action@master
@@ -41,5 +42,6 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         port: 22
         script: |
-          cd ${{ secrets.DEPLOY_PATH }}
-          pm2 start server.js --name "stock_analyse_front_server"
+          cd ${{ secrets.DEPLOY_PATH }} # 重启服务
+          pnpm install express
+          pm2 restart server.cjs --name "stock_analyse_front_server"

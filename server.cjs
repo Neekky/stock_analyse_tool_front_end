@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+
 const app = express();
 
 // 设置静态文件目录，通常是 React 构建后的文件夹
