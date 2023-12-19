@@ -4,14 +4,14 @@ export default new (class User extends Axios {
     // 获取涨停板数据
     // num为连板数
     getLimitUpData(params: any) {
-        return this.get(`/limitup`, { params });
+        return this.get(`/service-koa2/limitup`, { params });
     }
 
     getLimitUpDataByNum(params: any) {
-        return this.get(`/limitup/by-num`, { params });
+        return this.get(`/service-koa2/limitup/by-num`, { params });
     }
 
     getWinnersListData(params: any) {
-        return this.get(`/limitup/winners-list`, { params });
+        return this.get(`/service-koa2/limitup/winners-list`, { params });
     }
 })();
