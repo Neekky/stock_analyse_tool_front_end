@@ -6,7 +6,7 @@ export default new (class User extends Axios {
     // num为连板数
     getStockKLine(params: { symbol: string, period?: 'daily' | 'weekly' | 'monthly', start_date?: string, adjust?: '' | 'qfq' | 'hfq', end_date?: string }) {
         const stringified = queryString.stringify(params)
-        const url = `/get_stock_k_line?${stringified}`
+        const url = `/service-flask/get_stock_k_line?${stringified}`
         return this.get(url);
     }
 })();
