@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message, Button } from 'antd';
-import StockPlate from '../../components/stockPlate';
+// import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
@@ -78,17 +78,17 @@ const columns: ColumnsType<any> = [
       )
     },
   },
-  {
-    title: '所属板块',
-    dataIndex: `最终涨停时间`,
-    key: `最终涨停时间`,
-    render: (_: any, row: any) => {
-      const text = row['股票代码'];
-      const prefix = text.substring(7, 9);
-      const code = text.substring(0, 6);
-      return <StockPlate prefix={prefix} code={code} />
-    },
-  },
+  // {
+  //   title: '所属板块',
+  //   dataIndex: `最终涨停时间`,
+  //   key: `最终涨停时间`,
+  //   render: (_: any, row: any) => {
+  //     const text = row['股票代码'];
+  //     const prefix = text.substring(7, 9);
+  //     const code = text.substring(0, 6);
+  //     return <StockPlate prefix={prefix} code={code} />
+  //   },
+  // },
 ];
 
 export default function Index(): any {
