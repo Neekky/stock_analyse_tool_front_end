@@ -29,7 +29,6 @@ const columns: ColumnsType<any> = [
     dataIndex: '股票简称',
     key: '股票简称',
     render: (text) => text,
-    width: 100
   },
   {
     title: '最新价',
