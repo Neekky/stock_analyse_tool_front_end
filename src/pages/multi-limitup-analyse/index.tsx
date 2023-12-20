@@ -23,15 +23,12 @@ const columns: ColumnsType<any> = [
       const res = prefix + code;
       return <a style={{ width: '40px' }} target="_blank" href={`https://quote.eastmoney.com/concept/${res}.html`}>{res}</a>;
     },
-    width: 10,
   },
   {
     title: '股票名称',
     dataIndex: '股票简称',
     key: '股票简称',
     render: (text: string) => text,
-    width: 10,
-
   },
   {
     title: '最新价',
@@ -39,28 +36,24 @@ const columns: ColumnsType<any> = [
     key: '最新价',
     render: (text: string) => text,
     sorter: (a, b) => a['最新价'] - b['最新价'],
-    width: 20
   },
   {
     title: '涨停开板次数',
     dataIndex: `涨停开板次数`,
     key: `涨停开板次数`,
     render: (text) => text,
-    width: 20
   },
-  {
-    title: '连板数',
-    dataIndex: `连续涨停天数`,
-    key: `连续涨停天数`,
-    render: (text: string) => text,
-    width: 20
-  },
+  // {
+  //   title: '连板数',
+  //   dataIndex: `连续涨停天数`,
+  //   key: `连续涨停天数`,
+  //   render: (text: string) => text,
+  // },
   {
     title: '几天几板',
     dataIndex: `几天几板`,
     key: `几天几板`,
     render: (text: string) => text,
-    width: 40
   },
   {
     title: '涨停原因类别',
@@ -84,8 +77,6 @@ const columns: ColumnsType<any> = [
         </>
       )
     },
-    width: 60
-
   },
   {
     title: '所属板块',
@@ -97,7 +88,6 @@ const columns: ColumnsType<any> = [
       const code = text.substring(0, 6);
       return <StockPlate prefix={prefix} code={code} />
     },
-    width: 150
   },
 ];
 
@@ -187,7 +177,6 @@ export default function Index(): any {
           expandable={{
             expandedRowRender: (record) => <StockKLine data={record} />,
           }}
-          scroll={{ x: 1700 }}
           columns={columns}
           dataSource={limitUpData} />
       </div>
