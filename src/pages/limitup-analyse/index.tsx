@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message } from 'antd';
-import numeral from 'numeral';
-import StockPlate from '../../components/stockPlate';
+// import numeral from 'numeral';
+// import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
 import './index.less'
 import dayjs from 'dayjs';
