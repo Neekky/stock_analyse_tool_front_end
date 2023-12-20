@@ -222,7 +222,6 @@ export default function Index(): any {
           expandable={{
             expandedRowRender: (record) => <StockKLine data={record} />,
           }}
-          scroll={{ x: 1700 }}
           columns={columns} dataSource={limitUpData} />
       </div>
     </div>
