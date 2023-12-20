@@ -38,46 +38,46 @@ const columns: ColumnsType<any> = [
     render: (text) => text,
     sorter: (a, b) => a['最新价'] - b['最新价'],
   },
-  {
-    title: '涨停封单额',
-    dataIndex: `涨停封单额`,
-    key: `涨停封单额`,
-    render: (_text, row) => {
-      const amount = row[`涨停封单量`];
-      const price = row['最新价'];
-      const res = (amount * price).toFixed(0)
-      return numeral(res).format('0,0');
-    },
-    sorter: (a: any, b: any) => {
-      const aAmount = a[`涨停封单量`];
-      const aPrice = a['最新价'];
-      const aRes = aAmount * aPrice;
+  // {
+  //   title: '涨停封单额',
+  //   dataIndex: `涨停封单额`,
+  //   key: `涨停封单额`,
+  //   render: (_text, row) => {
+  //     const amount = row[`涨停封单量`];
+  //     const price = row['最新价'];
+  //     const res = (amount * price).toFixed(0)
+  //     return numeral(res).format('0,0');
+  //   },
+  //   sorter: (a: any, b: any) => {
+  //     const aAmount = a[`涨停封单量`];
+  //     const aPrice = a['最新价'];
+  //     const aRes = aAmount * aPrice;
 
-      const bAmount = b[`涨停封单量`];
-      const bPrice = b['最新价'];
-      const bRes = bAmount * bPrice;
-      return aRes - bRes;
-    },
-  },
-  {
-    title: '连板数',
-    dataIndex: `连续涨停天数`,
-    key: `连续涨停天数`,
-    render: (text) => text,
-    sorter: (a, b) => a[`连续涨停天数`] - b[`连续涨停天数`],
-  },
+  //     const bAmount = b[`涨停封单量`];
+  //     const bPrice = b['最新价'];
+  //     const bRes = bAmount * bPrice;
+  //     return aRes - bRes;
+  //   },
+  // },
+  // {
+  //   title: '连板数',
+  //   dataIndex: `连续涨停天数`,
+  //   key: `连续涨停天数`,
+  //   render: (text) => text,
+  //   sorter: (a, b) => a[`连续涨停天数`] - b[`连续涨停天数`],
+  // },
   {
     title: '几天几板',
     dataIndex: `几天几板`,
     key: `几天几板`,
     render: (text) => text,
   },
-  {
-    title: '涨停开板次数',
-    dataIndex: `涨停开板次数`,
-    key: `涨停开板次数`,
-    render: (text) => text,
-  },
+  // {
+  //   title: '涨停开板次数',
+  //   dataIndex: `涨停开板次数`,
+  //   key: `涨停开板次数`,
+  //   render: (text) => text,
+  // },
   {
     title: '涨停因子排名',
     dataIndex: `排名`,
@@ -85,12 +85,12 @@ const columns: ColumnsType<any> = [
     render: (text) => text,
     sorter: (a, b) => a[`排名`] - b[`排名`],
   },
-  {
-    title: '最终涨停时间',
-    dataIndex: `最终涨停时间`,
-    key: `最终涨停时间`,
-    render: (text) => text,
-  },
+  // {
+  //   title: '最终涨停时间',
+  //   dataIndex: `最终涨停时间`,
+  //   key: `最终涨停时间`,
+  //   render: (text) => text,
+  // },
   {
     title: '涨停原因类别',
     dataIndex: `涨停原因类别`,
@@ -114,18 +114,18 @@ const columns: ColumnsType<any> = [
       )
     },
   },
-  {
-    title: '所属板块',
-    dataIndex: `最终涨停时间`,
-    key: `最终涨停时间`,
-    render: (_: any, row: any) => {
-      const text = row['股票代码'];
-      const prefix = text.substring(7, 9);
-      const code = text.substring(0, 6);
-      return <StockPlate prefix={prefix} code={code} />
-    },
-    width: 400
-  },
+  // {
+  //   title: '所属板块',
+  //   dataIndex: `最终涨停时间`,
+  //   key: `最终涨停时间`,
+  //   render: (_: any, row: any) => {
+  //     const text = row['股票代码'];
+  //     const prefix = text.substring(7, 9);
+  //     const code = text.substring(0, 6);
+  //     return <StockPlate prefix={prefix} code={code} />
+  //   },
+  //   width: 400
+  // },
 ];
 
 export default function Index(): any {
