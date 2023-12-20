@@ -7,6 +7,7 @@ import LimitUpAnalyse from "./pages/limitup-analyse";
 import MultiLimitUpAnalyse from "./pages/multi-limitup-analyse";
 import WinnersListAnalyse from "./pages/winners-list-analyse";
 
+console.log(import.meta.env, 31321)
 export const router = createBrowserRouter([
     {
         path: "/",
@@ -27,5 +28,5 @@ export const router = createBrowserRouter([
         ],
     },
 ], {
-    basename: '/platform'
+    basename: import.meta.env.VITE_APP_REACT_ROUTE_BASENAME
 });
