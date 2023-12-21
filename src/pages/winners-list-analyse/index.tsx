@@ -26,13 +26,13 @@ const columns: ColumnsType<any> = [
             return <a target="_blank" href={url}>{text}</a>
         },
     },
-    {
-        title: '收盘价',
-        dataIndex: '收盘价',
-        key: '收盘价',
-        render: (text: string) => text,
-        sorter: (a, b) => a['收盘价'] - b['收盘价'],
-    },
+    // {
+    //     title: '收盘价',
+    //     dataIndex: '收盘价',
+    //     key: '收盘价',
+    //     render: (text: string) => text,
+    //     sorter: (a, b) => a['收盘价'] - b['收盘价'],
+    // },
     {
         title: '当日涨跌幅',
         dataIndex: '涨跌幅',
@@ -53,33 +53,28 @@ const columns: ColumnsType<any> = [
         key: '解读',
         render: (text: string) => text,
     },
-    {
-        title: '上榜原因',
-        dataIndex: `上榜原因`,
-        key: `上榜原因`,
-        render: (text: string) => text,
-    },
-    {
-        title: '龙虎榜买入额',
-        dataIndex: `龙虎榜买入额`,
-        key: `龙虎榜买入额`,
-        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
-        sorter: (a, b) => a['龙虎榜买入额'] - b['龙虎榜买入额'],
-    },
+   
     // {
-    //     title: '龙虎榜净买额',
-    //     dataIndex: `龙虎榜净买额`,
-    //     key: `龙虎榜净买额`,
+    //     title: '龙虎榜买入额',
+    //     dataIndex: `龙虎榜买入额`,
+    //     key: `龙虎榜买入额`,
     //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
-    //     sorter: (a, b) => a['龙虎榜净买额'] - b['龙虎榜净买额'],
+    //     sorter: (a, b) => a['龙虎榜买入额'] - b['龙虎榜买入额'],
     // },
     {
-        title: '龙虎榜卖出额',
-        dataIndex: `龙虎榜卖出额`,
-        key: `龙虎榜卖出额`,
+        title: '龙虎榜净买额',
+        dataIndex: `龙虎榜净买额`,
+        key: `龙虎榜净买额`,
         render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
-        sorter: (a, b) => a['龙虎榜卖出额'] - b['龙虎榜卖出额'],
+        sorter: (a, b) => a['龙虎榜净买额'] - b['龙虎榜净买额'],
     },
+    // {
+    //     title: '龙虎榜卖出额',
+    //     dataIndex: `龙虎榜卖出额`,
+    //     key: `龙虎榜卖出额`,
+    //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+    //     sorter: (a, b) => a['龙虎榜卖出额'] - b['龙虎榜卖出额'],
+    // },
     // {
     //     title: '龙虎榜成交额',
     //     dataIndex: `龙虎榜成交额`,
@@ -98,7 +93,7 @@ const columns: ColumnsType<any> = [
         title: '上榜后2日',
         dataIndex: `上榜后2日`,
         key: `上榜后2日`,
-        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
+        render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '上榜不足2日'}</div>,
         sorter: (a, b) => a['上榜后2日'] - b['上榜后2日'],
     },
     // {
@@ -115,6 +110,12 @@ const columns: ColumnsType<any> = [
     //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
     //     sorter: (a, b) => a['上榜后10日'] - b['上榜后10日'],
     // },
+     {
+        title: '上榜原因',
+        dataIndex: `上榜原因`,
+        key: `上榜原因`,
+        render: (text: string) => text,
+    },
 ];
 
 export default function Index(): any {
