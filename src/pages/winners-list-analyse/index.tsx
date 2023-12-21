@@ -115,6 +115,7 @@ const columns: ColumnsType<any> = [
         dataIndex: `上榜原因`,
         key: `上榜原因`,
         render: (text: string) => text,
+        width: 200
     },
 ];
 
