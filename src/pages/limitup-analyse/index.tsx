@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { limitupApi } from "@/apis";
-import { Table, Tag, DatePicker, message } from 'antd';
+import { Table, Tag, DatePicker, message, Button } from 'antd';
 // import numeral from 'numeral';
 // import StockPlate from '../../components/stockPlate';
 import StockKLine from '../../components/stockKLine';
@@ -12,134 +12,166 @@ import PlatePieChart from "../../components/platePieChart";
 import type { DatePickerProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-const columns: ColumnsType<any> = [
-  {
-    title: '股票代码',
-    dataIndex: '股票代码',
-    key: '股票代码',
-    render: (text: string) => {
-      const prefix = text.substring(7, 9).toLocaleLowerCase();
-      const code = text.substring(0, 6);
-      const res = prefix + code;
-      return <a target="_blank" href={`https://quote.eastmoney.com/concept/${res}.html`}>{res}</a>;
-    },
-  },
-  {
-    title: '股票名称',
-    dataIndex: '股票简称',
-    key: '股票简称',
-    render: (text) => text,
-  },
-  {
-    title: '最新价',
-    dataIndex: '最新价',
-    key: '最新价',
-    render: (text) => text,
-    sorter: (a, b) => a['最新价'] - b['最新价'],
-  },
-  // {
-  //   title: '涨停封单额',
-  //   dataIndex: `涨停封单额`,
-  //   key: `涨停封单额`,
-  //   render: (_text, row) => {
-  //     const amount = row[`涨停封单量`];
-  //     const price = row['最新价'];
-  //     const res = (amount * price).toFixed(0)
-  //     return numeral(res).format('0,0');
-  //   },
-  //   sorter: (a: any, b: any) => {
-  //     const aAmount = a[`涨停封单量`];
-  //     const aPrice = a['最新价'];
-  //     const aRes = aAmount * aPrice;
-
-  //     const bAmount = b[`涨停封单量`];
-  //     const bPrice = b['最新价'];
-  //     const bRes = bAmount * bPrice;
-  //     return aRes - bRes;
-  //   },
-  // },
-  // {
-  //   title: '连板数',
-  //   dataIndex: `连续涨停天数`,
-  //   key: `连续涨停天数`,
-  //   render: (text) => text,
-  //   sorter: (a, b) => a[`连续涨停天数`] - b[`连续涨停天数`],
-  // },
-  {
-    title: '几天几板',
-    dataIndex: `几天几板`,
-    key: `几天几板`,
-    render: (text) => text,
-  },
-  // {
-  //   title: '涨停开板次数',
-  //   dataIndex: `涨停开板次数`,
-  //   key: `涨停开板次数`,
-  //   render: (text) => text,
-  // },
-  {
-    title: '涨停因子排名',
-    dataIndex: `排名`,
-    key: `排名`,
-    render: (text) => text,
-    sorter: (a, b) => a[`排名`] - b[`排名`],
-  },
-  // {
-  //   title: '最终涨停时间',
-  //   dataIndex: `最终涨停时间`,
-  //   key: `最终涨停时间`,
-  //   render: (text) => text,
-  // },
-  {
-    title: '涨停原因类别',
-    dataIndex: `涨停原因类别`,
-    key: `涨停原因类别`,
-    render: (text) => {
-      const tags = text.split("+")
-      return (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      )
-    },
-  },
-  // {
-  //   title: '所属板块',
-  //   dataIndex: `最终涨停时间`,
-  //   key: `最终涨停时间`,
-  //   render: (_: any, row: any) => {
-  //     const text = row['股票代码'];
-  //     const prefix = text.substring(7, 9);
-  //     const code = text.substring(0, 6);
-  //     return <StockPlate prefix={prefix} code={code} />
-  //   },
-  //   width: 400
-  // },
-];
 
 export default function Index(): any {
 
+  const columns = useRef<ColumnsType<any>>(
+    [
+      {
+        title: '股票代码',
+        dataIndex: '股票代码',
+        key: '股票代码',
+        render: (text: string) => {
+          const prefix = text.substring(7, 9).toLocaleLowerCase();
+          const code = text.substring(0, 6);
+          const res = prefix + code;
+          return <a target="_blank" href={`https://quote.eastmoney.com/concept/${res}.html`}>{res}</a>;
+        },
+      },
+      {
+        title: '股票名称',
+        dataIndex: '股票简称',
+        key: '股票简称',
+        render: (text) => text,
+      },
+      {
+        title: '最新价',
+        dataIndex: '最新价',
+        key: '最新价',
+        render: (text) => text,
+        sorter: (a, b) => a['最新价'] - b['最新价'],
+      },
+      // {
+      //   title: '涨停封单额',
+      //   dataIndex: `涨停封单额`,
+      //   key: `涨停封单额`,
+      //   render: (_text, row) => {
+      //     const amount = row[`涨停封单量`];
+      //     const price = row['最新价'];
+      //     const res = (amount * price).toFixed(0)
+      //     return numeral(res).format('0,0');
+      //   },
+      //   sorter: (a: any, b: any) => {
+      //     const aAmount = a[`涨停封单量`];
+      //     const aPrice = a['最新价'];
+      //     const aRes = aAmount * aPrice;
+
+      //     const bAmount = b[`涨停封单量`];
+      //     const bPrice = b['最新价'];
+      //     const bRes = bAmount * bPrice;
+      //     return aRes - bRes;
+      //   },
+      // },
+      // {
+      //   title: '连板数',
+      //   dataIndex: `连续涨停天数`,
+      //   key: `连续涨停天数`,
+      //   render: (text) => text,
+      //   sorter: (a, b) => a[`连续涨停天数`] - b[`连续涨停天数`],
+      // },
+      {
+        title: '几天几板',
+        dataIndex: `几天几板`,
+        key: `几天几板`,
+        render: (text) => text,
+      },
+      // {
+      //   title: '涨停开板次数',
+      //   dataIndex: `涨停开板次数`,
+      //   key: `涨停开板次数`,
+      //   render: (text) => text,
+      // },
+      {
+        title: '涨停因子排名',
+        dataIndex: `排名`,
+        key: `排名`,
+        render: (text) => text,
+        sorter: (a, b) => a[`排名`] - b[`排名`],
+      },
+      // {
+      //   title: '最终涨停时间',
+      //   dataIndex: `最终涨停时间`,
+      //   key: `最终涨停时间`,
+      //   render: (text) => text,
+      // },
+      {
+        title: '涨停原因类别',
+        dataIndex: `涨停原因类别`,
+        key: `涨停原因类别`,
+        render: (text) => {
+          const tags = text.split("+")
+          return (
+            <>
+              {tags.map((tag) => {
+                let color = tag.length > 5 ? 'geekblue' : 'green';
+                if (tag === 'loser') {
+                  color = 'volcano';
+                }
+                return (
+                  <Tag className='reason-tag' color={color} key={tag}>
+                    {tag.toUpperCase()}
+                  </Tag>
+                );
+              })}
+            </>
+          )
+        },
+        width: 200
+      },
+      // {
+      //   title: '所属板块',
+      //   dataIndex: `最终涨停时间`,
+      //   key: `最终涨停时间`,
+      //   render: (_: any, row: any) => {
+      //     const text = row['股票代码'];
+      //     const prefix = text.substring(7, 9);
+      //     const code = text.substring(0, 6);
+      //     return <StockPlate prefix={prefix} code={code} />
+      //   },
+      //   width: 400
+      // },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        render: (_, record: { key: React.Key }) =>
+          <Button title="Sure to delete?" onConfirm={() => handleViewDetail(record.key)}>
+            <a>详情</a>
+          </Button>
+      },
+    ]
+  )
+
+
+  /**
+   * 用于分析涨停数据的组件。
+   */
   const [limitUpData, setLimitUpData] = useState([]);
 
+  /**
+   * 过滤后的涨停数据。
+   */
   const [limitUpFilterData, setLimitUpFilterData] = useState([]);
 
   const [date, setDate] = useState(dayjs(new Date()));
 
   const [messageApi, contextHolder] = message.useMessage();
 
+  // 股票详情
+  const [stockInfo, setStockInfo] = useState(null);
+
+  // 控制股票详情弹窗是否打开
+  const [isOpen, setOpen] = useState(false);
+
   useEffect(() => {
     pageGetLimitUpData(date);
   }, [date]);
+
+  const handleViewDetail = (key: React.Key) => {
+    console.log(key, "key")
+    const item = limitUpData.find(ele => ele.key === key);
+    setStockInfo(item);
+    setOpen(true);
+  }
 
   // 获取涨停股票数量
   const pageGetLimitUpData = async (queryDate) => {
@@ -160,7 +192,7 @@ export default function Index(): any {
 
         setLimitUpData(firstDealData)
 
-        const secondDealData = firstDealData.slice(0).sort((a,b) => a['排名'] - b['排名']);
+        const secondDealData = firstDealData.slice(0).sort((a, b) => a['排名'] - b['排名']);
 
         setLimitUpFilterData(secondDealData);
       }
@@ -219,10 +251,8 @@ export default function Index(): any {
           pagination={{
             defaultPageSize: 100
           }}
-          expandable={{
-            expandedRowRender: (record) => <StockKLine data={record} />,
-          }}
-          columns={columns} dataSource={limitUpData} />
+          columns={columns.current}
+          dataSource={limitUpData} />
       </div>
     </div>
   )
