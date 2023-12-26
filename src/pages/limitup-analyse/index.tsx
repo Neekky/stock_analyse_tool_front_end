@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message, Button } from 'antd';
 // import numeral from 'numeral';
 // import StockPlate from '../../components/stockPlate';
-import StockKLine from '../../components/stockKLine';
+// import StockKLine from '../../components/stockKLine';
 import './index.less'
 import dayjs from 'dayjs';
 import type { Dayjs as Dtype } from 'dayjs';
@@ -13,9 +13,40 @@ import type { DatePickerProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 export default function Index(): any {
+  /**
+   * 用于分析涨停数据的组件。
+   */
+  const [limitUpData, setLimitUpData] = useState([]);
 
-  const columns = useRef<ColumnsType<any>>(
-    [
+  /**
+   * 过滤后的涨停数据。
+   */
+  const [limitUpFilterData, setLimitUpFilterData] = useState([]);
+
+  const [date, setDate] = useState(dayjs(new Date()));
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  // 股票详情
+  const [stockInfo, setStockInfo] = useState<any>(null);
+
+  // 控制股票详情弹窗是否打开
+  const [isOpen, setOpen] = useState(false);
+
+  useEffect(() => {
+    pageGetLimitUpData(date);
+  }, [date]);
+
+  const wrapHandleViewDetail = useCallback((key: React.Key) => {
+    const item = limitUpData.find(ele => ele['股票简称'] === key);
+    console.log(limitUpData, key, item, "key")
+
+    setStockInfo(item);
+    setOpen(true);
+  }, [limitUpData]);
+
+  const columns = useMemo<ColumnsType<any>>(() => {
+    return  [
       {
         title: '股票代码',
         dataIndex: '股票代码',
@@ -134,44 +165,14 @@ export default function Index(): any {
         title: '操作',
         dataIndex: 'operation',
         render: (_, record: { key: React.Key }) =>
-          <Button title="Sure to delete?" onConfirm={() => handleViewDetail(record.key)}>
+          <Button title="Sure to delete?" onClick={() => wrapHandleViewDetail(record.key)}>
             <a>详情</a>
           </Button>
       },
     ]
-  )
+  }, [limitUpData, wrapHandleViewDetail]);
 
 
-  /**
-   * 用于分析涨停数据的组件。
-   */
-  const [limitUpData, setLimitUpData] = useState([]);
-
-  /**
-   * 过滤后的涨停数据。
-   */
-  const [limitUpFilterData, setLimitUpFilterData] = useState([]);
-
-  const [date, setDate] = useState(dayjs(new Date()));
-
-  const [messageApi, contextHolder] = message.useMessage();
-
-  // 股票详情
-  const [stockInfo, setStockInfo] = useState(null);
-
-  // 控制股票详情弹窗是否打开
-  const [isOpen, setOpen] = useState(false);
-
-  useEffect(() => {
-    pageGetLimitUpData(date);
-  }, [date]);
-
-  const handleViewDetail = (key: React.Key) => {
-    console.log(key, "key")
-    const item = limitUpData.find(ele => ele.key === key);
-    setStockInfo(item);
-    setOpen(true);
-  }
 
   // 获取涨停股票数量
   const pageGetLimitUpData = async (queryDate) => {
@@ -229,7 +230,7 @@ export default function Index(): any {
           </div>
           <div>
             {
-              limitUpFilterData.slice(0, 5)?.map(ele => <div>{ele['股票简称'] + ele['股票代码']}</div>)
+              limitUpFilterData.slice(0, 5)?.map(ele => <div key={ele['股票简称']}>{ele['股票简称'] + ele['股票代码']}</div>)
             }
           </div>
         </div>
@@ -251,7 +252,7 @@ export default function Index(): any {
           pagination={{
             defaultPageSize: 100
           }}
-          columns={columns.current}
+          columns={columns}
           dataSource={limitUpData} />
       </div>
     </div>
