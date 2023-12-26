@@ -34,7 +34,7 @@ export default (number: number, type = "upper") => {
     }
 
     const conf = confs[type];
-    const numbers = String(Number(number).toFixed(2)).split(".");
+    const numbers = String(Number(number).toFixed(2))?.split(".");
     const integer = numbers[0].split("");
     const decimal = Number(numbers[1]) === 0 ? [] : numbers[1].split("");
 

@@ -98,10 +98,11 @@ export default function Index(): any {
         dataIndex: `涨停原因类别`,
         key: `涨停原因类别`,
         render: (text) => {
-          const tags = text.split("+")
+          const tags = text?.split("+") || [];
+
           return (
             <>
-              {tags.map((tag) => {
+              {tags?.map((tag) => {
                 let color = tag.length > 5 ? 'geekblue' : 'green';
                 if (tag === 'loser') {
                   color = 'volcano';
@@ -187,7 +188,7 @@ export default function Index(): any {
           content: '当日无数据',
         });
       } else {
-        const firstDealData = res.data.map((ele) => ({ ...ele, key: ele['股票简称'] }));
+        const firstDealData = res.data?.map((ele) => ({ ...ele, key: ele['股票简称'] }));
 
         setLimitUpData(firstDealData)
 
@@ -228,7 +229,7 @@ export default function Index(): any {
           </div>
           <div>
             {
-              limitUpFilterData.slice(0, 5).map(ele => <div>{ele['股票简称'] + ele['股票代码']}</div>)
+              limitUpFilterData.slice(0, 5)?.map(ele => <div>{ele['股票简称'] + ele['股票代码']}</div>)
             }
           </div>
         </div>

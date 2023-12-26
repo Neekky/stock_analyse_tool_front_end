@@ -60,7 +60,8 @@ const columns: ColumnsType<any> = [
     dataIndex: `涨停原因类别`,
     key: `涨停原因类别`,
     render: (text) => {
-      const tags = text.split("+")
+      const tags = text?.split("+") || [];
+      
       return (
         <>
           {tags.map((tag) => {
