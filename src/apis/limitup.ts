@@ -15,4 +15,8 @@ export default new (class User extends Axios {
     getWinnersListData(params: any) {
         return this.get(`${API_GATEWAY_KOA2}/limitup/winners-list`, { params });
     }
+
+    getEarlyLimitData(params: any) {
+        return this.get(`${API_GATEWAY_KOA2}/limitup/early-limit-list`, { params });
+    }
 })();

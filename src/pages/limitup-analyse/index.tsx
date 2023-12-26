@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message, Button } from 'antd';
 // import numeral from 'numeral';
@@ -35,6 +35,7 @@ export default function Index(): any {
 
   useEffect(() => {
     pageGetLimitUpData(date);
+    console.log(stockInfo, isOpen)
   }, [date]);
 
   const wrapHandleViewDetail = useCallback((key: React.Key) => {
@@ -171,8 +172,6 @@ export default function Index(): any {
       },
     ]
   }, [limitUpData, wrapHandleViewDetail]);
-
-
 
   // 获取涨停股票数量
   const pageGetLimitUpData = async (queryDate) => {

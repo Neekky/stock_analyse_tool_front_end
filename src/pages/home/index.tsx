@@ -31,6 +31,7 @@ const items: MenuItem[] = [
   getItem('涨停分析', '2', <DesktopOutlined />),
   getItem('多板分析', '3', <DesktopOutlined />),
   getItem('龙虎榜分析', '4', <DesktopOutlined />),
+  getItem('早盘自研涨停板分析', '5', <DesktopOutlined />),
 ];
 
 const App: React.FC = () => {
@@ -61,6 +62,10 @@ const App: React.FC = () => {
 
       case "4":
         navigate('/winners-list-analyse');
+        break;
+
+      case "5":
+        navigate('early-limit-analyse');
         break;
 
       default:
