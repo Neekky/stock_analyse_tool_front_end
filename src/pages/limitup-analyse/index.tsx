@@ -12,7 +12,6 @@ import PlatePieChart from "../../components/platePieChart";
 import type { DatePickerProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-
 export default function Index(): any {
 
   const columns = useRef<ColumnsType<any>>(
