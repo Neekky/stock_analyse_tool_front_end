@@ -1,5 +1,6 @@
 import {
     createBrowserRouter,
+    Navigate
 } from "react-router-dom";
 
 import Home from "./pages/home/index";
@@ -33,6 +34,11 @@ export const router = createBrowserRouter([
             
         ],
     },
+
+    {
+        path: "*",
+        element: <Navigate to="/" replace />, // 重定向到主页
+    }
 ], {
     basename: import.meta.env.VITE_APP_REACT_ROUTE_BASENAME
 });
