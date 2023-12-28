@@ -16,10 +16,10 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
     const [limitData, setLimitData] = useState([]);
 
     // 股票详情
-    const [stockInfo, setStockInfo] = useState<any>(null);
+    const [, setStockInfo] = useState<any>(null);
 
     // 控制股票详情弹窗是否打开
-    const [isOpen, setOpen] = useState(false);
+    const [, setOpen] = useState(false);
 
     useEffect(() => {
         pageGetEarlyLimit(date);
@@ -76,7 +76,7 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
                 title: '当日收盘涨幅',
                 dataIndex: '股票简称',
                 key: '股票简称',
-                render: (text, row) => {
+                render: (_, row) => {
                     // console.log(row, 21)
                     return <IncCalculate code={row.code} date={date} />
                 },
@@ -86,8 +86,6 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
                 dataIndex: '竞价异动原因',
                 key: '竞价异动原因',
                 render: (text) => text,
-
-              
             },
 
             {
