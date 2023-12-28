@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Table, DatePicker, message } from 'antd';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Table, DatePicker, message, Button } from 'antd';
 import type { DatePickerProps } from 'antd';
 import type { Dayjs as Dtype } from 'dayjs';
 import type { ColumnsType } from 'antd/es/table';
 import { limitupApi } from '@/apis';
 import dayjs from 'dayjs';
+import IncCalculate from './components/inc-calculate';
 
 const EarlyLimitStrategyAnalyse: React.FC = () => {
 
@@ -14,9 +15,23 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
 
     const [limitData, setLimitData] = useState([]);
 
+    // 股票详情
+    const [stockInfo, setStockInfo] = useState<any>(null);
+
+    // 控制股票详情弹窗是否打开
+    const [isOpen, setOpen] = useState(false);
+
     useEffect(() => {
         pageGetEarlyLimit(date);
     }, [date]);
+
+    const wrapHandleViewDetail = useCallback((key: React.Key) => {
+        const item = limitData.find(ele => ele['股票简称'] === key);
+        console.log(limitData, key, item, "key")
+
+        setStockInfo(item);
+        setOpen(true);
+    }, [limitData]);
 
     const columns = useMemo<ColumnsType<any>>(() => {
         return [
@@ -58,15 +73,33 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
                 render: (text) => <div style={{ color: text === '看多' ? 'red' : 'green' }}>{text}</div>,
             },
             {
+                title: '当日收盘涨幅',
+                dataIndex: '股票简称',
+                key: '股票简称',
+                render: (text, row) => {
+                    // console.log(row, 21)
+                    return <IncCalculate code={row.code} date={date} />
+                },
+            },
+            {
                 title: '竞价异动原因',
                 dataIndex: '竞价异动原因',
                 key: '竞价异动原因',
                 render: (text) => text,
-            },
-            
-        ]
-    }, []);
 
+              
+            },
+
+            {
+                title: '操作',
+                dataIndex: 'operation',
+                render: (_, record: { key: React.Key }) =>
+                    <Button title="Sure to delete?" onClick={() => wrapHandleViewDetail(record.key)}>
+                        <a>详情</a>
+                    </Button>
+            },
+        ]
+    }, [wrapHandleViewDetail, date]);
 
     const onChange: DatePickerProps['onChange'] = (date: any | Dtype) => {
         setDate(date)
