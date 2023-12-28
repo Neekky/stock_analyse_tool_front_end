@@ -8,6 +8,7 @@ const IncCalculate = (props: any) => {
     const [onday, setOnday] = useState(0);
     const [today, setToday] = useState(0);
     const [todayDate] = useState(dayjs(new Date()).format('YYYYMMDD'));
+    const [ondayDate] = useState(dayjs(date).format('YYYYMMDD'));
 
     useEffect(() => {
         getKLineData()
@@ -33,7 +34,7 @@ const IncCalculate = (props: any) => {
     return (
         <div>
             <div>当日涨跌幅：<span style={{ color: onday > 0 ? 'red' : 'green' }}>{onday}%</span></div>
-            {date !== todayDate ? <div>今日涨跌幅：<span style={{ color: today > 0 ? 'red' : 'green' }}>{today}%</span></div> : null}
+            {ondayDate !== todayDate ? <div>今日涨跌幅：<span style={{ color: today > 0 ? 'red' : 'green' }}>{today}%</span></div> : null}
         </div>
     );
 };
