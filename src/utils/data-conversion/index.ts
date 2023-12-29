@@ -1,7 +1,7 @@
 const countSubWordsWithMapping = (phrases) => {
-  const countDict = {};
-  const phraseMapping = {};
-  const resultArray = [];
+  const countDict: any = {};
+  const phraseMapping: any = {};
+  const resultArray: any[] = [];
 
   // 遍历每个短语
   phrases.forEach(phrase => {
