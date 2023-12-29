@@ -13,13 +13,13 @@ export default function Index(props: any) {
 
   useEffect(() => {
     const pieData = data.map(ele => ele['涨停原因类别']?.split('+')) || [];
-    const transdata = pieData?.flat();
+    const transdata = pieData?.flat().sort((a: any,b: any) => a.length - b.length);
 
     // const dealData = transdata.reduce(function (accumulator: any, currentValue: any) {
     //   return accumulator[currentValue] ? ++accumulator[currentValue] : accumulator[currentValue] = 1, accumulator
     // }, {});
 
-    const dealData = dataConversion.countSubWordsWithMapping(transdata);
+    const dealData = dataConversion.countSubWordsWithMapping(transdata).slice(0,10);
 
     const res = dealData.map(ele => ({
       name: ele.word,
