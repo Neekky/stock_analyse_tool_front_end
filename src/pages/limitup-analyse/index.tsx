@@ -7,7 +7,7 @@ import { Table, Tag, DatePicker, message, Button } from 'antd';
 import './index.less'
 import dayjs from 'dayjs';
 import type { Dayjs as Dtype } from 'dayjs';
-import PlatePieChart from "../../components/platePieChart";
+import PlatePieChart from "@/components/platePieChart";
 
 import type { DatePickerProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
