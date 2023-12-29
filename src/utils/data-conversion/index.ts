@@ -1,4 +1,4 @@
-export const countSubWordsWithMapping = (phrases) => {
+const countSubWordsWithMapping = (phrases) => {
   const countDict = {};
   const phraseMapping = {};
   const resultArray = [];
@@ -41,4 +41,8 @@ export const countSubWordsWithMapping = (phrases) => {
   resultArray.sort((a, b) => b.count - a.count);
 
   return resultArray;
+}
+
+export default {
+	countSubWordsWithMapping
 }
