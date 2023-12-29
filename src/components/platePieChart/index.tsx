@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import * as echarts from 'echarts';
 import { EChartsType } from 'echarts';
+import { dataConversion } from "@/utils";
 
 export default function Index(props: any) {
   const { data } = props;
@@ -14,11 +15,18 @@ export default function Index(props: any) {
     const pieData = data.map(ele => ele['涨停原因类别']?.split('+')) || [];
     const transdata = pieData?.flat();
 
-    const dealData = transdata.reduce(function (accumulator: any, currentValue: any) {
-      return accumulator[currentValue] ? ++accumulator[currentValue] : accumulator[currentValue] = 1, accumulator
-    }, {});
+    // const dealData = transdata.reduce(function (accumulator: any, currentValue: any) {
+    //   return accumulator[currentValue] ? ++accumulator[currentValue] : accumulator[currentValue] = 1, accumulator
+    // }, {});
 
-    const res = Object.entries(dealData)?.map(ele => ({ name: ele[0], value: ele[1] })).sort((a: any, b: any) => b.value - a.value).slice(0, 10);
+    const dealData = dataConversion.countSubWordsWithMapping(transdata);
+
+    const res = dealData.map(ele => ({
+      name: ele.word,
+      value: ele.count
+    }))
+
+    // const res = Object.entries(dealData)?.map(ele => ({ name: ele[0], value: ele[1] })).sort((a: any, b: any) => b.value - a.value).slice(0, 10);
 
     const option: any = {
       title: {
