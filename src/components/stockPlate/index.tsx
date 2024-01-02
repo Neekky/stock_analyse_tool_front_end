@@ -9,12 +9,13 @@ export default function Index(props) {
     const { code, prefix } = props;
 
     useEffect(() => {
+        if (!code || !prefix) return;
         eastmoneyApi.getStockPlateData(prefix, code).then((res: any) => {
             if (res?.success) {
                 setPlateList(res?.result?.data || []);
             }
         });
-    }, [])
+    }, [code, prefix])
 
     useEffect(() => {
         const resTags: any[] = []

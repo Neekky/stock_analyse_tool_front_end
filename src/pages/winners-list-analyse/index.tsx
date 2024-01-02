@@ -140,7 +140,6 @@ export default function Index(): any {
                 end_date: dateParam
             });
 
-            console.log(res, 2321312)
             if (res.code !== 200) {
                 messageApi.open({
                     type: 'error',

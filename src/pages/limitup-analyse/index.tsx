@@ -6,11 +6,12 @@ import { Table, Tag, DatePicker, message, Button } from 'antd';
 // import StockKLine from '../../components/stockKLine';
 import './index.less'
 import dayjs from 'dayjs';
-import type { Dayjs as Dtype } from 'dayjs';
 import PlatePieChart from "@/components/platePieChart";
+import Drawers from "./components/drawers";
 
 import type { DatePickerProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import type { Dayjs as Dtype } from 'dayjs';
 
 export default function Index(): any {
   /**
@@ -28,20 +29,18 @@ export default function Index(): any {
   const [messageApi, contextHolder] = message.useMessage();
 
   // 股票详情
-  const [stockInfo, setStockInfo] = useState<any>(null);
+  const [stockInfo, setStockInfo] = useState<any>({});
 
   // 控制股票详情弹窗是否打开
   const [isOpen, setOpen] = useState(false);
 
   useEffect(() => {
     pageGetLimitUpData(date);
-    console.log(stockInfo, isOpen)
   }, [date]);
 
   const wrapHandleViewDetail = useCallback((key: React.Key) => {
     const item = limitUpData.find(ele => ele['股票简称'] === key);
-    console.log(limitUpData, key, item, "key")
-
+    console.log(item);
     setStockInfo(item);
     setOpen(true);
   }, [limitUpData]);
@@ -181,7 +180,6 @@ export default function Index(): any {
         date: dateParam,
         num: '0'
       });
-      console.log(res, "数据查看")
       if (res.code !== 200) {
         messageApi.open({
           type: 'error',
@@ -212,6 +210,11 @@ export default function Index(): any {
   return (
     <div className="limitup-wrapper">
       {contextHolder}
+      <Drawers
+        open={isOpen}
+        stockInfo={stockInfo}
+        onClose={() => setOpen(false)}
+      />
       <div className="analyse-area">
         {/* 板块情况分析 */}
         <div className="plate-analyse-area">

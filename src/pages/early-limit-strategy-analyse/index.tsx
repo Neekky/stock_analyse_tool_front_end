@@ -27,8 +27,6 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
 
     const wrapHandleViewDetail = useCallback((key: React.Key) => {
         const item = limitData.find(ele => ele['股票简称'] === key);
-        console.log(limitData, key, item, "key")
-
         setStockInfo(item);
         setOpen(true);
     }, [limitData]);
@@ -77,7 +75,6 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
                 dataIndex: '股票简称',
                 key: '股票简称',
                 render: (_, row) => {
-                    // console.log(row, 21)
                     return <IncCalculate code={row.code} date={date} />
                 },
             },
@@ -121,7 +118,6 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
 
                 setLimitData(firstDealData)
             }
-            console.log(res, "数据查看")
         } catch (error) {
             messageApi.open({
                 type: 'error',

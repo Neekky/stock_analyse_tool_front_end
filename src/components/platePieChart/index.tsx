@@ -1,7 +1,8 @@
-import { useRef, useEffect } from 'react'
-import * as echarts from 'echarts';
-import { EChartsType } from 'echarts';
+import { useRef, useEffect } from "react";
+import * as echarts from "echarts";
+import { EChartsType } from "echarts";
 import { dataConversion } from "@/utils";
+import { info } from "console";
 
 export default function Index(props: any) {
   const { data } = props;
@@ -12,50 +13,55 @@ export default function Index(props: any) {
   const echartDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const pieData = data.map(ele => ele['涨停原因类别']?.split('+')) || [];
-    const transdata = pieData?.flat().sort((a: any,b: any) => a.length - b.length);
+    const pieData = data.map((ele) => ele["涨停原因类别"]?.split("+")) || [];
+    const transdata = pieData
+      ?.flat()
+      .filter((info) => info.indexOf("ST") === -1)
+      .sort((a: any, b: any) => a.length - b.length);
 
     // const dealData = transdata.reduce(function (accumulator: any, currentValue: any) {
     //   return accumulator[currentValue] ? ++accumulator[currentValue] : accumulator[currentValue] = 1, accumulator
     // }, {});
 
-    const dealData = dataConversion.countSubWordsWithMapping(transdata).slice(0,10);
+    const dealData = dataConversion
+      .countSubWordsWithMapping(transdata)
+      .slice(0, 10);
 
-    const res = dealData.map(ele => ({
+    const res = dealData.map((ele) => ({
       name: ele.word,
-      value: ele.count
-    }))
+      value: ele.count,
+    }));
 
     // const res = Object.entries(dealData)?.map(ele => ({ name: ele[0], value: ele[1] })).sort((a: any, b: any) => b.value - a.value).slice(0, 10);
 
     const option: any = {
       title: {
-        text: '涨停板块分析',
-        subtext: '板块数量分部',
-        left: 'center'
+        text: "涨停板块分析",
+        subtext: "板块数量分部",
+        left: "center",
       },
       tooltip: {
-        trigger: 'item'
+        trigger: "item",
       },
       legend: {
-        orient: 'vertical',
-        left: 'left'
+        orient: "vertical",
+        left: "left",
       },
       series: [
         {
-          name: 'Access From',
-          type: 'pie',
-          radius: '50%',
+          name: "Access From",
+          type: "pie",
+          radius: "50%",
           data: res,
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
               shadowOffsetX: 0,
-              shadowColor: 'rgba(0, 0, 0, 0.5)'
-            }
-          }
-        }
-      ]
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
+      ],
     };
     if (echartDivRef.current) {
       echartInstanceRef.current = echarts.init(echartDivRef.current);
@@ -64,12 +70,15 @@ export default function Index(props: any) {
 
     return () => {
       echartInstanceRef.current?.dispose();
-    }
-  }, [data])
+    };
+  }, [data]);
 
   return (
     <div>
-      <div ref={echartDivRef} style={{ minHeight: "300px", width: "600px", marginTop: "10px" }}></div>
+      <div
+        ref={echartDivRef}
+        style={{ minHeight: "300px", width: "600px", marginTop: "10px" }}
+      ></div>
     </div>
-  )
+  );
 }

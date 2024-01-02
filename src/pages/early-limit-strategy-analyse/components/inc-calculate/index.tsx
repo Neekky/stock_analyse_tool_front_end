@@ -24,10 +24,8 @@ const IncCalculate = (props: any) => {
             end_date,
             is_head_end: '1'
         }).then(res => {
-            console.log(res, 213213)
             setOnday(res[0]?.['涨跌幅']);
             setToday(res[1]?.['涨跌幅']);
-            console.log('res', res);
         });
     }
 

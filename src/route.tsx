@@ -8,7 +8,6 @@ import MultiLimitUpAnalyse from "./pages/multi-limitup-analyse";
 import WinnersListAnalyse from "./pages/winners-list-analyse";
 import EarlyLimitStartegyAnalyse from "./pages/early-limit-strategy-analyse";
 
-console.log(import.meta.env, 31321)
 export const router = createBrowserRouter([
     {
         path: "/",
