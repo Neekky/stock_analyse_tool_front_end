@@ -1,4 +1,4 @@
-const countSubWordsWithMapping = (phrases) => {
+const countSubWordsWithMapping = (phrases: any[] = []) => {
   const countDict: any = {};
   const phraseMapping: any = {};
   const resultArray: any[] = [];
@@ -9,7 +9,7 @@ const countSubWordsWithMapping = (phrases) => {
 
     // 检查字典中的每个现有单词是否是当前短语的子字符串
     Object.keys(countDict).forEach(subWord => {
-      if (phrase.includes(subWord)) {
+      if (phrase?.includes(subWord)) {
         countDict[subWord] += 1;
         phraseMapping[subWord].push(phrase);
         foundSubWord = true;
@@ -19,7 +19,7 @@ const countSubWordsWithMapping = (phrases) => {
     // 如果当前短语不是任何现有单词的子字符串
     // 将其所有可能的子字符串添加到字典中
     if (!foundSubWord) {
-      phrase.split(' ').forEach(subWord => {
+      phrase?.split(' ').forEach(subWord => {
         if (!(subWord in countDict)) {
           countDict[subWord] = 1;
           phraseMapping[subWord] = [phrase];
