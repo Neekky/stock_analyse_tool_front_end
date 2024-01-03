@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { eastmoneyApi } from "@/apis";
 import { Tag } from 'antd';
+import './index.less';
 
 export default function Index(props) {
     const [plateList, setPlateList] = useState<any[]>([])
@@ -35,7 +36,7 @@ export default function Index(props) {
                 color = 'volcano';
             }
             return (
-                <Tag color={color} key={tag}>
+                <Tag className='stock-plate-tag' color={color} key={tag}>
                     {tag.toUpperCase()}
                 </Tag>
             );

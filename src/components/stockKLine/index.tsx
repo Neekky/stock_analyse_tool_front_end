@@ -51,7 +51,7 @@ export default function Index(props: any) {
       const splitDataResult = Calculate.splitData(dealData);
       const echartsOptions:any = {
         title: {
-          text: '上证指数',
+          text: data['股票简称'],
           left: 0
         },
         tooltip: {

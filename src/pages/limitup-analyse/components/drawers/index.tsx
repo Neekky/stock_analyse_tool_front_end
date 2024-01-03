@@ -33,6 +33,7 @@ const StockDetails: React.FC<StockDetailsProps> = (props: any) => {
     >
       <StockKLine data={stockInfo} />
       <div className="gap"></div>
+      <h3 className="drawers-title">所属板块</h3>
       <StockPlate prefix={prefix} code={code} />
     </Drawer>
   );
