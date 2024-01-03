@@ -2,7 +2,6 @@ import { useRef, useEffect } from "react";
 import * as echarts from "echarts";
 import { EChartsType } from "echarts";
 import { dataConversion } from "@/utils";
-import { info } from "console";
 
 export default function Index(props: any) {
   const { data } = props;
