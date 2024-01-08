@@ -12,7 +12,7 @@ interface IGetStockKLineProps {
     is_head_end?: '1' | void
 }
 
-export default new (class User extends Axios {
+export default new (class StockKline extends Axios {
     // 获取涨停板数据
     // num为连板数
     getStockKLine(params: IGetStockKLineProps) {

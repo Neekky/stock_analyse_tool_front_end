@@ -44,7 +44,7 @@ const countSubWordsWithMapping = (phrases: any[] = []) => {
 }
 
 const getExchangeByCode = (code: string) => {
-  if (code.length === 6) {
+  if (code?.length === 6) {
     if (code.startsWith('60') || code.startsWith('900') || code.startsWith('688')) {
       return 'SH'
     } else if (code.startsWith('00') || code.startsWith('30') || code.startsWith('200')) {

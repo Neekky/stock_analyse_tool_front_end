@@ -1,6 +1,6 @@
 import { Axios } from "@/utils"; // 导入 api
 
-export default new (class User extends Axios {
+export default new (class EastMoney extends Axios {
     // 获取涨停板数据
     // num为连板数
     getStockPlateData(prefix: string, code: string) {

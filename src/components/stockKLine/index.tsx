@@ -20,18 +20,19 @@ export default function Index(props: any) {
   useEffect(() => {
     echartInstanceRef.current = echarts.init(echartDivRef.current);
     getKLineData();
-  }, [])
+  }, [data.code])
 
   const getKLineData = () => {
-    const start_date = dayjs(new Date()).subtract(6, 'month').format('YYYYMMDD')
+    const start_date = dayjs(new Date()).subtract(12, 'month').format('YYYYMMDD')
     // 获取K线数据
-    console.log(data, start_date + 123, 1332);
+    console.log(data, start_date, 1332);
     stockklineApi.getStockKLine({
       symbol: ('' + data.code).padStart(6, '0'),
       start_date: start_date,
       end_date: dayjs(new Date()).format('YYYYMMDD'),
     }).then(res => {
       const dealData: any[] = [];
+      
       res.forEach((item: any) => {
         const date = dayjs(item['日期']).format('YYYY/MM/DD')
         const open = item['开盘']

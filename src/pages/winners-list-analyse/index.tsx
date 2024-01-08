@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { eastmoneyApi, limitupApi } from "@/apis";
-import { Table, DatePicker, message } from "antd";
+import { Table, DatePicker, message, Button } from "antd";
 import StockKLine from "../../components/stockKLine";
 import dayjs, { Dayjs } from "dayjs";
 import PlatePieChart from "../../components/platePieChart";
@@ -8,131 +8,7 @@ import PlatePieChart from "../../components/platePieChart";
 import "./index.less";
 import type { ColumnsType } from "antd/es/table";
 import { dataConversion } from "@/utils";
-
-const columns: ColumnsType<any> = [
-  {
-    title: "股票代码",
-    dataIndex: "代码",
-    key: "代码",
-    render: (text: string) => text,
-  },
-  {
-    title: "股票名称",
-    dataIndex: "名称",
-    key: "名称",
-    render: (text: string, row) => {
-      const code = row["代码"];
-      const date = dayjs(row["上榜日"]).format("YYYY-MM-DD");
-      const url = `https://data.eastmoney.com/stock/lhb,${date},${code}.html`;
-      return (
-        <a target="_blank" href={url}>
-          {text}
-        </a>
-      );
-    },
-  },
-  // {
-  //     title: '收盘价',
-  //     dataIndex: '收盘价',
-  //     key: '收盘价',
-  //     render: (text: string) => text,
-  //     sorter: (a, b) => a['收盘价'] - b['收盘价'],
-  // },
-  {
-    title: "当日涨跌幅",
-    dataIndex: "涨跌幅",
-    key: "涨跌幅",
-    render: (text: string) => (
-      <div style={{ color: Number(text) > 0 ? "red" : "green" }}>{text}%</div>
-    ),
-    sorter: (a, b) => a["涨跌幅"] - b["涨跌幅"],
-  },
-  // {
-  //     title: '成交额',
-  //     dataIndex: '市场总成交额',
-  //     key: '市场总成交额',
-  //     render: (text: string) => text,
-  //     sorter: (a, b) => a['市场总成交额'] - b['市场总成交额'],
-  // },
-  {
-    title: "解读",
-    dataIndex: "解读",
-    key: "解读",
-    render: (text: string) => text,
-  },
-
-  // {
-  //     title: '龙虎榜买入额',
-  //     dataIndex: `龙虎榜买入额`,
-  //     key: `龙虎榜买入额`,
-  //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
-  //     sorter: (a, b) => a['龙虎榜买入额'] - b['龙虎榜买入额'],
-  // },
-  {
-    title: "龙虎榜净买额",
-    dataIndex: `龙虎榜净买额`,
-    key: `龙虎榜净买额`,
-    render: (text: string) => (
-      <div style={{ color: Number(text) > 0 ? "red" : "green" }}>
-        {text ? `${text}元` : "无数据"}
-      </div>
-    ),
-    sorter: (a, b) => a["龙虎榜净买额"] - b["龙虎榜净买额"],
-  },
-  // {
-  //     title: '龙虎榜卖出额',
-  //     dataIndex: `龙虎榜卖出额`,
-  //     key: `龙虎榜卖出额`,
-  //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
-  //     sorter: (a, b) => a['龙虎榜卖出额'] - b['龙虎榜卖出额'],
-  // },
-  // {
-  //     title: '龙虎榜成交额',
-  //     dataIndex: `龙虎榜成交额`,
-  //     key: `龙虎榜成交额`,
-  //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
-  //     sorter: (a, b) => a['龙虎榜成交额'] - b['龙虎榜成交额'],
-  // },
-  // {
-  //     title: '上榜后1日',
-  //     dataIndex: `上榜后1日`,
-  //     key: `上榜后1日`,
-  //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
-  //     sorter: (a, b) => a['上榜后1日'] - b['上榜后1日'],
-  // },
-  {
-    title: "上榜后2日",
-    dataIndex: `上榜后2日`,
-    key: `上榜后2日`,
-    render: (text: string) => (
-      <div style={{ color: Number(text) > 0 ? "red" : "green" }}>
-        {text ? `${text}%` : "上榜不足2日"}
-      </div>
-    ),
-    sorter: (a, b) => a["上榜后2日"] - b["上榜后2日"],
-  },
-  // {
-  //     title: '上榜后5日',
-  //     dataIndex: `上榜后5日`,
-  //     key: `上榜后5日`,
-  //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
-  //     sorter: (a, b) => a['上榜后5日'] - b['上榜后5日'],
-  // },
-  // {
-  //     title: '上榜后10日',
-  //     dataIndex: `上榜后10日`,
-  //     key: `上榜后10日`,
-  //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
-  //     sorter: (a, b) => a['上榜后10日'] - b['上榜后10日'],
-  // },
-  {
-    title: "上榜原因",
-    dataIndex: `上榜原因`,
-    key: `上榜原因`,
-    render: (text: string) => text,
-    width: 200,
-  },
-];
+import Drawers from "../limitup-analyse/components/drawers";
 
 export default function Index(): any {
   const [limitUpData, setLimitUpData] = useState([]);
@@ -144,6 +20,12 @@ export default function Index(): any {
   const [platePieData, setPlatePieData] = useState<any[]>([]);
 
   const [messageApi, contextHolder] = message.useMessage();
+
+  // 股票详情
+  const [stockInfo, setStockInfo] = useState<any>({});
+
+  // 控制股票详情弹窗是否打开
+  const [isOpen, setOpen] = useState(false);
 
   useEffect(() => {
     pageGetLimitUpData(date);
@@ -170,6 +52,149 @@ export default function Index(): any {
     });
   }, [limitUpData]);
 
+  const wrapHandleViewDetail = useCallback((key: React.Key) => {
+    console.log(limitUpData, key, 2313)
+    const item = limitUpData.find(ele => ele['名称'] === key);
+    console.log(item);
+    setStockInfo(item);
+    setOpen(true);
+  }, [limitUpData]);
+
+  const columns = useMemo<ColumnsType<any>>(() => {
+    return [
+      {
+        title: "股票代码",
+        dataIndex: "代码",
+        key: "代码",
+        render: (text: string) => text,
+      },
+      {
+        title: "股票名称",
+        dataIndex: "名称",
+        key: "名称",
+        render: (text: string, row) => {
+          const code = row["代码"];
+          const date = dayjs(row["上榜日"]).format("YYYY-MM-DD");
+          const url = `https://data.eastmoney.com/stock/lhb,${date},${code}.html`;
+          return (
+            <a target="_blank" href={url}>
+              {text}
+            </a>
+          );
+        },
+      },
+      // {
+      //     title: '收盘价',
+      //     dataIndex: '收盘价',
+      //     key: '收盘价',
+      //     render: (text: string) => text,
+      //     sorter: (a, b) => a['收盘价'] - b['收盘价'],
+      // },
+      {
+        title: "当日涨跌幅",
+        dataIndex: "涨跌幅",
+        key: "涨跌幅",
+        render: (text: string) => (
+          <div style={{ color: Number(text) > 0 ? "red" : "green" }}>{text}%</div>
+        ),
+        sorter: (a, b) => a["涨跌幅"] - b["涨跌幅"],
+      },
+      // {
+      //     title: '成交额',
+      //     dataIndex: '市场总成交额',
+      //     key: '市场总成交额',
+      //     render: (text: string) => text,
+      //     sorter: (a, b) => a['市场总成交额'] - b['市场总成交额'],
+      // },
+      {
+        title: "解读",
+        dataIndex: "解读",
+        key: "解读",
+        render: (text: string) => text,
+      },
+    
+      // {
+      //     title: '龙虎榜买入额',
+      //     dataIndex: `龙虎榜买入额`,
+      //     key: `龙虎榜买入额`,
+      //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+      //     sorter: (a, b) => a['龙虎榜买入额'] - b['龙虎榜买入额'],
+      // },
+      {
+        title: "龙虎榜净买额",
+        dataIndex: `龙虎榜净买额`,
+        key: `龙虎榜净买额`,
+        render: (text: string) => (
+          <div style={{ color: Number(text) > 0 ? "red" : "green" }}>
+            {text ? `${text}元` : "无数据"}
+          </div>
+        ),
+        sorter: (a, b) => a["龙虎榜净买额"] - b["龙虎榜净买额"],
+      },
+      // {
+      //     title: '龙虎榜卖出额',
+      //     dataIndex: `龙虎榜卖出额`,
+      //     key: `龙虎榜卖出额`,
+      //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+      //     sorter: (a, b) => a['龙虎榜卖出额'] - b['龙虎榜卖出额'],
+      // },
+      // {
+      //     title: '龙虎榜成交额',
+      //     dataIndex: `龙虎榜成交额`,
+      //     key: `龙虎榜成交额`,
+      //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}元` : '无数据'}</div>,
+      //     sorter: (a, b) => a['龙虎榜成交额'] - b['龙虎榜成交额'],
+      // },
+      // {
+      //     title: '上榜后1日',
+      //     dataIndex: `上榜后1日`,
+      //     key: `上榜后1日`,
+      //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
+      //     sorter: (a, b) => a['上榜后1日'] - b['上榜后1日'],
+      // },
+      {
+        title: "上榜后2日",
+        dataIndex: `上榜后2日`,
+        key: `上榜后2日`,
+        render: (text: string) => (
+          <div style={{ color: Number(text) > 0 ? "red" : "green" }}>
+            {text ? `${text}%` : "上榜不足2日"}
+          </div>
+        ),
+        sorter: (a, b) => a["上榜后2日"] - b["上榜后2日"],
+      },
+      // {
+      //     title: '上榜后5日',
+      //     dataIndex: `上榜后5日`,
+      //     key: `上榜后5日`,
+      //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
+      //     sorter: (a, b) => a['上榜后5日'] - b['上榜后5日'],
+      // },
+      // {
+      //     title: '上榜后10日',
+      //     dataIndex: `上榜后10日`,
+      //     key: `上榜后10日`,
+      //     render: (text: string) => <div style={{ color: Number(text) > 0 ? 'red' : 'green' }}>{text ? `${text}%` : '无数据'}</div>,
+      //     sorter: (a, b) => a['上榜后10日'] - b['上榜后10日'],
+      // },
+      // {
+      //   title: "上榜原因",
+      //   dataIndex: `上榜原因`,
+      //   key: `上榜原因`,
+      //   render: (text: string) => text,
+      //   width: 200,
+      // },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        render: (_, record: { key: React.Key }) =>
+          <Button title="Sure to delete?" onClick={() => wrapHandleViewDetail(record.key)}>
+            <a>详情</a>
+          </Button>
+      },
+    ];
+  }, [limitUpData, wrapHandleViewDetail]);
+
   const getStockPlateData = async (code: string) => {
     const prefix = dataConversion.getExchangeByCode(code);
     await eastmoneyApi.getStockPlateData(prefix, code).then((res: any) => {
@@ -194,7 +219,7 @@ export default function Index(): any {
           content: "当日无数据",
         });
       } else {
-        setLimitUpData(res.data.map((ele, i) => ({ ...ele, key: i })));
+        setLimitUpData(res.data.map((ele) => ({ ...ele, key: ele['名称'] })));
       }
     } catch (error) {
       messageApi.open({
@@ -211,6 +236,11 @@ export default function Index(): any {
   return (
     <div className="winners-wrapper">
       {contextHolder}
+      <Drawers
+        open={isOpen}
+        stockInfo={stockInfo}
+        onClose={() => setOpen(false)}
+      />
       {/* 板块情况分析 */}
       <div>板块分析：</div>
       <div>
@@ -239,9 +269,9 @@ export default function Index(): any {
           pagination={{
             defaultPageSize: 100,
           }}
-          expandable={{
-            expandedRowRender: (record) => <StockKLine data={record} />,
-          }}
+          // expandable={{
+          //   expandedRowRender: (record) => <StockKLine data={record} />,
+          // }}
           columns={columns}
           dataSource={limitUpData}
         />

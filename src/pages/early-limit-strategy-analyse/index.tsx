@@ -3,7 +3,7 @@ import { Table, DatePicker, message, Button } from 'antd';
 import type { DatePickerProps } from 'antd';
 import type { Dayjs as Dtype } from 'dayjs';
 import type { ColumnsType } from 'antd/es/table';
-import { limitupApi } from '@/apis';
+import { limitupApi, stockInfoApi } from '@/apis';
 import dayjs from 'dayjs';
 import IncCalculate from './components/inc-calculate';
 
@@ -23,6 +23,13 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
 
     useEffect(() => {
         pageGetEarlyLimit(date);
+        stockInfoApi.get_stock_fundamentals('杭州高新').then(res => {
+            console.log(res, 'stockInfoApi.get_stock_fundamentals');
+            const a = JSON.parse(res.fundTxt)
+            const b = JSON.parse(res.capacity)
+            console.log(a);
+            console.log(b);
+        });
     }, [date]);
 
     const wrapHandleViewDetail = useCallback((key: React.Key) => {
