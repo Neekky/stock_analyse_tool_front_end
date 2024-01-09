@@ -14,7 +14,6 @@ const downBorderColor = '#008F28';
 export default function Index(props: any) {
   const { data } = props;
   const echartInstanceRef = useRef<EChartsType | null>(null);
-  console.log(data, 1332);
   const echartDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -25,7 +24,6 @@ export default function Index(props: any) {
   const getKLineData = () => {
     const start_date = dayjs(new Date()).subtract(12, 'month').format('YYYYMMDD')
     // 获取K线数据
-    console.log(data, start_date, 1332);
     stockklineApi.getStockKLine({
       symbol: ('' + data.code).padStart(6, '0'),
       start_date: start_date,
@@ -237,7 +235,7 @@ export default function Index(props: any) {
 
   return (
     <div>
-      <div ref={echartDivRef} style={{ minHeight: "400px", width: "800px", marginTop: "10px" }}></div>
+      <div ref={echartDivRef} style={{ minHeight: "400px", width: "1200px", marginTop: "10px" }}></div>
     </div>
   )
 }

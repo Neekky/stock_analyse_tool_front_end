@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { eastmoneyApi, limitupApi } from "@/apis";
 import { Table, DatePicker, message, Button } from "antd";
-import StockKLine from "../../components/stockKLine";
 import dayjs, { Dayjs } from "dayjs";
 import PlatePieChart from "../../components/platePieChart";
-
+import { dataConversion } from "@/utils";
+import Drawers from "@/components/drawers";
 import "./index.less";
 import type { ColumnsType } from "antd/es/table";
-import { dataConversion } from "@/utils";
-import Drawers from "../limitup-analyse/components/drawers";
+
 
 export default function Index(): any {
   const [limitUpData, setLimitUpData] = useState([]);
@@ -188,7 +187,7 @@ export default function Index(): any {
         title: '操作',
         dataIndex: 'operation',
         render: (_, record: { key: React.Key }) =>
-          <Button title="Sure to delete?" onClick={() => wrapHandleViewDetail(record.key)}>
+          <Button onClick={() => wrapHandleViewDetail(record.key)}>
             <a>详情</a>
           </Button>
       },
@@ -269,9 +268,6 @@ export default function Index(): any {
           pagination={{
             defaultPageSize: 100,
           }}
-          // expandable={{
-          //   expandedRowRender: (record) => <StockKLine data={record} />,
-          // }}
           columns={columns}
           dataSource={limitUpData}
         />

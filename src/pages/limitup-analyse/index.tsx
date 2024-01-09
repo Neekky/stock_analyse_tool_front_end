@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { limitupApi } from "@/apis";
 import { Table, Tag, DatePicker, message, Button } from 'antd';
-// import numeral from 'numeral';
-// import StockPlate from '../../components/stockPlate';
-// import StockKLine from '../../components/stockKLine';
-import './index.less'
 import dayjs from 'dayjs';
 import PlatePieChart from "@/components/platePieChart";
-import Drawers from "./components/drawers";
+import Drawers from "@/components/drawers";
+import './index.less'
 
 import type { DatePickerProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -165,7 +162,7 @@ export default function Index(): any {
         title: '操作',
         dataIndex: 'operation',
         render: (_, record: { key: React.Key }) =>
-          <Button title="Sure to delete?" onClick={() => wrapHandleViewDetail(record.key)}>
+          <Button onClick={() => wrapHandleViewDetail(record.key)}>
             <a>详情</a>
           </Button>
       },
