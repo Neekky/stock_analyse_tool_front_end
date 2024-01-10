@@ -3,7 +3,7 @@ import { Table, DatePicker, message, Button } from 'antd';
 import type { DatePickerProps } from 'antd';
 import type { Dayjs as Dtype } from 'dayjs';
 import type { ColumnsType } from 'antd/es/table';
-import { limitupApi, stockInfoApi } from '@/apis';
+import { limitupApi } from '@/apis';
 import dayjs from 'dayjs';
 import IncCalculate from './components/inc-calculate';
 
