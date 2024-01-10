@@ -37,7 +37,6 @@ export default function Index(): any {
 
   const wrapHandleViewDetail = useCallback((key: React.Key) => {
     const item = limitUpData.find(ele => ele['股票简称'] === key);
-    console.log(item);
     setStockInfo(item);
     setOpen(true);
   }, [limitUpData]);

@@ -25,14 +25,14 @@ export default function Index(): any {
   // 控制股票详情弹窗是否打开
   const [isOpen, setOpen] = useState(false);
 
-  const wrapHandleViewDetail = useCallback((key: React.Key) => {
-
-    const item = limitUpData.find(ele => ele['股票简称'] === key);
-    console.log(item);
-    setStockInfo(item);
-    setOpen(true);
-
-  }, [limitUpData]);
+  const wrapHandleViewDetail = useCallback(
+    (key: React.Key) => {
+      const item = limitUpData.find((ele) => ele["股票简称"] === key);
+      setStockInfo(item);
+      setOpen(true);
+    },
+    [limitUpData]
+  );
 
   const columns = useMemo<ColumnsType<any>>(() => {
     return [
@@ -111,12 +111,13 @@ export default function Index(): any {
         },
       },
       {
-        title: '操作',
-        dataIndex: 'operation',
-        render: (_, record: { key: React.Key }) =>
+        title: "操作",
+        dataIndex: "operation",
+        render: (_, record: { key: React.Key }) => (
           <Button onClick={() => wrapHandleViewDetail(record.key)}>
             <a>详情</a>
           </Button>
+        ),
       },
       // {
       //   title: '所属板块',
@@ -130,11 +131,13 @@ export default function Index(): any {
       //   },
       // },
     ];
-  }, [limitUpData, ]);
+  }, [limitUpData]);
 
   useEffect(() => {
     pageGetLimitUpData(date);
-    limitupApi.get_limitup_diff(date.format("YYYYMMDD"));
+    limitupApi.get_limitup_diff(date.format("YYYYMMDD")).then((res) => {
+      console.log(res);
+    });
   }, [date, num]);
 
   // 获取涨停股票数量
@@ -151,7 +154,9 @@ export default function Index(): any {
           content: "当日无数据",
         });
       } else {
-        setLimitUpData(res.data.map((ele) => ({ ...ele, key: ele['股票简称']  })));
+        setLimitUpData(
+          res.data.map((ele) => ({ ...ele, key: ele["股票简称"] }))
+        );
       }
     } catch (error) {
       messageApi.open({

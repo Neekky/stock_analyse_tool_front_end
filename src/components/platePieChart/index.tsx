@@ -12,7 +12,6 @@ export default function Index(props: any) {
   const echartDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log(data, 'data查看')
     let pieData = data;
     if (data[0]?.["涨停原因类别"]) {
       pieData = data.map((ele) => ele?.["涨停原因类别"]?.split("+")) || [];

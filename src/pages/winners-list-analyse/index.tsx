@@ -52,9 +52,7 @@ export default function Index(): any {
   }, [limitUpData]);
 
   const wrapHandleViewDetail = useCallback((key: React.Key) => {
-    console.log(limitUpData, key, 2313)
     const item = limitUpData.find(ele => ele['名称'] === key);
-    console.log(item);
     setStockInfo(item);
     setOpen(true);
   }, [limitUpData]);
