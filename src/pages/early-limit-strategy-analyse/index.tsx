@@ -23,13 +23,13 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
 
     useEffect(() => {
         pageGetEarlyLimit(date);
-        stockInfoApi.get_stock_fundamentals('杭州高新').then(res => {
-            console.log(res, 'stockInfoApi.get_stock_fundamentals');
-            const a = JSON.parse(res.fundTxt)
-            const b = JSON.parse(res.capacity)
-            console.log(a);
-            console.log(b);
-        });
+        // stockInfoApi.get_stock_fundamentals('杭州高新').then(res => {
+        //     console.log(res, 'stockInfoApi.get_stock_fundamentals');
+        //     const a = JSON.parse(res.fundTxt)
+        //     const b = JSON.parse(res.capacity)
+        //     console.log(a);
+        //     console.log(b);
+        // });
     }, [date]);
 
     const wrapHandleViewDetail = useCallback((key: React.Key) => {
@@ -45,8 +45,8 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
                 dataIndex: '股票代码',
                 key: '股票代码',
                 render: (text: string) => {
-                    const prefix = text.substring(7, 9).toLocaleLowerCase();
-                    const code = text.substring(0, 6);
+                    const prefix = text?.substring(7, 9).toLocaleLowerCase();
+                    const code = text?.substring(0, 6);
                     const res = prefix + code;
                     return <a target="_blank" href={`https://quote.eastmoney.com/concept/${res}.html`}>{res}</a>;
                 },
@@ -122,7 +122,7 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
                 });
             } else {
                 const firstDealData = res.data?.map((ele) => ({ ...ele, key: ele['股票简称'] }));
-
+                console.log(firstDealData, 'firstDealData is')
                 setLimitData(firstDealData)
             }
         } catch (error) {
