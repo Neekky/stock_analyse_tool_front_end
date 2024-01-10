@@ -45,8 +45,8 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
                 dataIndex: '股票代码',
                 key: '股票代码',
                 render: (text: string) => {
-                    const code = text.padStart(6, '0');
-                    const prefix = getExchangeByCode(code);.toLocaleLowerCase();
+                    const code = text.substring(0, 6);
+                    const prefix = text.substring(7, 9).toLocaleLowerCase();
                     const res = prefix + code;
                     return <a target="_blank" href={`https://quote.eastmoney.com/concept/${res}.html`}>{res}</a>;
                 },
