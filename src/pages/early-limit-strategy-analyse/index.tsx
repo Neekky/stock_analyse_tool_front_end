@@ -23,12 +23,6 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
 
     useEffect(() => {
         pageGetEarlyLimit(date);
-        // stockInfoApi.get_stock_fundamentals('杭州高新').then(res => {
-        //     console.log(res, 'stockInfoApi.get_stock_fundamentals');
-        //     const a = JSON.parse(res.fundTxt)
-        //     const b = JSON.parse(res.capacity)
-        //     console.log(a);
-        //     console.log(b);
         // });
     }, [date]);
 
