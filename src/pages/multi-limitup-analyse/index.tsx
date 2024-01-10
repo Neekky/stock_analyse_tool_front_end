@@ -151,7 +151,7 @@ export default function Index(): any {
           content: "当日无数据",
         });
       } else {
-        setLimitUpData(res.data.map((ele, i) => ({ ...ele, key: ele['股票简称']  })));
+        setLimitUpData(res.data.map((ele) => ({ ...ele, key: ele['股票简称']  })));
       }
     } catch (error) {
       messageApi.open({
