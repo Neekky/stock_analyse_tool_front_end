@@ -2,9 +2,9 @@ const countSubWordsWithMapping = (phrases: any[] = []) => {
   const countDict: any = {};
   const phraseMapping: any = {};
   const resultArray: any[] = [];
-
+  
   // 遍历每个短语
-  phrases.forEach(phrase => {
+  phrases.filter(tag => tag).forEach(phrase => {
     let foundSubWord = false;
 
     // 检查字典中的每个现有单词是否是当前短语的子字符串
@@ -21,8 +21,8 @@ const countSubWordsWithMapping = (phrases: any[] = []) => {
     if (!foundSubWord) {
       phrase?.split(' ')?.forEach(subWord => {
         if (!(subWord in countDict)) {
-          countDict?.[subWord] = 1;
-          phraseMapping?.[subWord] = [phrase];
+          countDict[subWord] = 1;
+          phraseMapping[subWord] = [phrase];
         }
       });
     }
@@ -39,7 +39,6 @@ const countSubWordsWithMapping = (phrases: any[] = []) => {
 
   // 根据出现次数排序结果数组
   resultArray?.sort((a, b) => b?.count - a?.count);
-
   return resultArray;
 }
 
