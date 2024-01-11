@@ -14,13 +14,13 @@ export default function Index(props: any) {
   useEffect(() => {
     let pieData = data;
     if (data[0]?.["涨停原因类别"]) {
-      pieData = data.map((ele) => ele?.["涨停原因类别"]?.split("+")) || [];
+      pieData = data?.map((ele) => ele?.["涨停原因类别"]?.split("+")) || [];
     }
 
     const transdata = pieData
       ?.flat()
       .filter((info) => info?.indexOf("ST") === -1)
-      .sort((a: any, b: any) => a.length - b.length);
+      .sort((a: any, b: any) => a?.length - b?.length);
 
     const dealData = dataConversion
       .countSubWordsWithMapping(transdata)
