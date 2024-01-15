@@ -8,4 +8,9 @@ export default new (class StockInfo extends Axios {
         const url = `${API_GATEWAY_FLASK}/all_info/fundamentals?name=${name}`
         return this.get(url);
     }
+
+    get_hot_plate_data(date?: string) {
+        const url = `${API_GATEWAY_FLASK}/all_info/hot_plate_data?date=${date}`
+        return this.get(url);
+    }
 })();
