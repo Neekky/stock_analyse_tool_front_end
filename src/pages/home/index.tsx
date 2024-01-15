@@ -5,7 +5,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet, useNavigate } from "react-router-dom";
 import type { MenuProps } from 'antd';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Layout, Menu, theme } from 'antd';
 import './index.less';
 
 const { Header, Content, Footer } = Layout;
@@ -32,6 +32,7 @@ const items: MenuItem[] = [
   getItem('多板分析', '3', <DesktopOutlined />),
   getItem('龙虎榜分析', '4', <DesktopOutlined />),
   getItem('早盘自研涨停板分析', '5', <DesktopOutlined />),
+  getItem('龙头脉络分析', '6', <DesktopOutlined />),
 ];
 
 const App: React.FC = () => {
@@ -67,6 +68,10 @@ const App: React.FC = () => {
       case "5":
         navigate('early-limit-analyse');
         break;
+      
+      case "6":
+        navigate('leading-trend-analyse');
+        break;
 
       default:
         navigate('/');
@@ -85,10 +90,6 @@ const App: React.FC = () => {
       <div className="content-wrapper">
         <Header style={{ padding: 0, background: colorBgContainer }} />
         <Content style={{ margin: '0 16px' }}>
-          <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
           <div className='outlet-wrapper'>
             <Outlet />
           </div>

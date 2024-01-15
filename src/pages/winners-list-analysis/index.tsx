@@ -194,11 +194,20 @@ export default function Index(): any {
 
   const getStockPlateData = async (code: string) => {
     const prefix = dataConversion.getExchangeByCode(code);
-    await thirdPartyApi.getStockPlateData(prefix, code).then((res: any) => {
-      if (res?.success) {
-        plateData.current?.push(res?.result?.data);
-      }
-    });
+    // 去除可转债票
+    if (code.startsWith("11")) {
+      return;
+    }
+    try {
+      await thirdPartyApi.getStockPlateData(prefix, code).then((res: any) => {
+        if (res?.success) {
+          plateData.current?.push(res?.result?.data);
+        }
+      });
+    } catch (error) {
+      console.log(error, code, '获取股票板块数据失败');
+    }
+   
   };
 
   // 获取涨停股票数量

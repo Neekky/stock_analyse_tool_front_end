@@ -3,10 +3,11 @@ import {
 } from "react-router-dom";
 
 import Home from "./pages/home/index";
-import LimitUpAnalyse from "./pages/limitup-analyse";
-import MultiLimitUpAnalyse from "./pages/multi-limitup-analyse";
-import WinnersListAnalyse from "./pages/winners-list-analyse";
-import EarlyLimitStartegyAnalyse from "./pages/early-limit-strategy-analyse";
+import LimitUpAnalyse from "./pages/limitup-analysis";
+import MultiLimitUpAnalyse from "./pages/multi-limitup-analysis";
+import WinnersListAnalyse from "./pages/winners-list-analysis";
+import EarlyLimitStartegyAnalyse from "./pages/early-limit-strategy-analysis";
+import LeadingTrendAnalysis from "./pages/leading-trend-analysis";
 
 export const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
                 path: "early-limit-analyse",
                 element: <EarlyLimitStartegyAnalyse />,
             },
+            {
+                path: "leading-trend-analyse",
+                element: <LeadingTrendAnalysis />,
+            }
             
         ],
     },
