@@ -9,6 +9,7 @@ import "./index.less";
 import type { Dayjs } from "dayjs";
 import type { DatePickerProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import thirdParty from "@/apis/thirdParty";
 
 export default function Index(): any {
   const [messageApi, contextHolder] = message.useMessage();
@@ -122,6 +123,9 @@ export default function Index(): any {
   useEffect(() => {
     pageGetLimitUpData(date);
     pageGetRateData(date);
+    thirdParty.getHotPlateData().then((res) => {
+      console.log(res, 123213);
+    } );
   }, [date, num]);
 
   // 获取涨停股票数量

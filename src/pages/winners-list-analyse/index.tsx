@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { eastmoneyApi, limitupApi } from "@/apis";
+import { thirdPartyApi, limitupApi } from "@/apis";
 import { Table, DatePicker, message, Button } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import PlatePieChart from "../../components/platePieChart";
@@ -194,7 +194,7 @@ export default function Index(): any {
 
   const getStockPlateData = async (code: string) => {
     const prefix = dataConversion.getExchangeByCode(code);
-    await eastmoneyApi.getStockPlateData(prefix, code).then((res: any) => {
+    await thirdPartyApi.getStockPlateData(prefix, code).then((res: any) => {
       if (res?.success) {
         plateData.current?.push(res?.result?.data);
       }

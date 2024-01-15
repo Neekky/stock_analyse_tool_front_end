@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { eastmoneyApi } from "@/apis";
+import { thirdPartyApi } from "@/apis";
 import { Tag } from 'antd';
 import './index.less';
 
@@ -11,7 +11,7 @@ export default function Index(props) {
 
     useEffect(() => {
         if (!code || !prefix) return;
-        eastmoneyApi.getStockPlateData(prefix, code).then((res: any) => {
+        thirdPartyApi.getStockPlateData(prefix, code).then((res: any) => {
             if (res?.success) {
                 setPlateList(res?.result?.data || []);
             }
