@@ -13,4 +13,14 @@ export default new (class StockInfo extends Axios {
         const url = `${API_GATEWAY_FLASK}/all_info/hot_plate_data?date=${date}`
         return this.get(url);
     }
+
+    get_hot_plate_stock_data(pid) {
+        const url = `${API_GATEWAY_FLASK}/all_info/hot_plate_stock_data?pid=${pid}`
+        return this.get(url);
+    }
+
+    get_all_stock_data() {
+        const url = `${API_GATEWAY_FLASK}/all_info/all_stock_list`
+        return this.get(url);
+    }
 })();

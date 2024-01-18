@@ -2,7 +2,9 @@ import { allInfoApi } from "@/apis";
 import React, { useEffect, useState } from "react";
 import "./index.less";
 
-const HotPlateRank: React.FC = () => {
+const HotPlateRank: React.FC = (props: any) => {
+  const { setPid } = props;
+
   const [plateData, setPlateData] = useState([]);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ const HotPlateRank: React.FC = () => {
       <div className="plate-list-wrap">
         {plateData.map((ele: any) => {
           return (
-            <div className="plate-item" key={ele.code}>
+            <div onClick={() => setPid(ele.code)} className="plate-item" key={ele.code}>
               <div className="rank-tag">{ele?.order}</div>
               <div className="item-name">{ele?.name}</div>
               {ele?.hot_tag && (

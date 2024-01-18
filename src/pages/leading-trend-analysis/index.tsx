@@ -1,25 +1,43 @@
-// import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 // import { message } from "antd";
 import HotPlateRank from "./components/hot-plate-rank";
+import HotPlateStockList from "./components/hot_plate_stock_list";
 import "./index.less";
+import { allInfoApi } from "@/apis";
 
 export default function Index(): any {
-//   const [messageApi, contextHolder] = message.useMessage();
+  const [pid, setPid] = useState("");
 
-  return <div className="leading-trend-wrapper">
-    {/* {contextHolder} */}
-    {/* 上层 */}
-    <div>
+  const [allStockData, setAllStockData] = useState<any[]>([]);
+
+  useEffect(() => {
+    getAllStockData();
+  }, []);
+
+  const getAllStockData = async () => {
+    const res = await allInfoApi.get_all_stock_data();
+    if (res.code === 200) {
+      const data = JSON.parse(res.data);
+      setAllStockData(data);
+      setPid(data[0].code);
+    }
+  }
+  
+
+  return (
+    <div className="leading-trend-wrapper">
+      {/* {contextHolder} */}
+      {/* 上层 */}
+      <div className="trend-top">
         {/* 今日热点板块 */}
-        <HotPlateRank />
+        <HotPlateRank setPid={setPid} />
 
         {/* 热点板块龙头股，夹带自我排名 */}
-        <div></div>
-    </div>
+        <HotPlateStockList allStockData={allStockData} id={pid} />
+      </div>
 
-    {/* 中层 */}
-    <div>
-        {/* 股票走势 */}
+      {/* 中层 */}
+      <div>{/* 股票走势 */}</div>
     </div>
-    </div>;
+  );
 }
