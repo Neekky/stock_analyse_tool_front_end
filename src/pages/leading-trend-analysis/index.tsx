@@ -16,6 +16,7 @@ export default function Index(): any {
 
   const getAllStockData = async () => {
     const res = await allInfoApi.get_all_stock_data();
+    console.log(res, 'allStockData')
     if (res.code === 200) {
       const data = JSON.parse(res.data);
       setAllStockData(data);
