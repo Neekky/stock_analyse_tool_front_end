@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 // import { message } from "antd";
 import HotPlateRank from "./components/hot-plate-rank";
 import HotPlateStockList from "./components/hot_plate_stock_list";

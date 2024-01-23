@@ -2,7 +2,7 @@ import { allInfoApi } from "@/apis";
 import React, { useEffect, useState } from "react";
 import "./index.less";
 
-const HotPlateRank: React.FC = (props: any) => {
+const HotPlateRank = (props: any) => {
   const { setPid } = props;
 
   const [plateData, setPlateData] = useState([]);

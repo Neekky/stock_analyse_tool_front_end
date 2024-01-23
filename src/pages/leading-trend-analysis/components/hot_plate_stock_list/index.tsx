@@ -2,7 +2,7 @@ import { allInfoApi } from "@/apis";
 import React, { useEffect, useState } from "react";
 import "./index.less";
 
-const HotPlateStockList: React.FC = (props: any) => {
+const HotPlateStockList = (props: any) => {
   const { id, allStockData } = props;
 
   const [plateData, setPlateData] = useState([]);
