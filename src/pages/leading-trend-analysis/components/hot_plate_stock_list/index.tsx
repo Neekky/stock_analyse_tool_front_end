@@ -15,6 +15,7 @@ const HotPlateStockList: React.FC = (props: any) => {
   // 获取热点板块龙头股
   const get_hot_plate_stock_data = async (pid: string) => {
     const res = await allInfoApi.get_hot_plate_stock_data(pid);
+    console.log(res, '热点板块龙头股')
     if (res.code === 200) {
       console.log(res);
       const data = res.data;
