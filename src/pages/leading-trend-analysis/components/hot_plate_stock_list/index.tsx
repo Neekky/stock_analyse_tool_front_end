@@ -10,7 +10,7 @@ const HotPlateStockList = (props: any) => {
   useEffect(() => {
     console.log(id, 'id变化');
     get_hot_plate_stock_data(id);
-  }, [id, allStockData]);
+  }, [id, allStockData.length]);
 
   // 获取热点板块龙头股
   const get_hot_plate_stock_data = async (pid: string) => {
