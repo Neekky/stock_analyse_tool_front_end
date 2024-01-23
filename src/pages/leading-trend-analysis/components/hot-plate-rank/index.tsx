@@ -1,5 +1,5 @@
 import { allInfoApi } from "@/apis";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./index.less";
 
 const HotPlateRank = (props: any) => {
