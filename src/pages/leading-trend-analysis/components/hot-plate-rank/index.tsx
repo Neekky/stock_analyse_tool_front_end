@@ -1,5 +1,7 @@
 import { allInfoApi } from "@/apis";
 import { useEffect, useState } from "react";
+import dayjs from 'dayjs'
+
 import "./index.less";
 
 const HotPlateRank = (props: any) => {
@@ -8,7 +10,8 @@ const HotPlateRank = (props: any) => {
   const [plateData, setPlateData] = useState([]);
 
   useEffect(() => {
-    get_hot_plate_data("20240116");
+    const curDate = dayjs(new Date()).format('YYYYMMDD');
+    get_hot_plate_data(curDate);
   }, []);
 
   const get_hot_plate_data = async (date: string) => {

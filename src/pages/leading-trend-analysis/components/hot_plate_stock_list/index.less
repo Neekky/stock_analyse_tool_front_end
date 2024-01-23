@@ -1,9 +1,115 @@
 .hot-plate-stock-wrap {
+  position: relative;
 
-    .title {
-        font-size: 16px;
-        font-weight: bold;
-        color: #333333;
-        margin-bottom: 10px;
+  .title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+    margin-bottom: 10px;
+  }
+
+  .table-header {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+
+    .table-item {
+      position: absolute;
+      color: #999999;
+      font-size: 12px;
     }
+
+    .header-price {
+      left: 190px;
+    }
+
+    .header-rate {
+      left: 270px;
+    }
+
+    .header-market {
+      left: 360px;
+    }
+  }
+
+  .stock-list-wrap {
+    position: relative;
+    padding: 10px 10px;
+    border: 1px solid #f3f3f3;
+    border-radius: 10px;
+    min-width: 700px;
+    height: 500px;
+    overflow: scroll;
+
+    .stock-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .stock-basic-info {
+      min-width: 62px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .item-tags {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .item-name {
+      color: #333333;
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 2px;
+    }
+
+    .info-item-basic {
+      position: absolute;
+      color: #f03e11;
+      font-weight: 500;
+    }
+
+    .item-price {
+      left: 190px;
+    }
+
+    .item-rate {
+      left: 270px;
+    }
+
+    .item-market {
+        left: 360px;
+    }
+
+    .item-code {
+      color: #999999;
+      font-size: 12px;
+    }
+
+    .tag-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 12px;
+      margin-top: 4px;
+      margin-right: 6px;
+      padding: 1px 2px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #f03e11;
+      background-color: #ffcabd;
+      border-radius: 2px;
+    }
+  }
 }
