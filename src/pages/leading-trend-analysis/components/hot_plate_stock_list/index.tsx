@@ -51,6 +51,8 @@ const HotPlateStockList = (props: any) => {
         <div className="table-item header-price">最新价</div>
         <div className="table-item header-rate">涨跌幅</div>
         <div className="table-item header-market">流通市值</div>
+        <div className="table-item header-exchange">换手率</div>
+        <div className="table-item header-sixty-rate">60日涨跌幅</div>
       </div>
       <div className="stock-list-wrap">
         {plateData.map((ele: any) => {
@@ -81,6 +83,12 @@ const HotPlateStockList = (props: any) => {
               </div>
               <div className="info-item-basic item-market">
                 {Amount.formatLargeAmount(ele?.["流通市值"])}
+              </div>
+              <div className="info-item-basic item-exchange">
+                {ele?.["换手率"]}%
+              </div>
+              <div style={{color: ele?.["60日涨跌幅"] < 0 ? '#11a43b' : '#f03e11'}} className="info-item-basic item-sixty-rate">
+                {ele?.["60日涨跌幅"]}%
               </div>
             </div>
           );

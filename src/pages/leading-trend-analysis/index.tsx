@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Spin } from "antd";
+import { Button, Spin } from "antd";
 import HotPlateRank from "./components/hot-plate-rank";
 import HotPlateStockList from "./components/hot_plate_stock_list";
 import "./index.less";
@@ -37,6 +37,10 @@ export default function Index(): any {
         </div>
       ) : (
         <>
+          <div className="operate-btns">
+            <Button className="opt-btn">热点概览</Button>
+            <Button className="opt-btn">龙头搜集</Button>
+          </div>
           <div className="trend-top">
             {/* 今日热点板块 */}
             <HotPlateRank setPid={setPid} />

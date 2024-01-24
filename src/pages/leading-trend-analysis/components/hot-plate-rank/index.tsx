@@ -19,7 +19,7 @@ const HotPlateRank = (props: any) => {
     if (res.code === 200) {
       const data = JSON.parse(res.data);
       setPlateData(data);
-      console.log(data);
+      console.log(data, 'plateData');
     }
   };
 
