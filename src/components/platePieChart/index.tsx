@@ -17,9 +17,11 @@ export default function Index(props: any) {
       pieData = data?.map((ele) => ele?.["涨停原因类别"]?.split("+")) || [];
     }
 
+    // 过滤掉包含ST的、为其它的数据
     const transdata = pieData
       ?.flat()
       .filter((info) => info?.indexOf("ST") === -1)
+      .filter((info) => info !== '其它')
       .sort((a: any, b: any) => a?.length - b?.length);
 
     const dealData = dataConversion
