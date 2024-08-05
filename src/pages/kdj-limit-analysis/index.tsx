@@ -2,7 +2,7 @@ import { allInfoApi } from "@/apis";
 import { useEffect, useState } from "react";
 
 export default function Index() {
-  const [wcData, setWcData] = useState([]);
+  const [, setWcData] = useState([]);
 
   useEffect(() => {
     get_wencai_data();
