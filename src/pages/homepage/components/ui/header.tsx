@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 import Logo from "./logo";
-import { div } from "react-router-dom";
 
 export default function Header() {
   const [top, setTop] = useState<boolean>(true);
@@ -32,14 +31,14 @@ export default function Header() {
               <div
                 className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
               >
-                Login
+                登录
               </div>
             </li>
             <li>
               <div
                 className="btn-sm bg-gray-800 text-gray-200 shadow hover:bg-gray-900"
               >
-                Register
+                注册
               </div>
             </li>
           </ul>

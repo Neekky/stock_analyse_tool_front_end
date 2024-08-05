@@ -1,4 +1,3 @@
-import { div } from "react-router-dom";
 import Logo from "./logo";
 
 export default function Footer({ border = false }: { border?: boolean }) {
