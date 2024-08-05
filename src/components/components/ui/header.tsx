@@ -1,9 +1,7 @@
-"use client";
-
 import { useState, useEffect } from "react";
 
-import Link from "next/link";
 import Logo from "./logo";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const [top, setTop] = useState<boolean>(true);
@@ -32,7 +30,7 @@ export default function Header() {
           <ul className="flex flex-1 items-center justify-end gap-3">
             <li>
               <Link
-                href="/signin"
+                to="/signin"
                 className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
               >
                 Login
@@ -40,7 +38,7 @@ export default function Header() {
             </li>
             <li>
               <Link
-                href="/signup"
+                to="/signup"
                 className="btn-sm bg-gray-800 text-gray-200 shadow hover:bg-gray-900"
               >
                 Register

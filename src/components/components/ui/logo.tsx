@@ -1,8 +1,8 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 
 export default function Logo() {
   return (
-    <Link href="/" className="inline-flex" aria-label="Cruip">
+    <Link to="/" className="inline-flex" aria-label="Cruip">
       <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28">
         <path
           className="fill-blue-500"

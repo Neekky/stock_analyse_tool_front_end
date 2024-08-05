@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import Logo from "./logo";
 
 export default function Footer({ border = false }: { border?: boolean }) {
@@ -26,7 +26,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Features
                 </Link>
@@ -34,7 +34,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Integrations
                 </Link>
@@ -42,7 +42,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Pricing & Plans
                 </Link>
@@ -50,7 +50,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Changelog
                 </Link>
@@ -58,7 +58,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Our method
                 </Link>
@@ -73,7 +73,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   About us
                 </Link>
@@ -81,7 +81,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Diversity & Inclusion
                 </Link>
@@ -89,7 +89,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Blog
                 </Link>
@@ -97,7 +97,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Careers
                 </Link>
@@ -105,7 +105,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Financial statements
                 </Link>
@@ -120,7 +120,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Community
                 </Link>
@@ -128,7 +128,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Terms of service
                 </Link>
@@ -136,7 +136,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="text-gray-600 transition hover:text-gray-900"
-                  href="#0"
+                  to="#0"
                 >
                   Report a vulnerability
                 </Link>
@@ -151,7 +151,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="flex items-center justify-center text-blue-500 transition hover:text-blue-600"
-                  href="#0"
+                  to="#0"
                   aria-label="Twitter"
                 >
                   <svg
@@ -166,7 +166,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="flex items-center justify-center text-blue-500 transition hover:text-blue-600"
-                  href="#0"
+                  to="#0"
                   aria-label="Medium"
                 >
                   <svg
@@ -181,7 +181,7 @@ export default function Footer({ border = false }: { border?: boolean }) {
               <li>
                 <Link
                   className="flex items-center justify-center text-blue-500 transition hover:text-blue-600"
-                  href="#0"
+                  to="#0"
                   aria-label="Github"
                 >
                   <svg

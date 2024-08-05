@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "antd";
 import Stripes from "@/public/images/stripes-dark.svg";
 
 export default function Cta() {

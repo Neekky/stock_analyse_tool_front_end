@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "antd";
 import PlanetImg from "@/public/images/planet.png";
 import PlanetOverlayImg from "@/public/images/planet-overlay.svg";
 import PlanetTagImg01 from "@/public/images/planet-tag-01.png";

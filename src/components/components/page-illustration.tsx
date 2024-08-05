@@ -1,5 +1,4 @@
-import Image from "next/image";
-
+import { Image } from "antd";
 import Stripes from "@/public/images/stripes.svg";
 
 export default function PageIllustration() {
@@ -15,7 +14,6 @@ export default function PageIllustration() {
           src={Stripes}
           width={768}
           alt="Stripes"
-          priority
         />
       </div>
       {/* Circles */}

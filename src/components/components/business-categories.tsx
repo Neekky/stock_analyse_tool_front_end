@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "antd";
 import Logo01 from "@/public/images/logo-01.svg";
 import Logo02 from "@/public/images/logo-02.svg";
 import Logo03 from "@/public/images/logo-03.svg";

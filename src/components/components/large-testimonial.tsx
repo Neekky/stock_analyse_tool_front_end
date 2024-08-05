@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "antd";
 import TestimonialImg from "@/public/images/large-testimonial.jpg";
 
 export default function LargeTestimonial() {

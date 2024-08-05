@@ -1,5 +1,5 @@
-import Image from "next/image";
-import PageIllustration from "@/components/page-illustration";
+import { Image } from "antd";
+import PageIllustration from "./page-illustration";
 import Avatar01 from "@/public/images/avatar-01.jpg";
 import Avatar02 from "@/public/images/avatar-02.jpg";
 import Avatar03 from "@/public/images/avatar-03.jpg";
