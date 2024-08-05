@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 import Logo from "./logo";
-import { Link } from "react-router-dom";
 
 export default function Header() {
   const [top, setTop] = useState<boolean>(true);
@@ -29,20 +28,18 @@ export default function Header() {
           {/* Desktop sign in links */}
           <ul className="flex flex-1 items-center justify-end gap-3">
             <li>
-              <Link
-                to="/signin"
+              <div
                 className="btn-sm bg-white text-gray-800 shadow hover:bg-gray-50"
               >
                 Login
-              </Link>
+              </div>
             </li>
             <li>
-              <Link
-                to="/signup"
+              <div
                 className="btn-sm bg-gray-800 text-gray-200 shadow hover:bg-gray-900"
               >
                 Register
-              </Link>
+              </div>
             </li>
           </ul>
         </div>
