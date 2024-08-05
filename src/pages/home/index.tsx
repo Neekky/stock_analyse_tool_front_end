@@ -54,23 +54,23 @@ const App: React.FC = () => {
         break;
 
       case "2":
-        navigate('/limitup-analyse');
+        navigate('/home/limitup-analyse');
         break;
 
       case "3":
-        navigate('/multi-limitup-analyse');
+        navigate('/home/multi-limitup-analyse');
         break;
 
       case "4":
-        navigate('/winners-list-analyse');
+        navigate('/home/winners-list-analyse');
         break;
 
       case "5":
-        navigate('early-limit-analyse');
+        navigate('/home/early-limit-analyse');
         break;
       
       case "6":
-        navigate('leading-trend-analyse');
+        navigate('/home/leading-trend-analyse');
         break;
 
       default:

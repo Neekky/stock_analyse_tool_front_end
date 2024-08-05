@@ -23,12 +23,12 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
 
   useEffect(() => {
     pageGetEarlyLimit(date);
-    allInfoApi.get_stock_fundamentals("杭州高新").then((res) => {
-      const a = JSON.parse(res.fundTxt);
-      const b = JSON.parse(res.capacity);
-      console.log(a);
-      console.log(b);
-    });
+    // allInfoApi.get_stock_fundamentals("杭州高新").then((res) => {
+    //   const a = JSON.parse(res.fundTxt);
+    //   const b = JSON.parse(res.capacity);
+    //   console.log(a);
+    //   console.log(b);
+    // });
   }, [date]);
 
   const wrapHandleViewDetail = useCallback(

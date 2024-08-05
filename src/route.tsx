@@ -2,16 +2,26 @@ import {
     createBrowserRouter,
 } from "react-router-dom";
 
+import HomePage from "./pages/homepage/index";
 import Home from "./pages/home/index";
 import LimitUpAnalyse from "./pages/limitup-analysis";
 import MultiLimitUpAnalyse from "./pages/multi-limitup-analysis";
 import WinnersListAnalyse from "./pages/winners-list-analysis";
 import EarlyLimitStartegyAnalyse from "./pages/early-limit-strategy-analysis";
 import LeadingTrendAnalysis from "./pages/leading-trend-analysis";
+import KdjLimitAnalysis from "./pages/kdj-limit-analysis";
 
 export const router = createBrowserRouter([
     {
         path: "/",
+        element: <HomePage />,
+    },
+    {
+        path: '/kdj-limit-analysis',
+        element: <KdjLimitAnalysis />,
+    },
+    {
+        path: "/home",
         element: <Home />,
         children: [
             {

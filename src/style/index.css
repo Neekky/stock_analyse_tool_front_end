@@ -1,0 +1,18 @@
+/* ./src/index.{css, less, sass, scss} */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+
+/* Additional styles */
+/* Additional styles */
+@import "./additional-styles/utility-patterns.css";
+@import "./additional-styles/theme.css";
+
+@import "tailwindcss/utilities";
+* {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
