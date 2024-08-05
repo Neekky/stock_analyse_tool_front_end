@@ -1,4 +1,3 @@
-export default function Index(props) {
-  const { item } = props;
+export default function Index() {
   return <div>index</div>;
 }
