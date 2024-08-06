@@ -1,15 +1,16 @@
 import { allInfoApi } from "@/apis";
 import { useEffect, useState } from "react";
+import StockItem from "./components/stockItem";
 
 export default function Index() {
-  const [, setWcData] = useState([]);
+  const [wcData, setWcData] = useState<any[]>([]);
 
   useEffect(() => {
     get_wencai_data();
   }, []);
 
   const get_wencai_data = async () => {
-    const res = await allInfoApi.get_wencai_data("kdj金叉几天内有涨停，无质押");
+    const res = await allInfoApi.get_wencai_data("kdj金叉几天内有涨停");
     if (res.code === 200) {
       console.log(res.data, 12313);
       setWcData(res.data);
@@ -23,5 +24,11 @@ export default function Index() {
     console.log(res, "同花顺");
   };
 
-  return <div>{}</div>;
+  return (
+    <div>
+      {wcData.map((ele) => (
+        <StockItem key={ele.code} data={ele} />
+      ))}
+    </div>
+  );
 }

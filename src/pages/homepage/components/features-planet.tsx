@@ -5,7 +5,7 @@ export default function FeaturesPlanet() {
 
   const toPage = (path: string) => {
     navigate(path);
-  }
+  };
   return (
     <section className="relative before:absolute before:inset-0 before:-z-20 before:bg-gray-900">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -18,7 +18,7 @@ export default function FeaturesPlanet() {
           </div>
           {/* Grid */}
           <div className="grid overflow-hidden sm:grid-cols-2 lg:grid-cols-3 [&>*]:relative [&>*]:p-6 [&>*]:before:absolute [&>*]:before:bg-gray-800 [&>*]:before:[block-size:100vh] [&>*]:before:[inline-size:1px] [&>*]:before:[inset-block-start:0] [&>*]:before:[inset-inline-start:-1px] [&>*]:after:absolute [&>*]:after:bg-gray-800 [&>*]:after:[block-size:1px] [&>*]:after:[inline-size:100vw] [&>*]:after:[inset-block-start:-1px] [&>*]:after:[inset-inline-start:0] md:[&>*]:p-10">
-            <article onClick={() => toPage('/home/limitup-analyse')}>
+            <article onClick={() => toPage("/home/limitup-analyse")}>
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -36,7 +36,7 @@ export default function FeaturesPlanet() {
                 sites, and more.
               </p>
             </article>
-            <article>
+            <article onClick={() => toPage("/kdj-limit-analysis")}>
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -46,12 +46,13 @@ export default function FeaturesPlanet() {
                 >
                   <path d="M14.29 2.614a1 1 0 0 0-1.58-1.228L6.407 9.492l-3.199-3.2a1 1 0 1 0-1.414 1.415l4 4a1 1 0 0 0 1.496-.093l7-9ZM1 14a1 1 0 1 0 0 2h14a1 1 0 1 0 0-2H1Z" />
                 </svg>
-                <span>Metadata</span>
+                <span>定制化选股分析</span>
               </h3>
               <p className="text-[15px] text-gray-400">
-                Collect essential insights about how visitors are using your
-                site with in-depth page view metrics like pages, referring
-                sites, and more.
+                本功能以每日涨停数据为基础，结合多维度因子分析，对个股进行深度挖掘。
+                <br />
+                系统将根据设定的参数，对筛选出的个股进行多维度量化评估，并提供可视化排名，
+                快速锁定投资机会，抢占市场先机。
               </p>
             </article>
             <article>
