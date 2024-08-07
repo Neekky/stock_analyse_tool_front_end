@@ -154,7 +154,7 @@ export default function HeroHome() {
                   {` ${indexData["当前趋势"]}`}
                 </span>
               </div>
-              {indexData["是否剧烈振幅"] ? (
+              {indexData?.["是否剧烈振幅"] ? (
                 <div className="module-content">
                   今日剧烈震荡 {indexData["是否加速"]}
                 </div>
@@ -164,15 +164,15 @@ export default function HeroHome() {
                 <span
                   style={{
                     color:
-                      indexData["反转数据"].score > 0 ? "#f46649" : "#2aa491",
+                      indexData["反转数据"]?.score > 0 ? "#f46649" : "#2aa491",
                   }}
                 >
-                  {` ${indexData["反转数据"].score > 0 ? "见顶" : "见底"} `}
+                  {` ${indexData["反转数据"]?.score > 0 ? "见顶" : "见底"} `}
                 </span>
                 的概率为
                 <span className="text-[#f46649] text-500">
                   {" "}
-                  {indexData["反转数据"].percent}%{" "}
+                  {indexData["反转数据"]?.percent}%{" "}
                 </span>
                 {renderTrendWord(100, -20)}
               </div>
