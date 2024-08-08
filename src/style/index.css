@@ -15,4 +15,6 @@
 
 #root {
   min-height: 100vh;
+  max-width: 100vw;
+  overflow: hidden;
 }
