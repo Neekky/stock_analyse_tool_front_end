@@ -162,10 +162,10 @@ export default function HeroHome() {
           个股选择： 投资者应仔细筛选个股，选择那些具有良好基本面和成长潜力的公司。
         </div>
       }
-
-
       return word;
     }
+
+    return '暂无'
   };
 
   return (
@@ -273,7 +273,7 @@ export default function HeroHome() {
                   {" "}
                   {indexData["反转数据"]?.percent}%{" "}
                 </span>
-                {renderTrendWord(100, -20)}
+                {renderTrendWord(indexData["反转数据"]?.percent, indexData["反转数据"]?.score)}
               </div>
               <div className="module-content">{indexData["最新涨跌幅"]}</div>
             </div>
