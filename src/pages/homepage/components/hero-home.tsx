@@ -345,7 +345,7 @@ export default function HeroHome() {
           >
             <div className="index-module mx-auto">
               <h2 className="module-title">上证指数</h2>
-              <div className="flex flex-row items-center justify-between max-h-40">
+              <div className="flex flex-row items-center justify-between flex-wrap">
                 <div className="shrink-0">
                   <div className="module-content">
                     今日涨跌幅
@@ -411,7 +411,7 @@ export default function HeroHome() {
                     </span>
                   </div>
                 </div>
-                <div className="w-3/4 h-56">
+                <div className="w-3/5 h-56">
                   <ReactEcharts
                     option={getOption()}
                     style={{ width: "100%", height: "100%" }}
