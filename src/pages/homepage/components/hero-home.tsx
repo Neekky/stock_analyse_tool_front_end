@@ -7,6 +7,7 @@ import dayjs from "dayjs";
 import { safeJsonParse } from "@/utils/common";
 
 export default function HeroHome() {
+
   // 指数运行状态数据
   const [indexData, setIndexData] = useState({
     consecutive_up_days: 0,
@@ -345,7 +346,7 @@ export default function HeroHome() {
           >
             <div className="index-module mx-auto">
               <h2 className="module-title">上证指数</h2>
-              <div className="flex flex-row items-center justify-between flex-wrap">
+              <div className="flex flex-row items-center justify-between flex-wrap container mx-auto">
                 <div className="shrink-0">
                   <div className="module-content">
                     今日涨跌幅
@@ -411,7 +412,7 @@ export default function HeroHome() {
                     </span>
                   </div>
                 </div>
-                <div className="w-3/5 h-56">
+                <div className="w-3/5 h-56 custom:w-screen ">
                   <ReactEcharts
                     option={getOption()}
                     style={{ width: "100%", height: "100%" }}
