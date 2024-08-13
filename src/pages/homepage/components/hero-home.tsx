@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { allInfoApi, selectStockModelApi } from "@/apis";
 import "./hero-home.less";
-import dayjs from "dayjs";
-import { safeJsonParse } from "@/utils/common";
 import { useNavigate } from "react-router-dom";
 import PageIllustration from "@/components/pageIllustration/page-illustration";
 import IndexCompilations from "@/pages/multi-index-analysis/components/index-compilations";

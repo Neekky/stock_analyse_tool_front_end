@@ -7,7 +7,7 @@ import './index.less'
 
 export default function IndexCompilations(props) {
 
-  const { indexData = {}, index } = props;
+  const { indexData = {} } = props;
 
   // 指数K线开高收低数据
   const [indexKline, setIndexKline] = useState([]);
