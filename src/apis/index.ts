@@ -3,3 +3,4 @@ export { default as limitupApi } from "./limitup";
 export { default as thirdPartyApi } from "./thirdParty";
 export { default as stockklineApi } from "./stock_kline";
 export { default as allInfoApi } from "./all_info";
+export { default as selectStockModelApi } from "./select_stock_model";

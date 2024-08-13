@@ -10,6 +10,7 @@ import WinnersListAnalyse from "./pages/winners-list-analysis";
 import EarlyLimitStartegyAnalyse from "./pages/early-limit-strategy-analysis";
 import LeadingTrendAnalysis from "./pages/leading-trend-analysis";
 import KdjLimitAnalysis from "./pages/kdj-limit-analysis";
+import MultiIndexAnalysis from "./pages/multi-index-analysis";
 
 export const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
     {
         path: '/kdj-limit-analysis',
         element: <KdjLimitAnalysis />,
+    },
+    {
+        path: '/multi-index-analysis',
+        element: <MultiIndexAnalysis />,
     },
     {
         path: "/home",
