@@ -31,7 +31,6 @@ export default function Index() {
         // 提取结果
         const data = responses.map((response) => response);
         const filteredData = data.filter((item) => item !== null);
-
         setIndexData(filteredData);
         // 在这里可以继续执行后续的操作
         console.log("所有请求完成", responses, filteredData);
@@ -57,7 +56,7 @@ export default function Index() {
 
         // 字体动态颜色
         copyData.scoreColor =
-          res.data?.["反转数据"]?.score > 0 ? "#f46649" : "#2aa491";
+          res.data?.["最新涨跌幅"] > 0 ? "#f46649" : "#2aa491";
 
         // 指数名称
         copyData.indexName = INDEX_NAME_MAP[res.data.index];
@@ -75,7 +74,7 @@ export default function Index() {
   return (
     <div className="relative hero-home-wrap mx-auto bg-[#eaecf1]">
       <Header />
-      <IndexCompilations ago={80} indexData={indexData[0]} />
+      <IndexCompilations ago={750} indexData={indexData[0]} />
       <div className="sub-index-warp">
         {indexData.slice(1).map((ele, index) => (
           <SubIndexCompilations key={index} indexData={ele} />

@@ -4,7 +4,8 @@ import { renderTrendWord } from "@/utils/render-func";
 import dayjs from "dayjs";
 import ReactEcharts from "echarts-for-react";
 import { useEffect, useState } from "react";
-import './index.less';
+import "./index.less";
+import { myToFixed } from "@/utils/calculate";
 
 export default function IndexCompilations(props) {
   const { indexData = {}, ago = 40 } = props;
@@ -12,8 +13,12 @@ export default function IndexCompilations(props) {
   // 指数K线开高收低数据
   const [indexKline, setIndexKline] = useState([]);
 
+  // 指数K线见顶见底概率数据
+  const [indexTBPercent, setIndexTBPercent] = useState([]);
+
   useEffect(() => {
     getIndexKLine();
+    getIndexTopBottomPercent();
   }, []);
 
   const getIndexKLine = async () => {
@@ -27,7 +32,6 @@ export default function IndexCompilations(props) {
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
       const times: string[] = [];
-      console.log(data, 12131);
       // 处理K线数据，按照[开盘价, 收盘价, 最低价, 最高价]的顺序。
       const kdata = data.map((ele) => {
         const { open, close, low, high, candle_end_time } = ele;
@@ -36,6 +40,30 @@ export default function IndexCompilations(props) {
         return kitem;
       });
       setIndexKline(kdata);
+    }
+  };
+
+  const getIndexTopBottomPercent = async () => {
+    const startDate = dayjs().subtract(ago, "day").format("YYYY-MM-DD");
+
+    const res = await stockklineApi.getIndexTopBottomPercent({
+      type: "index",
+      code: "sh000001",
+      start_date: startDate,
+    });
+
+    if (res.code === 200) {
+      const data = safeJsonParse(res.data, []);
+      console.log(data, "查看data");
+      // 处理概率数据
+      const percentData = data.map((ele) => {
+        const { date, percent } = ele;
+        const calPercent = percent.toFixed(2);
+        const percentItem = [date, calPercent];
+        return percentItem;
+      });
+
+      setIndexTBPercent(percentData);
     }
   };
 
@@ -60,31 +88,60 @@ export default function IndexCompilations(props) {
       data: indexKline.map((item) => item[0]), // 提取日期
       boundaryGap: true,
     },
-    yAxis: {
-      type: "value",
-      min: function (value) {
-        return (value.min - 10).toFixed(0);
+    yAxis: [
+      {
+        type: "value",
+        min: function (value) {
+          return (value.min - 10).toFixed(0);
+        },
+        max: function (value) {
+          return (value.max + 10).toFixed(0);
+        },
+        splitNumber: 4,
       },
-      max: function (value) {
-        return (value.max + 10).toFixed(0);
+      {
+        type: "value",
+        name: "见顶见底概率",
+        axisLine: { onZero: false },
+        min: -100,
+        max: 100,
+        scale: true,
       },
-      splitNumber: 4,
-    },
+    ],
     series: [
       {
-        name: "K-Line",
+        name: "K线图",
         type: "candlestick",
         data: indexKline.map((item) => [item[1], item[2], item[3], item[4]]),
       },
+      {
+        name: "见顶见底概率",
+        type: "line",
+        data: indexTBPercent.map((item) => item[1]),
+        yAxisIndex: 1,
+        smooth: true,
+        symbol: 'none',
+      },
     ],
+    dataZoom: [
+      {
+          type: 'slider',
+          show: true,
+          xAxisIndex: 0,
+          start: 60,
+          end: 100
+      },
+      {
+          type: 'inside',
+          xAxisIndex: 0,
+          start: 60,
+          end: 100
+      }
+  ]
   });
 
   return (
-    <div
-      className="icomp-wrap mx-auto mb-4"
-      data-aos="zoom-y-out"
-      data-aos-delay={600}
-    >
+    <div className="icomp-wrap mx-auto mb-4">
       <div className="index-module mx-auto flex flex-col items-center">
         <h2 className="module-title w-full">{indexData.indexName}</h2>
         <div className="flex flex-row items-center justify-between flex-wrap container mx-auto">
@@ -96,7 +153,7 @@ export default function IndexCompilations(props) {
                   color: indexData?.scoreColor,
                 }}
               >
-                {` ${indexData?.["最新涨跌幅"]?.toFixed(3)}%`}
+                {` ${myToFixed(indexData?.["最新涨跌幅"], 3)}%`}
               </span>
             </div>
             <div className="module-content">

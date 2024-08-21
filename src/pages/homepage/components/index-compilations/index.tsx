@@ -1,31 +1,33 @@
 import { stockklineApi } from "@/apis";
 import { safeJsonParse } from "@/utils/common";
+import { renderTrendWord } from "@/utils/render-func";
 import dayjs from "dayjs";
 import ReactEcharts from "echarts-for-react";
 import { useEffect, useState } from "react";
-import './index.less'
+import './index.less';
 import { myToFixed } from "@/utils/calculate";
 
 export default function IndexCompilations(props) {
-
-  const { indexData = {} } = props;
+  const { indexData = {}, ago = 40 } = props;
 
   // 指数K线开高收低数据
   const [indexKline, setIndexKline] = useState([]);
 
   useEffect(() => {
-   getIndexKLine();
+    getIndexKLine();
   }, []);
 
   const getIndexKLine = async () => {
     // 获取当前时间的60天之前日期
-    const startDate = dayjs().subtract(40, "day").format("YYYY-MM-DD");
-    const res = await stockklineApi.getIndexKLine({ startDate, index: indexData.index });
+    const startDate = dayjs().subtract(ago, "day").format("YYYY-MM-DD");
+    const res = await stockklineApi.getIndexKLine({
+      startDate,
+      index: indexData.index,
+    });
 
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
       const times: string[] = [];
-      console.log(data, 12131)
       // 处理K线数据，按照[开盘价, 收盘价, 最低价, 最高价]的顺序。
       const kdata = data.map((ele) => {
         const { open, close, low, high, candle_end_time } = ele;
@@ -79,9 +81,9 @@ export default function IndexCompilations(props) {
 
   return (
     <div
-      className="sic-wrap"
+      className="icomp-wrap mx-auto mb-4"
     >
-      <div className="p-4 bg-[#fff]/90 rounded-2xl mx-auto flex flex-col items-center">
+      <div className="index-module mx-auto flex flex-col items-center">
         <h2 className="module-title w-full">{indexData.indexName}</h2>
         <div className="flex flex-row items-center justify-between flex-wrap container mx-auto">
           <div className="shrink-0">
@@ -140,11 +142,21 @@ export default function IndexCompilations(props) {
               </span>
             </div>
           </div>
-          <div className="h-56 w-full">
+          <div className="h-56 md:w-3/4 custom:w-screen ">
             <ReactEcharts
               option={getOption()}
               style={{ width: "100%", height: "100%" }}
             />
+          </div>
+        </div>
+
+        <div className="w-full">
+          <h2 className="text-[#333] text-lg font-medium mb-[8px]">市场建议</h2>
+          <div className="text-gray-600 text-sm bg-slate-200 rounded-lg p-3">
+            {renderTrendWord(
+              indexData["反转数据"]?.percent,
+              indexData["反转数据"]?.score
+            )}
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@ import { allInfoApi, selectStockModelApi } from "@/apis";
 import "./hero-home.less";
 import { useNavigate } from "react-router-dom";
 import PageIllustration from "@/components/pageIllustration/page-illustration";
-import IndexCompilations from "@/pages/multi-index-analysis/components/index-compilations";
+import IndexCompilations from "./index-compilations";
 
 export default function HeroHome() {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ export default function HeroHome() {
       copyData.isTopOrBottom =
         res.data?.["反转数据"]?.score > 0 ? "见顶" : "见底";
       copyData.scoreColor =
-        res.data?.["反转数据"]?.score > 0 ? "#f46649" : "#2aa491";
+        res.data?.["最新涨跌幅"] > 0 ? "#f46649" : "#2aa491";
       copyData.indexName = "上证指数";
       copyData.upDaysColor =
         res.data?.consecutive_up_days > 0 ? "#f46649" : "#2aa491";
