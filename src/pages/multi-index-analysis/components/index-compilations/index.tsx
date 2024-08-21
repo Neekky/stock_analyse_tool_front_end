@@ -55,6 +55,7 @@ export default function IndexCompilations(props) {
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
       console.log(data, "查看data");
+
       // 处理概率数据
       const percentData = data.map((ele) => {
         const { date, percent } = ele;
@@ -62,7 +63,6 @@ export default function IndexCompilations(props) {
         const percentItem = [date, calPercent];
         return percentItem;
       });
-
       setIndexTBPercent(percentData);
     }
   };
@@ -117,27 +117,29 @@ export default function IndexCompilations(props) {
       {
         name: "见顶见底概率",
         type: "line",
-        data: indexTBPercent.map((item) => item[1]),
+        data: indexTBPercent.map((item) => ({
+          value: item[1],
+        })),
         yAxisIndex: 1,
         smooth: true,
-        symbol: 'none',
+        symbol: "none",
       },
     ],
     dataZoom: [
       {
-          type: 'slider',
-          show: true,
-          xAxisIndex: 0,
-          start: 60,
-          end: 100
+        type: "slider",
+        show: true,
+        xAxisIndex: 0,
+        start: 60,
+        end: 100,
       },
       {
-          type: 'inside',
-          xAxisIndex: 0,
-          start: 60,
-          end: 100
-      }
-  ]
+        type: "inside",
+        xAxisIndex: 0,
+        start: 60,
+        end: 100,
+      },
+    ],
   });
 
   return (
@@ -201,7 +203,7 @@ export default function IndexCompilations(props) {
               </span>
             </div>
           </div>
-          <div className="h-56 md:w-3/4 custom:w-screen ">
+          <div className="h-72 md:w-full custom:w-screen ">
             <ReactEcharts
               option={getOption()}
               style={{ width: "100%", height: "100%" }}
