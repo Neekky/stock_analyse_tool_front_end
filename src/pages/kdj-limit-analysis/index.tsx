@@ -5,6 +5,7 @@ import Header from "./components/header";
 import { useSelector, useDispatch } from "react-redux";
 import { updateData } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import { RootState } from "@/store/store";
+import { dataConversion } from "@/utils";
 
 export default function Index() {
   const [isFinish, setIsfinish] = useState(false);
@@ -25,13 +26,20 @@ export default function Index() {
 
   useEffect(() => {
     if (finishCount === kdjData.length && kdjData.length > 0 && !isFinish) {
-      const copyKdjData = [...kdjData];
+      // 数据转换
+      const copyKdjData = kdjData.map(ele => {
+        const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
+        const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
+        return {
+        ...ele,
+        newestProfitYoy, 
+        newestProfitColor: newestProfitValue > 0 ? '#ff004417' : '#90e29f38'
+        }
+      });
       // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
-      const result = copyKdjData.sort((a,b) => {
-        const aYoy = Number(a?.financialData?.[0]?.yoy || 0)
-        const bYoy = Number(b?.financialData?.[0]?.yoy || 0)
-        return bYoy - aYoy;
-      })
+      const result = dataConversion.quickSort(copyKdjData, 'newestProfitYoy', 'desc');
+      console.log(result, '2312')
+
       dispatch(updateData({data: result, isUpdate: true}));
       setIsfinish(true);
     }

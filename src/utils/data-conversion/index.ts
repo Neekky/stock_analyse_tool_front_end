@@ -55,7 +55,39 @@ const getExchangeByCode = (code: string) => {
   return '';
 }
 
+const quickSort = (arr: any[], key: string, order: 'asc' | 'desc' = 'asc') => {
+  if (!Array.isArray(arr) || arr.length <= 1) return arr;
+
+  const pivotIndex = Math.floor(arr.length / 2);
+  const pivot = arr[pivotIndex];
+  const lessThanPivot: any[] = [];
+  const greaterThanPivot: any[] = [];
+  
+  for (let i = 0; i < arr.length; i++) {
+      if (i === pivotIndex) continue;
+
+      if (order === 'asc') {
+          if (arr[i][key] < pivot[key]) {
+              lessThanPivot.push(arr[i]);
+          } else {
+              greaterThanPivot.push(arr[i]);
+          }
+      } else if (order === 'desc') {
+          if (arr[i][key] > pivot[key]) {
+              lessThanPivot.push(arr[i]);
+          } else {
+              greaterThanPivot.push(arr[i]);
+          }
+      } else {
+          throw new Error("排序必须是升序或者降序");
+      }
+  }
+
+  return [...quickSort(lessThanPivot, key, order), pivot, ...quickSort(greaterThanPivot, key, order)];
+}
+
 export default {
 	countSubWordsWithMapping,
-  getExchangeByCode
+  getExchangeByCode,
+  quickSort
 }
