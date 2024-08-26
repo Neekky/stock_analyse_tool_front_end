@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { allInfoApi, selectStockModelApi } from "@/apis";
+import { allInfoApi } from "@/apis";
 import "./hero-home.less";
 import { useNavigate } from "react-router-dom";
 import PageIllustration from "@/components/pageIllustration/page-illustration";
@@ -24,7 +24,7 @@ export default function HeroHome() {
   });
 
   useEffect(() => {
-    Promise.allSettled([getIndexStatusData(), getLimitKdjModelData()]);
+    getIndexStatusData();
   }, []);
 
   const getIndexStatusData = async () => {
@@ -44,11 +44,6 @@ export default function HeroHome() {
       setIndexData(copyData);
     }
   };
-
-  const getLimitKdjModelData = async () => {
-    const res = await selectStockModelApi.get_limit_kdj_model_data()
-    console.log(res, '12323113')
-  }
 
   return (
     <section className="relative hero-home-wrap">

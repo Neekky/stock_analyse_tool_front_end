@@ -54,7 +54,6 @@ export default function IndexCompilations(props) {
 
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
-      console.log(data, "查看data");
 
       // 处理概率数据
       const percentData = data.map((ele) => {
@@ -203,7 +202,7 @@ export default function IndexCompilations(props) {
               </span>
             </div>
           </div>
-          <div className="h-72 md:w-full custom:w-screen ">
+          <div className="h-96 md:w-full custom:w-screen ">
             <ReactEcharts
               option={getOption()}
               style={{ width: "100%", height: "100%" }}

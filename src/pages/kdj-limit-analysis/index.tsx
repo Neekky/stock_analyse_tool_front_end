@@ -1,34 +1,62 @@
-import { allInfoApi } from "@/apis";
+import { allInfoApi, selectStockModelApi } from "@/apis";
 import { useEffect, useState } from "react";
 import StockItem from "./components/stockItem";
+import Header from "./components/header";
+import { useSelector, useDispatch } from "react-redux";
+import { updateData } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
+import { RootState } from "@/store/store";
 
 export default function Index() {
-  const [wcData, setWcData] = useState<any[]>([]);
+  const [isFinish, setIsfinish] = useState(false);
+
+  // 定义store相关的hooks
+  const kdjData = useSelector(
+    (state: RootState) => state.kdj_limit.kdjLimitData
+  );
+
+  const finishCount = useSelector(
+    (state: RootState) => state.kdj_limit.finishCount
+  );
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    get_wencai_data();
+    get_limit_kdj_model_data({ date: "20240823" });
   }, []);
 
-  const get_wencai_data = async () => {
-    const res = await allInfoApi.get_wencai_data("kdj金叉几天内有涨停");
+  useEffect(() => {
+    if (finishCount === kdjData.length && kdjData.length > 0 && !isFinish) {
+      const copyKdjData = [...kdjData];
+      // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
+      const result = copyKdjData.sort((a,b) => {
+        const aYoy = Number(a?.financialData?.[0]?.yoy || 0)
+        const bYoy = Number(b?.financialData?.[0]?.yoy || 0)
+        return bYoy - aYoy;
+      })
+      dispatch(updateData({data: result, isUpdate: true}));
+      setIsfinish(true);
+    }
+  }, [finishCount, kdjData.length, isFinish]);
+
+  const get_limit_kdj_model_data = async (data) => {
+    const res = await selectStockModelApi.get_limit_kdj_model_data(data);
     if (res.code === 200) {
-      console.log(res.data, 12313);
-      setWcData(res.data);
-      const stockCode: string = res.data[0].code;
-      get_profit_data(stockCode, stockCode.startsWith("6") ? "17" : "33");
+      dispatch(updateData({data: res.data}));
     }
   };
 
-  const get_profit_data = async (stockCode: string, marketId: string) => {
-    const res = await allInfoApi.get_profit_data(stockCode, marketId);
-    console.log(res, "同花顺");
-  };
-
   return (
-    <div>
-      {wcData.map((ele) => (
-        <StockItem key={ele.code} data={ele} />
-      ))}
+    <div className="flex items-center	flex-col">
+      <Header />
+
+     <div className="w-10/12">
+        {kdjData.map((ele, index) => (
+          <StockItem
+            key={ele.code + ele["涨停封单量"]}
+            index={index}
+            data={ele}
+          />
+        ))}
+      </div>
     </div>
   );
 }
