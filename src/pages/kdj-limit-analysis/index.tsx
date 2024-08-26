@@ -1,4 +1,4 @@
-import { allInfoApi, selectStockModelApi } from "@/apis";
+import { selectStockModelApi } from "@/apis";
 import { useEffect, useState } from "react";
 import StockItem from "./components/stockItem";
 import Header from "./components/header";

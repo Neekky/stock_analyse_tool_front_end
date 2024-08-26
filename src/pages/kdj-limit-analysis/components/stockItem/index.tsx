@@ -8,7 +8,7 @@ import {
 } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 
 export default function Index(props) {
-  const { data, index } = props;
+  const { data } = props;
 
   // 定义store相关的hooks
   const dispatch = useDispatch();
