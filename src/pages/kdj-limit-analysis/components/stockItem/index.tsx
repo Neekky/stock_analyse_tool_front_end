@@ -116,15 +116,14 @@ export default function Index(props) {
     >
       {/* 股票基本数据展示 */}
       <div className="stock-info-wrap">
+      
+      <div className="mb-2.5 text-[15px]">
+          <span className="text-[15px] text-[#ff2244]">股票代码</span>{" "}
+          {data.股票代码}
+        </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">股票简称</span>{" "}
           {data.股票简称}
-        </div>
-        <div className="mb-2.5 text-[15px]">
-          <span className="text-[15px] text-[#ff2244]">
-            涨停封单量占成交量比
-          </span>{" "}
-          {data.涨停封单量占成交量比}
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">涨停原因类别</span>{" "}
