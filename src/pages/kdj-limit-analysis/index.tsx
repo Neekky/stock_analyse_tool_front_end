@@ -21,7 +21,7 @@ export default function Index() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    get_limit_kdj_model_data({ date: "20240826" });
+    get_limit_kdj_model_data({ date: "20240827" });
   }, []);
 
   useEffect(() => {
