@@ -1,12 +1,16 @@
 import { useEffect } from "react";
 import "./index.less";
-import { allInfoApi } from "@/apis";
+import { allInfoApi, stockklineApi } from "@/apis";
 import { useDispatch } from "react-redux";
 import {
   finishCountIncrease,
   updateDataByCode,
 } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
+import dayjs from "dayjs";
+
+const today = dayjs().format("YYYYMMDD");
+const startdate = dayjs(today).subtract(60, 'day').format("YYYYMMDD");
 
 export default function Index(props) {
   const { data } = props;
@@ -17,9 +21,21 @@ export default function Index(props) {
   useEffect(() => {
     const stock: string = data["股票代码"]?.split(".");
     get_profit_data(stock[0], stock[1] === "SH" ? "17" : "33", data.code);
+    get_stock_data(stock[0], startdate, today);
   }, [data.code]);
 
   useEffect(() => {}, [data.financialData]);
+
+  const get_stock_data = async (symbol, start_date, end_date) => {
+    const res = await stockklineApi.getStockKLine({
+      symbol,
+      start_date,
+      end_date,
+      is_head_end: "2"
+    });
+
+    console.log(res, 'K线')
+  };
 
   const get_profit_data = async (
     stockCode: string,
@@ -51,8 +67,12 @@ export default function Index(props) {
     const reverseData = data?.financialData?.slice(0)?.reverse() || [];
     const categories = reverseData.map((item) => item.report); // 获取X轴刻度
     const netProfit = reverseData.map((item) => item.numberValue); // 净利润
-    const yoyGrowth = reverseData.map((item) => (item.numberYoy * 100).toFixed(2)); // 同比增长率
-    const qoqGrowth = reverseData.map((item) => (item.numberMom * 100).toFixed(2)); // 环比增长率
+    const yoyGrowth = reverseData.map((item) =>
+      (item.numberYoy * 100).toFixed(2)
+    ); // 同比增长率
+    const qoqGrowth = reverseData.map((item) =>
+      (item.numberMom * 100).toFixed(2)
+    ); // 环比增长率
 
     return {
       title: {
@@ -91,7 +111,7 @@ export default function Index(props) {
           name: "净利润",
           type: "bar",
           data: netProfit,
-          barWidth: 20
+          barWidth: 20,
         },
         {
           name: "同比增长率",
@@ -116,34 +136,33 @@ export default function Index(props) {
     >
       {/* 股票基本数据展示 */}
       <div className="stock-info-wrap">
-      
-      <div className="mb-2.5 text-[15px]">
+        <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">股票代码</span>{" "}
-          {data.股票代码}
+          <span className=" text-[#333]">{data.股票代码}</span>
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">股票简称</span>{" "}
-          {data.股票简称}
+          <span className=" text-[#333]">{data.股票简称}</span>
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">涨停原因类别</span>{" "}
-          {data.涨停原因类别}
+          <span className=" text-[#333]">{data.涨停原因类别}</span>
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">几天几板</span>{" "}
-          {data.几天几板}
+          <span className=" text-[#333]">{data.几天几板}</span>
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">连续涨停天数</span>{" "}
-          {data.连续涨停天数}
+          <span className=" text-[#333]">{data.连续涨停天数}</span>
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">买入信号</span>{" "}
-          {data.买入信号inter}
+          <span className=" text-[#333]">{data.买入信号inter}</span>
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">技术形态</span>{" "}
-          {data.技术形态}
+          <span className=" text-[#333]">{data.技术形态}</span>
         </div>
         <div className="mb-2.5 text-[15px]">
           <span className="text-[15px] text-[#ff2244]">归母净利润增长</span>{" "}

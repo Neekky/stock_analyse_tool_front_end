@@ -9,7 +9,7 @@ interface IGetStockKLineProps {
   start_date?: string;
   adjust?: "" | "qfq" | "hfq";
   end_date?: string;
-  is_head_end?: "1" | void;
+  is_head_end?: "1" | void; // 是否只返回起始日和结束日日期
 }
 
 interface IGetIndexKLineProps {

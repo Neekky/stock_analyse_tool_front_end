@@ -14,13 +14,20 @@ const counterSlice = createSlice({
   name: "kdj_limit_data",
   initialState,
   reducers: {
+    // 刷新数据
+    refreshData(state) {
+      state.kdjLimitData = [];
+      state.finishCount = 0;
+    },
     updateData(state, action: PayloadAction<any>) {
       // kdjLimitData没数据时，才更新数据，处理useEffect的两次调用逻辑，或者定义了更新
       if (state.kdjLimitData.length <= 0) {
         // 更新数据
         state.kdjLimitData = action.payload.data;
       }
-      if (state.kdjLimitData.length > 0 && action.payload?.isUpdate) {
+
+      // 强制重新赋值
+      if (action.payload?.isUpdate) {
         state.kdjLimitData = action.payload.data;
       }
     },
@@ -50,6 +57,6 @@ const counterSlice = createSlice({
   },
 });
 
-export const { updateData, updateDataByCode, finishCountIncrease } =
+export const { updateData, updateDataByCode, finishCountIncrease, refreshData } =
   counterSlice.actions;
 export default counterSlice.reducer;
