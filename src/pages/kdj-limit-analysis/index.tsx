@@ -122,8 +122,8 @@ export default function Index() {
 
       copyStocks.forEach((stock, index) => {
         stock.score =
-          weights.yoy * normalizedData.yoy[index] +
-          weights.break * normalizedData.break[index] +
+          weights.yoy * normalizedData.yoy[index] -
+          weights.break * normalizedData.break[index] -
           weights.time * normalizedData.time[index] +
           weights.limitAmount * normalizedData.limitAmount[index];
       });
