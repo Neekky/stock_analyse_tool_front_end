@@ -155,6 +155,7 @@ export default function Index() {
             key={ele.code + ele["涨停封单量"]}
             index={index}
             data={ele}
+            date={date}
           />
         ))}
       </div>

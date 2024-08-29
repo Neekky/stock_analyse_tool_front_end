@@ -8,12 +8,13 @@ import {
 } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
-
-const today = dayjs().format("YYYYMMDD");
-const startdate = dayjs(today).subtract(60, 'day').format("YYYYMMDD");
+import { useState } from "react";
+import { useCallback } from "react";
 
 export default function Index(props) {
-  const { data } = props;
+  const { data, date } = props;
+
+  const [kLine, setKLine] = useState([]);
 
   // 定义store相关的hooks
   const dispatch = useDispatch();
@@ -21,8 +22,21 @@ export default function Index(props) {
   useEffect(() => {
     const stock: string = data["股票代码"]?.split(".");
     get_profit_data(stock[0], stock[1] === "SH" ? "17" : "33", data.code);
-    get_stock_data(stock[0], startdate, today);
   }, [data.code]);
+
+  useEffect(() => {
+    // 起始日期为选择日期的60天前
+    const start_date = date.subtract(120, "day").format("YYYYMMDD");
+    // 结束日期恒定为今天
+    const end_date = dayjs(new Date()).format("YYYYMMDD");
+
+    const stock: string = data["股票代码"]?.split(".");
+    get_stock_data(
+      stock[0],
+      start_date,
+      end_date
+    );
+  }, [data.code, date]);
 
   useEffect(() => {}, [data.financialData]);
 
@@ -31,10 +45,11 @@ export default function Index(props) {
       symbol,
       start_date,
       end_date,
-      is_head_end: "2"
     });
-
-    console.log(res, 'K线')
+    if (res?.length > 0) {
+      setKLine(res);
+    }
+    console.log(res, "K线");
   };
 
   const get_profit_data = async (
@@ -129,6 +144,56 @@ export default function Index(props) {
     };
   };
 
+  // k线图的echarts配置
+  const getKlineoOption = useCallback(() => {
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+        },
+      },
+      xAxis: {
+        type: 'category',
+        data: kLine.map((item) => dayjs(item['日期']).format("YYYY-MM-DD")),
+      },
+      yAxis: [
+        {
+          type: 'value',
+          name: 'Price',
+        },
+        {
+          type: 'value',
+          name: 'Volume',
+          // 关联成交量图，最好分开展示
+          position: 'right',
+        },
+      ],
+      series: [
+        {
+          name: 'K-line',
+          type: 'candlestick',
+          data: kLine.map((item) => [item['开盘'], item['收盘'], item['最低'], item['最高']]),
+          itemStyle: {
+            color: '#ef232a',
+            color0: '#14b143',
+            borderColor: '#ef232a',
+            borderColor0: '#14b143',
+          },
+        },
+        {
+          name: 'Volume',
+          type: 'bar',
+          yAxisIndex: 1,
+          data: kLine.map((item) => item['成交额']),
+          itemStyle: {
+            color: '#4b8df8',
+          },
+        },
+      ],
+    };
+  }, [kLine])
+
   return (
     <div
       className="stock-item-wrap"
@@ -177,6 +242,13 @@ export default function Index(props) {
           style={{ width: "80%", height: "100%" }}
         />
       </div>
+      <div className="h-72 md:w-full custom:w-screen mt-6 flex justify-center">
+        <ReactEcharts
+          option={getKlineoOption()}
+          style={{ width: "80%", height: "100%" }}
+        />
+      </div>
+      
     </div>
   );
 }
