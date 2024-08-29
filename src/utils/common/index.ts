@@ -57,7 +57,7 @@ export const deepClone = <T>(obj: T, cache: WeakMap<object, unknown> = new WeakM
 
    // 递归拷贝每个属性
    for (const key in obj) {
-       if (obj.hasOwnProperty(key)) {
+       if (Object.prototype.hasOwnProperty.call(obj, key)) {
            (newObj as any)[key] = deepClone((obj as any)[key], cache);
        }
    }
