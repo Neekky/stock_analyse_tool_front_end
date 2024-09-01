@@ -1,7 +1,7 @@
 // features/stockSlice.js
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { stockklineApi } from "@/apis";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 import "dayjs/locale/zh-cn";
 
