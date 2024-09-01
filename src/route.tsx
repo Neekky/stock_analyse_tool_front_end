@@ -2,15 +2,16 @@ import {
     createBrowserRouter,
 } from "react-router-dom";
 
-import HomePage from "./pages/homepage/index";
-import Home from "./pages/home/index";
-import LimitUpAnalyse from "./pages/limitup-analysis";
-import MultiLimitUpAnalyse from "./pages/multi-limitup-analysis";
-import WinnersListAnalyse from "./pages/winners-list-analysis";
-import EarlyLimitStartegyAnalyse from "./pages/early-limit-strategy-analysis";
-import LeadingTrendAnalysis from "./pages/leading-trend-analysis";
-import KdjLimitAnalysis from "./pages/kdj-limit-analysis";
-import MultiIndexAnalysis from "./pages/multi-index-analysis";
+import HomePage from "@/pages/homepage/index";
+import Home from "@/pages/old-home/index";
+import LimitUpAnalyse from "@/pages/old-home/limitup-analysis";
+import MultiLimitUpAnalyse from "@/pages/old-home/multi-limitup-analysis";
+import WinnersListAnalyse from "@/pages/old-home/winners-list-analysis";
+import EarlyLimitStartegyAnalyse from "@/pages/old-home/early-limit-strategy-analysis";
+import LeadingTrendAnalysis from "@/pages/old-home/leading-trend-analysis";
+import KdjLimitAnalysis from "@/pages/kdj-limit-analysis";
+import MultiIndexAnalysis from "@/pages/multi-index-analysis";
+import StockCombatCockpit from "@/pages/stock_combat_cockpit";
 
 export const router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
     {
         path: '/multi-index-analysis',
         element: <MultiIndexAnalysis />,
+    },
+    {
+        path: '/stock-combat-cockpit',
+        element: <StockCombatCockpit />,
     },
     {
         path: "/home",

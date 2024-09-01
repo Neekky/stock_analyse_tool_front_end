@@ -18,7 +18,7 @@ export default function FeaturesPlanet() {
           </div>
           {/* Grid */}
           <div className="grid overflow-hidden sm:grid-cols-2 lg:grid-cols-3 [&>*]:relative [&>*]:p-6 [&>*]:before:absolute [&>*]:before:bg-gray-800 [&>*]:before:[block-size:100vh] [&>*]:before:[inline-size:1px] [&>*]:before:[inset-block-start:0] [&>*]:before:[inset-inline-start:-1px] [&>*]:after:absolute [&>*]:after:bg-gray-800 [&>*]:after:[block-size:1px] [&>*]:after:[inline-size:100vw] [&>*]:after:[inset-block-start:-1px] [&>*]:after:[inset-inline-start:0] md:[&>*]:p-10">
-            <article onClick={() => toPage("/home/limitup-analyse")}>
+            <article className="cursor-pointer hover:bg-blue-900" onClick={() => toPage("/home/limitup-analyse")}>
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -36,7 +36,7 @@ export default function FeaturesPlanet() {
                 sites, and more.
               </p>
             </article>
-            <article onClick={() => toPage("/kdj-limit-analysis")}>
+            <article className="cursor-pointer hover:bg-blue-900" onClick={() => toPage("/kdj-limit-analysis")}>
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -55,7 +55,7 @@ export default function FeaturesPlanet() {
                 快速锁定投资机会，抢占市场先机。
               </p>
             </article>
-            <article>
+            <article className="cursor-pointer hover:bg-blue-900" onClick={() => toPage("/stock-combat-cockpit")}>
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -69,7 +69,7 @@ export default function FeaturesPlanet() {
                   />
                   <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm0-2a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm1.715-6.752a1 1 0 0 1 .57-1.916 8.014 8.014 0 0 1 5.383 5.383 1 1 0 1 1-1.916.57 6.014 6.014 0 0 0-4.037-4.037Zm4.037 7.467a1 1 0 1 1 1.916.57 8.014 8.014 0 0 1-5.383 5.383 1 1 0 1 1-.57-1.916 6.014 6.014 0 0 0 4.037-4.037Zm-7.467 4.037a1 1 0 1 1-.57 1.916 8.014 8.014 0 0 1-5.383-5.383 1 1 0 1 1 1.916-.57 6.014 6.014 0 0 0 4.037 4.037Z" />
                 </svg>
-                <span>SEO &amp; Performance</span>
+                <span>股市实时监控</span>
               </h3>
               <p className="text-[15px] text-gray-400">
                 Collect essential insights about how visitors are using your

@@ -19,4 +19,5 @@ export default new (class EastMoney extends Axios {
     const url = `https://eq.10jqka.com.cn/open/api/hot_list/v1/hot_plate/concept/data.txt`;
     return this.get(url);
   }
+
 })();

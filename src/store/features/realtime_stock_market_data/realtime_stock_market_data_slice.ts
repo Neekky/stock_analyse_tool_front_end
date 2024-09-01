@@ -1,6 +1,11 @@
 // features/stockSlice.js
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { stockklineApi } from "@/apis";
+import dayjs, { Dayjs } from "dayjs";
+
+import "dayjs/locale/zh-cn";
+
+dayjs.locale("zh-cn");
 
 /**
  * 异步获取实时股票市场数据
@@ -19,8 +24,8 @@ export const fetchStockData = createAsyncThunk<any, void>(
     let response: any[] = await stockklineApi.stockZhASpotEm(); // 假设这是你的函数
 
     // 过滤退市股
-    response = response.filter((ele) => ele['今开'] > 0);
-    
+    response = response.filter((ele) => ele["今开"] > 0);
+
     // 计算股市的上涨下跌家数
     let up_count = 0;
     let down_count = 0;
@@ -100,7 +105,7 @@ export const fetchStockData = createAsyncThunk<any, void>(
     return {
       data: response,
       stock_market_situation,
-      rise_fall_distribution
+      rise_fall_distribution,
     };
   }
 );
@@ -128,6 +133,7 @@ interface StockState {
     seven: number;
     ten: number;
   };
+  tradeDate: number;
 }
 
 // 创建初始状态
@@ -153,13 +159,18 @@ const initialState: StockState = {
   },
   loading: false,
   error: null,
+  tradeDate: dayjs().valueOf(),
 };
 
 // 创建 stockSlice
 const stockSlice = createSlice({
   name: "realtime_stock_market", // Slice 的名称
   initialState, // 设置初始状态
-  reducers: {}, // 这里可以添加同步 reducer
+  reducers: {
+    updateTradeDate(state, action: PayloadAction<any>) {
+      state.tradeDate = action.payload.tradeDate;
+    },
+  }, // 这里可以添加同步 reducer
   extraReducers: (builder) => {
     builder
       // 当 fetchStockData 处于 pending 状态时，设置 loading 为 true
@@ -184,5 +195,5 @@ const stockSlice = createSlice({
       });
   },
 });
-
+export const { updateTradeDate } = stockSlice.actions;
 export default stockSlice.reducer;

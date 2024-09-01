@@ -9,9 +9,8 @@ import { dataConversion } from "@/utils";
 import { deepClone, normalize } from "@/utils/common";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
-
-import 'dayjs/locale/zh-cn';
 import { RangePickerProps } from "antd/es/date-picker";
+import 'dayjs/locale/zh-cn';
 
 dayjs.locale('zh-cn');
 

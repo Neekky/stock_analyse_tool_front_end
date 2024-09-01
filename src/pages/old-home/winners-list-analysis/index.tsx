@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { thirdPartyApi, limitupApi } from "@/apis";
 import { Table, DatePicker, message, Button } from "antd";
 import dayjs, { Dayjs } from "dayjs";
-import PlatePieChart from "../../components/platePieChart";
+import PlatePieChart from "@/components/platePieChart";
 import { dataConversion } from "@/utils";
 import Drawers from "@/components/drawers";
 import "./index.less";
