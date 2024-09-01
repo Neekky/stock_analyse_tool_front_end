@@ -1,14 +1,13 @@
 import { stockklineApi } from "@/apis";
 import { safeJsonParse } from "@/utils/common";
 import { renderTrendWord } from "@/utils/render-func";
-import dayjs from "dayjs";
 import ReactEcharts from "echarts-for-react";
 import { useEffect, useState } from "react";
 import "./index.less";
 import { myToFixed } from "@/utils/calculate";
 
 export default function IndexCompilations(props) {
-  const { indexData = {}, ago = 40 } = props;
+  const { indexData = {} } = props;
 
   // 指数K线开高收低数据
   const [indexKline, setIndexKline] = useState([]);
