@@ -57,7 +57,7 @@ export default function Index() {
         },
       },
       grid: { top: "45%" },
-
+      title: { text: '大盘实时涨跌分布', top: '5%', left: 'center' },
       series: [
         {
           data: [
@@ -138,7 +138,7 @@ export default function Index() {
           name: "Access From",
           type: "pie",
           center: ["80%", "25%"],
-          radius: [0, "40%"],
+          radius: [0, "42%"],
           itemStyle: {
             borderRadius: 10,
             borderColor: "#fff",
@@ -182,7 +182,7 @@ export default function Index() {
     [distribution, market_situation]
   );
   return (
-    <div className="h-96 md:w-3/4 custom:w-screen ">
+    <div className="h-96 w-full">
     <ReactEcharts
       option={getOption()}
       style={{ width: "100%", height: "100%" }}

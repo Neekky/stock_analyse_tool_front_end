@@ -111,6 +111,12 @@ export default new (class StockKline extends Axios {
     return this.get(url);
   }
 
+  // 快速获取上证指数的见顶见底概率
+  getSzTopBottomPercent() {
+    const url = `${API_GATEWAY_FLASK}/get_sz_top_bottom_percent`;
+    return this.get(url);
+  }
+
   // 直接从东方财富获取股票K线
   async stockZhAHist(
     symbol = "000001",

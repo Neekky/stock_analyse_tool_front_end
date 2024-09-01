@@ -46,7 +46,6 @@ export default function Index() {
     try {
       const res = await allInfoApi.get_status_of_index(index);
       if (res.code === 200) {
-        console.log(res.data);
         // 复制一份res.data
         const copyData = { ...res.data };
 

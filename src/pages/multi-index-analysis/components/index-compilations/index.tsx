@@ -23,9 +23,8 @@ export default function IndexCompilations(props) {
 
   const getIndexKLine = async () => {
     // 获取当前时间的60天之前日期
-    const startDate = dayjs().subtract(ago, "day").format("YYYY-MM-DD");
     const res = await stockklineApi.getIndexKLine({
-      startDate,
+      startDate: '2018-01-01',
       index: indexData.index,
     });
 
@@ -44,14 +43,7 @@ export default function IndexCompilations(props) {
   };
 
   const getIndexTopBottomPercent = async () => {
-    const startDate = dayjs().subtract(ago, "day").format("YYYY-MM-DD");
-
-    const res = await stockklineApi.getIndexTopBottomPercent({
-      type: "index",
-      code: "sh000001",
-      start_date: startDate,
-    });
-
+    const res = await stockklineApi.getSzTopBottomPercent();
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
 
@@ -62,6 +54,7 @@ export default function IndexCompilations(props) {
         const percentItem = [date, calPercent];
         return percentItem;
       });
+
       setIndexTBPercent(percentData);
     }
   };
