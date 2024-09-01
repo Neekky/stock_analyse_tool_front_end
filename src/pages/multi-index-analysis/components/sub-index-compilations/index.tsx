@@ -25,7 +25,6 @@ export default function IndexCompilations(props) {
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
       const times: string[] = [];
-      console.log(data, 12131)
       // 处理K线数据，按照[开盘价, 收盘价, 最低价, 最高价]的顺序。
       const kdata = data.map((ele) => {
         const { open, close, low, high, candle_end_time } = ele;

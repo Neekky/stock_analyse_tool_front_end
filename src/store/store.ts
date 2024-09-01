@@ -2,10 +2,12 @@ import { configureStore } from '@reduxjs/toolkit';
 
 // 导入你的 reducer
 import kdj_limit_data_reducer from './features/kdj_limit_data/kdj_limit_data_slice';
+import realtime_stock_market_data_slice from './features/realtime_stock_market_data/realtime_stock_market_data_slice';
 
 const store = configureStore({
   reducer: {
     kdj_limit: kdj_limit_data_reducer,
+    realtime_stock: realtime_stock_market_data_slice
     // 添加其他的 reducer
   },
 });

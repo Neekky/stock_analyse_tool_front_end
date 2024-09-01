@@ -10,6 +10,11 @@ import { deepClone, normalize } from "@/utils/common";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
 
+import 'dayjs/locale/zh-cn';
+import { RangePickerProps } from "antd/es/date-picker";
+
+dayjs.locale('zh-cn');
+
 export default function Index() {
   const [isFinish, setIsfinish] = useState(false);
 
@@ -61,7 +66,6 @@ export default function Index() {
       const result = dataConversion.quickSort(analysisData, "score", "desc");
 
       const diffData = stock_differentiation(result);
-      console.log(diffData, "维度分析后数据");
 
       dispatch(updateData({ data: diffData, isUpdate: true }));
       setIsfinish(true);
@@ -135,6 +139,11 @@ export default function Index() {
     }
   };
 
+  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    // Can not select days before today and today
+    return current && current > dayjs().endOf('day');
+  };
+
   return (
     <div className="flex items-center	flex-col">
       <Header />
@@ -147,6 +156,7 @@ export default function Index() {
           defaultValue={date}
           placeholder="选择日期"
           onChange={setDate}
+          disabledDate={disabledDate}
         />
       </div>
       <div className="w-10/12">

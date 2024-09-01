@@ -40,12 +40,14 @@ export default function Index(props) {
 
   useEffect(() => {}, [data.financialData]);
 
-  const get_stock_data = async (symbol, start_date, end_date) => {
-    const res = await stockklineApi.getStockKLine({
+  const get_stock_data = async (symbol:string, start_date, end_date) => {
+    const res = await stockklineApi.stockZhAHist(
       symbol,
+      'daily',
       start_date,
       end_date,
-    });
+      'qfq'
+    );
     if (res?.length > 0) {
       setKLine(res);
     }
@@ -160,11 +162,11 @@ export default function Index(props) {
       yAxis: [
         {
           type: 'value',
-          name: 'Price',
+          name: 'K线',
         },
         {
           type: 'value',
-          name: 'Volume',
+          name: '成交额',
           // 关联成交量图，最好分开展示
           position: 'right',
         },

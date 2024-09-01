@@ -9,7 +9,6 @@ const HotPlateStockList = (props: any) => {
   const [plateData, setPlateData] = useState([]);
 
   useEffect(() => {
-    console.log(id, "id变化");
     get_hot_plate_stock_data(id);
   }, [id, allStockData.length]);
 

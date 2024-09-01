@@ -1,6 +1,7 @@
 import { Axios } from "@/utils"; // 导入 api
 const API_GATEWAY_FLASK = import.meta.env.VITE_APP_API_GATEWAY_FLASK;
 
+
 export default new (class StockInfo extends Axios {
   // 获取指数运行数据
   get_status_of_index(index: string) {
@@ -40,4 +41,6 @@ export default new (class StockInfo extends Axios {
     const url = `${API_GATEWAY_FLASK}/all_info/all_stock_list`;
     return this.get(url);
   }
+
+  
 })();

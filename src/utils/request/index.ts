@@ -7,7 +7,7 @@ import { errorCodeType } from "./error-code-type";
 // import router from "@/router";
 
 // 创建axios实例
-const service: AxiosInstance = axios.create({
+export const service: AxiosInstance = axios.create({
   // 服务接口请求
   baseURL: import.meta.env.VITE_APP_BASE_API,
   // 超时设置
