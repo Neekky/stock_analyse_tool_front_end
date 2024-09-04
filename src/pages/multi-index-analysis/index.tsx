@@ -73,7 +73,7 @@ export default function Index() {
   return (
     <div className="relative hero-home-wrap mx-auto bg-[#eaecf1]">
       <Header />
-      <IndexCompilations ago={2250} indexData={indexData[0]} />
+      <IndexCompilations indexData={indexData[0]} />
       <div className="sub-index-warp">
         {indexData.slice(1).map((ele, index) => (
           <SubIndexCompilations key={index} indexData={ele} />

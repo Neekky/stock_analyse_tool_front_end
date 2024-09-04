@@ -12,13 +12,13 @@ export default function Index() {
           <h1
             className="mb-6 border-y text-5xl font-bold [border-image:linear-gradient(to_right,transparent,theme(colors.slate.300/.8),transparent)1] md:text-6xl"
           >
-            多指数趋势洞察
+            个性化策略构建
           </h1>
           <div className="mx-auto max-w-3xl">
             <p
               className="mb-8 text-lg text-gray-700"
             >
-              跟踪各行业板块指数的涨跌情况，及时捕捉行业轮动机会，帮助投资者把握市场热点。
+              提供多维度、多策略的聚合分析功能，帮助投资者快速构建个性化的投资组合<br/> 对比不同策略的当日表现，做出更明智的投资决策
             </p>
           </div>
         </div>

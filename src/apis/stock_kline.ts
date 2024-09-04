@@ -31,7 +31,6 @@ let codeIdMap: any = null;
 
 // akshare辅助函数，获取每个股票所对应的ID，返回一个映射符号到ID的字典
 const codeIdMapEM = async () => {
-  console.log("执行了吗");
   if (codeIdMap) return codeIdMap;
   const url = "https://80.push2.eastmoney.com/api/qt/clist/get";
 
@@ -146,7 +145,6 @@ export default new (class StockKline extends Axios {
     try {
       const response = await this.get(url, { params, timeout });
       const dataJson = response.data;
-      console.log(dataJson, "tempData");
 
       if (!dataJson || !dataJson?.klines) {
         return []; // 返回空数组替代DataFrame

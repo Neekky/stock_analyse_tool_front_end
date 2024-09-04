@@ -4,7 +4,7 @@ import { allInfoApi, stockklineApi } from "@/apis";
 import { useDispatch } from "react-redux";
 import {
   finishCountIncrease,
-  updateDataByCode,
+  updateLeadingProfitDataByCode,
 } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
@@ -60,7 +60,7 @@ export default function Index(props) {
           numberMom: Number(ele.mom),
           numberValue: Number(ele.value),
         }));
-        dispatch(updateDataByCode({ data: transData, code }));
+        dispatch(updateLeadingProfitDataByCode({ data: transData, code }));
         // 已完成统计数量递增
       }
     } catch (error) {

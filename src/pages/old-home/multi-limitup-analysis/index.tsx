@@ -123,7 +123,8 @@ export default function Index(): any {
   useEffect(() => {
     pageGetLimitUpData(date);
     pageGetRateData(date);
-    thirdParty.getHotPlateData().then(() => {
+    thirdParty.getHotPlateData().then((res) => {
+      console.log(res, 2131231)
     } );
   }, [date, num]);
 
