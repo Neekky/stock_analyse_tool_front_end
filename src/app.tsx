@@ -33,7 +33,7 @@ export default function App() {
       if (today !== tradeDateStr || now.isAfter(afternoonThree)) {
         clearInterval(interval);
       }
-    }, 6000);
+    }, 3000);
 
     // 获取交易时间
     getTradeDate();

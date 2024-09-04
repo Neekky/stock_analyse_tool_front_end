@@ -20,4 +20,10 @@ export default new (class EastMoney extends Axios {
     return this.get(url);
   }
 
+  // 同花顺的股票相关板块数据，包含是否为龙头，各板块当前人气股，market：沪市-17；深市-33；北证-151
+  getQKAStockPlateData() {
+    const url = `https://dq.10jqka.com.cn/fuyao/thsweb_quote/fund/v1/get_list_obj?code=300068&market=33`;
+    return this.get(url);
+  }
+
 })();

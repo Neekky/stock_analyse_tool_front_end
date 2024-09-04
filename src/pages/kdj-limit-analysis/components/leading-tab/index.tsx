@@ -110,7 +110,7 @@ export default function Index(props) {
         time: normalize(copyStocks, "final_limit_time_stamp"), // 最终涨停时间
         limitAmount: normalize(copyStocks, "涨停封单量占成交量比"), // 涨停封单量占成交量比
       };
-
+      console.log(normalizedData, 23123213)
       copyStocks.forEach((stock, index) => {
         stock.score =
           weights.yoy * normalizedData.yoy[index] -
