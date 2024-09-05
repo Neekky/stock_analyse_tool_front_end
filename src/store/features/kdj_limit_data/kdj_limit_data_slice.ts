@@ -4,22 +4,30 @@ interface CounterState {
   kdjLimitData: any[];
   leadingLimitData: any[];
   finishCount: number;
+  leadingFinishCount: number;
 }
 
 const initialState: CounterState = {
   kdjLimitData: [], // kdj涨停数据
   leadingLimitData: [], // 龙头涨停数据
   finishCount: 0,
+  leadingFinishCount: 0,
 };
 
 const counterSlice = createSlice({
   name: "kdj_limit_data",
   initialState,
   reducers: {
-    // 刷新数据
+    // 刷新KDJ涨停数据
     refreshData(state) {
       state.kdjLimitData = [];
       state.finishCount = 0;
+    },
+
+    // 刷新数据
+    refreshLeadingData(state) {
+      state.leadingLimitData = [];
+      state.leadingFinishCount = 0;
     },
     updateKdjData(state, action: PayloadAction<any>) {
       // kdjLimitData没数据时，才更新数据，处理useEffect的两次调用逻辑，或者定义了更新
@@ -91,9 +99,21 @@ const counterSlice = createSlice({
     finishCountIncrease(state) {
       state.finishCount += 1;
     },
+
+    leadingFinishCountIncrease(state) {
+      state.leadingFinishCount += 1;
+    },
   },
 });
 
-export const { updateKdjData, updateLeadingData, updateLeadingProfitDataByCode, updateDataByCode, finishCountIncrease, refreshData } =
-  counterSlice.actions;
+export const {
+  updateKdjData,
+  updateLeadingData,
+  updateLeadingProfitDataByCode,
+  updateDataByCode,
+  finishCountIncrease,
+  leadingFinishCountIncrease,
+  refreshData,
+  refreshLeadingData,
+} = counterSlice.actions;
 export default counterSlice.reducer;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/store";
 import {
-  refreshData,
+  refreshLeadingData,
   updateLeadingData,
 } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import { dataConversion } from "@/utils";
@@ -31,12 +31,12 @@ export default function Index(props) {
   );
 
   const finishCount = useSelector(
-    (state: RootState) => state.kdj_limit.finishCount
+    (state: RootState) => state.kdj_limit.leadingFinishCount
   );
 
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYYMMDD");
-    dispatch(refreshData());
+    dispatch(refreshLeadingData());
     setIsfinish(false);
     get_limit_leading_model_data({ date: dateStr });
   }, [date]);

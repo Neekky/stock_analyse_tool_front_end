@@ -3,7 +3,7 @@ import "./index.less";
 import { allInfoApi, stockklineApi } from "@/apis";
 import { useDispatch } from "react-redux";
 import {
-  finishCountIncrease,
+  leadingFinishCountIncrease,
   updateLeadingProfitDataByCode,
 } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
@@ -52,7 +52,7 @@ export default function Index(props) {
   ) => {
     try {
       const res = await allInfoApi.get_profit_data(stockCode, marketId);
-      dispatch(finishCountIncrease());
+      dispatch(leadingFinishCountIncrease());
       if (res.code === 200) {
         const transData = res.data.map((ele) => ({
           ...ele,
@@ -65,7 +65,7 @@ export default function Index(props) {
       }
     } catch (error) {
       // 已完成统计数量递增
-      dispatch(finishCountIncrease());
+      dispatch(leadingFinishCountIncrease());
       console.log(error, `财务数据请求报错,股票码${stockCode}`);
     }
   };
@@ -185,7 +185,7 @@ export default function Index(props) {
         },
       },
       legend: {
-        data: ["K线", "成交额"],
+        // data: ["K线", "成交额"],
       },
       xAxis: {
         type: "category",
@@ -215,7 +215,7 @@ export default function Index(props) {
       ],
       series: [
         {
-          name: "K线图",
+          name: "K线",
           type: "candlestick",
           data: kLine.map((item) => [
             item["开盘"],
@@ -232,7 +232,7 @@ export default function Index(props) {
           },
         },
         {
-          name: "Volume",
+          name: "成交额",
           type: "bar",
           yAxisIndex: 0,
           data: kLine.map((item) => item["成交额"]),

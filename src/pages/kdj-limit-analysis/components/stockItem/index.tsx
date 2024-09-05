@@ -185,7 +185,7 @@ export default function Index(props) {
         },
       },
       legend: {
-        data: ["K线", "成交额"],
+        // data: ["K线", "成交额"],
       },
       xAxis: {
         type: "category",
@@ -215,7 +215,7 @@ export default function Index(props) {
       ],
       series: [
         {
-          name: "K线图",
+          name: "K线",
           type: "candlestick",
           data: kLine.map((item) => [
             item["开盘"],
@@ -232,7 +232,7 @@ export default function Index(props) {
           },
         },
         {
-          name: "Volume",
+          name: "成交额",
           type: "bar",
           yAxisIndex: 0,
           data: kLine.map((item) => item["成交额"]),
