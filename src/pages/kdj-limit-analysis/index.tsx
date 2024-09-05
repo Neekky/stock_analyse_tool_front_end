@@ -46,6 +46,7 @@ export default function Index() {
     {
       key: "3",
       label: <div>Tab 3</div>,
+      forceRender: true,
       children: "Content of Tab Pane 3",
     },
   ];

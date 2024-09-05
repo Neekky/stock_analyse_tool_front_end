@@ -8,9 +8,10 @@ import {
 } from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
+import thirdParty from "@/apis/thirdParty";
 
 export default function Index(props) {
-  const { data, date } = props;
+  const { data, date, isFinish } = props;
 
   const [kLine, setKLine] = useState([]);
 
@@ -31,6 +32,30 @@ export default function Index(props) {
     const stock: string = data["股票代码"]?.split(".");
     get_stock_data(stock[0], start_date, end_date);
   }, [data.code, date]);
+
+  // 倒计时结束时，请求个股板块数据
+  useEffect(() => {
+    if (isFinish) {
+      get_stock_plate_data()
+    }
+  }, [isFinish, data.code]);
+
+  const get_stock_plate_data = async () => {
+    const stock: string = data["股票代码"]?.split(".")[0];
+
+    // 计算market
+    let market = "33";
+    if (stock.startsWith("6")) {
+      market = "17";
+    }
+    if (stock.startsWith("8")) {
+      market = "151";
+    }
+
+    const res = await thirdParty.getQKAStockPlateData(stock, market);
+
+    console.log(res, 12313)
+  };
 
   const get_stock_data = async (symbol: string, start_date, end_date) => {
     const res = await stockklineApi.stockZhAHist(
@@ -194,13 +219,13 @@ export default function Index(props) {
       yAxis: [
         {
           type: "value",
-          name: "K线",
+          name: "成交额",
+          // 关联成交量图，最好分开展示
           position: "left",
         },
         {
           type: "value",
-          name: "成交额",
-          // 关联成交量图，最好分开展示
+          name: "K线",
           position: "right",
         },
       ],
@@ -251,20 +276,27 @@ export default function Index(props) {
     >
       {/* 股票基本数据展示 */}
       <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票代码</span>{" "}
           <span className=" text-[#333]">{data.股票代码}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票简称</span>{" "}
           <span className=" text-[#333]">{data.股票简称}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">几天几板</span>{" "}
           <span className=" text-[#333]">{data.几天几板}</span>
         </div>
+
+        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">概念龙头个数</span>{" "}
+          <span className=" text-[#333]">{data.概念龙头个数}</span>
+        </div>
+
+        
       </div>
 
       {/* 归母净利润图表展示 */}

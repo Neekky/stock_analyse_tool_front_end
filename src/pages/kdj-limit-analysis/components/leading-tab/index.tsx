@@ -18,9 +18,10 @@ export default function Index(props) {
   // 各分析维度的权重配比
   const [weights] = useState({
     yoy: 0.4, // 同比增长
-    break: 0.2, // 涨停开板次数
+    break: 0.1, // 涨停开板次数
     time: 0.1, // 最终涨停时间
-    limitAmount: 0.3, // 涨停封单量占成交量比
+    limitAmount: 0.2, // 涨停封单量占成交量比
+    leadingCount:  0.2, // 占不同概念龙头的数量
   });
 
   const [isFinish, setIsfinish] = useState(false);
@@ -50,7 +51,7 @@ export default function Index(props) {
         const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
         return {
           ...ele,
-          newestProfitYoy,
+          newestProfitYoy, // 最新的同比增长数值
           newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
         };
       });
@@ -109,6 +110,7 @@ export default function Index(props) {
         break: normalize(copyStocks, "涨停开板次数"), // 涨停开板次数
         time: normalize(copyStocks, "final_limit_time_stamp"), // 最终涨停时间
         limitAmount: normalize(copyStocks, "涨停封单量占成交量比"), // 涨停封单量占成交量比
+        leadingCount: normalize(copyStocks, "概念龙头个数"), // 涨停封单量占成交量比
       };
       console.log(normalizedData, 23123213)
       copyStocks.forEach((stock, index) => {
@@ -116,7 +118,8 @@ export default function Index(props) {
           weights.yoy * normalizedData.yoy[index] -
           weights.break * normalizedData.break[index] -
           weights.time * normalizedData.time[index] +
-          weights.limitAmount * normalizedData.limitAmount[index];
+          weights.limitAmount * normalizedData.limitAmount[index] +
+          weights.leadingCount * normalizedData.limitAmount[index];
       });
 
       return copyStocks;
@@ -141,6 +144,7 @@ export default function Index(props) {
           index={index}
           data={ele}
           date={date}
+          isFinish={isFinish}
         />
       ))}
     </div>

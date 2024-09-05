@@ -194,13 +194,13 @@ export default function Index(props) {
       yAxis: [
         {
           type: "value",
-          name: "K线",
+          name: "成交额",
+          // 关联成交量图，最好分开展示
           position: "left",
         },
         {
           type: "value",
-          name: "成交额",
-          // 关联成交量图，最好分开展示
+          name: "K线",
           position: "right",
         },
       ],
