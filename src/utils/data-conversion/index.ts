@@ -55,6 +55,7 @@ const getExchangeByCode = (code: string) => {
   return '';
 }
 
+// desc降序， asc升序
 const quickSort = (arr: any[], key: string, order: 'asc' | 'desc' = 'asc') => {
   if (!Array.isArray(arr) || arr.length <= 1) return arr;
 

@@ -3,15 +3,14 @@ import "./index.less";
 import { allInfoApi, stockklineApi } from "@/apis";
 import { useDispatch } from "react-redux";
 import {
-  leadingFinishCountIncrease,
-  updateLeadingProfitDataByCode,
-} from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
+  finishCountIncrease,
+  updateDataByCode,
+} from "@/store/features/winners_limit_data/winners_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
-import thirdParty from "@/apis/thirdParty";
 
 export default function Index(props) {
-  const { data, date, isFinish } = props;
+  const { data, date } = props;
 
   const [kLine, setKLine] = useState([]);
 
@@ -19,9 +18,10 @@ export default function Index(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const stock: string = data["股票代码"]?.split(".");
-    get_profit_data(stock[0], stock[1] === "SH" ? "17" : "33", data.code);
-  }, [data.code]);
+    const stock_code: string = data.stock_code;
+    const market_id: string = data.market_id;
+    get_profit_data(stock_code, market_id, stock_code);
+  }, [data.stock_code]);
 
   useEffect(() => {
     // 起始日期为选择日期的60天前
@@ -29,31 +29,9 @@ export default function Index(props) {
     // 结束日期恒定为今天
     const end_date = dayjs(new Date()).format("YYYYMMDD");
 
-    const stock: string = data["股票代码"]?.split(".");
-    get_stock_data(stock[0], start_date, end_date);
-  }, [data.code, date]);
-
-  // 倒计时结束时，请求个股板块数据
-  useEffect(() => {
-    if (isFinish) {
-      get_stock_plate_data()
-    }
-  }, [isFinish, data.code]);
-
-  const get_stock_plate_data = async () => {
-    const stock: string = data["股票代码"]?.split(".")[0];
-
-    // 计算market
-    let market = "33";
-    if (stock.startsWith("6")) {
-      market = "17";
-    }
-    if (stock.startsWith("8")) {
-      market = "151";
-    }
-
-    const res = await thirdParty.getQKAStockPlateData(stock, market);
-  };
+    const stock_code: string = data.stock_code;
+    get_stock_data(stock_code, start_date, end_date);
+  }, [data.stock_code, date]);
 
   const get_stock_data = async (symbol: string, start_date, end_date) => {
     const res = await stockklineApi.stockZhAHist(
@@ -71,11 +49,11 @@ export default function Index(props) {
   const get_profit_data = async (
     stockCode: string,
     marketId: string,
-    code: number
+    code: string
   ) => {
     try {
       const res = await allInfoApi.get_profit_data(stockCode, marketId);
-      dispatch(leadingFinishCountIncrease());
+      dispatch(finishCountIncrease());
       if (res.code === 200) {
         const transData = res.data.map((ele) => ({
           ...ele,
@@ -83,12 +61,12 @@ export default function Index(props) {
           numberMom: Number(ele.mom),
           numberValue: Number(ele.value),
         }));
-        dispatch(updateLeadingProfitDataByCode({ data: transData, code }));
+        dispatch(updateDataByCode({ data: transData, code }));
         // 已完成统计数量递增
       }
     } catch (error) {
       // 已完成统计数量递增
-      dispatch(leadingFinishCountIncrease());
+      dispatch(finishCountIncrease());
       console.log(error, `财务数据请求报错,股票码${stockCode}`);
     }
   };
@@ -274,27 +252,28 @@ export default function Index(props) {
     >
       {/* 股票基本数据展示 */}
       <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
+        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
           <span className="text-[15px] text-[#ff2244] mr-4">股票代码</span>{" "}
-          <span className=" text-[#333]">{data.股票代码}</span>
+          <span className=" text-[#333]">{data.stock_code}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
+        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
           <span className="text-[15px] text-[#ff2244] mr-4">股票简称</span>{" "}
-          <span className=" text-[#333]">{data.股票简称}</span>
+          <span className=" text-[#333]">{data.stock_name}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
-          <span className="text-[15px] text-[#ff2244] mr-4">几天几板</span>{" "}
-          <span className=" text-[#333]">{data.几天几板}</span>
+        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+          <span className="text-[15px] text-[#ff2244] mr-4">净买入</span>{" "}
+          <span className=" text-[#333]">{data.net_value}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
-          <span className="text-[15px] text-[#ff2244] mr-4">概念龙头个数</span>{" "}
-          <span className=" text-[#333]">{data.概念龙头个数}</span>
-        </div>
-
-        
+        {data.tags.length > 0 ? (
+          <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+            {data.tags.map((ele) => {
+              return <span style={{color: ele.color}} className="mr-2">{ele.name}</span>;
+            })}
+          </div>
+        ) : null}
       </div>
 
       {/* 归母净利润图表展示 */}

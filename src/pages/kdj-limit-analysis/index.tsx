@@ -11,6 +11,7 @@ import './index.less';
 import type { TabsProps } from "antd";
 import KdjTab from "./components/kdj-tab";
 import LeadingTab from "./components/leading-tab";
+import WinnersTab from './components/winners-tab';
 
 dayjs.locale("zh-cn");
 
@@ -45,9 +46,9 @@ export default function Index() {
     },
     {
       key: "3",
-      label: <div>Tab 3</div>,
-      forceRender: true,
-      children: "Content of Tab Pane 3",
+      label: "龙虎榜优选",
+      // forceRender: true,
+      children: <WinnersTab date={date} />,
     },
   ];
 

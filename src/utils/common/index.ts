@@ -76,3 +76,27 @@ export const normalize = (data, key) => {
   return data.map(d => (d[key] - min) / (max - min));
 }
 
+// 将数据转换为各个元素在数组中的排名值
+export const rank = (data, key, sort = 'asc') => {
+  if (!data.length) return [];
+  
+  // 提取出所有值
+  const values = data.map(d => d[key]);
+  
+  // 创建一个映射，存储值及其排名
+  const rankedValues = [...new Set(values)] // 去重并排序
+    .sort((a, b) => {
+      if (sort === 'asc') {
+        return (a - b) 
+      } else {
+        return (b - a)
+      }
+    }) // 升序排序
+    .reduce((acc, value, index) => {
+      acc[value] = index + 1; // 排名从1开始
+      return acc;
+    }, {});
+
+  // 返回每个数据项的排名值
+  return data.map(d => rankedValues[d[key]]);
+}

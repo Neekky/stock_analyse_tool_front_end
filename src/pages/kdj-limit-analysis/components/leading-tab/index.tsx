@@ -8,7 +8,7 @@ import {
 import { dataConversion } from "@/utils";
 import dayjs from "dayjs";
 import { selectStockModelApi } from "@/apis";
-import { deepClone, normalize } from "@/utils/common";
+import { deepClone, normalize, rank } from "@/utils/common";
 import LeadingStockItem from "../leading-stock-item";
 
 export default function Index(props) {
@@ -104,7 +104,7 @@ export default function Index(props) {
           final_limit_time_stamp: date.getTime(),
         };
       });
-
+   
       const normalizedData = {
         yoy: normalize(copyStocks, "newestProfitYoy"), // 同比增长
         break: normalize(copyStocks, "涨停开板次数"), // 涨停开板次数
@@ -112,7 +112,6 @@ export default function Index(props) {
         limitAmount: normalize(copyStocks, "涨停封单量占成交量比"), // 涨停封单量占成交量比
         leadingCount: normalize(copyStocks, "概念龙头个数"), // 涨停封单量占成交量比
       };
-      console.log(normalizedData, 23123213)
       copyStocks.forEach((stock, index) => {
         stock.score =
           weights.yoy * normalizedData.yoy[index] -
