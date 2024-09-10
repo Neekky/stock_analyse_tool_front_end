@@ -8,7 +8,7 @@ import {
 import { dataConversion } from "@/utils";
 import dayjs from "dayjs";
 import { selectStockModelApi } from "@/apis";
-import { deepClone, normalize, rank } from "@/utils/common";
+import { deepClone, rank } from "@/utils/common";
 import LeadingStockItem from "../leading-stock-item";
 
 export default function Index(props) {
@@ -106,16 +106,16 @@ export default function Index(props) {
       });
    
       const normalizedData = {
-        yoy: normalize(copyStocks, "newestProfitYoy"), // 同比增长
-        break: normalize(copyStocks, "涨停开板次数"), // 涨停开板次数
-        time: normalize(copyStocks, "final_limit_time_stamp"), // 最终涨停时间
-        limitAmount: normalize(copyStocks, "涨停封单量占成交量比"), // 涨停封单量占成交量比
-        leadingCount: normalize(copyStocks, "概念龙头个数"), // 涨停封单量占成交量比
+        yoy: rank(copyStocks, "newestProfitYoy", 'asc'), // 同比增长
+        break: rank(copyStocks, "涨停开板次数", 'desc'), // 涨停开板次数
+        time: rank(copyStocks, "final_limit_time_stamp", 'desc'), // 最终涨停时间
+        limitAmount: rank(copyStocks, "涨停封单量占成交量比", 'asc'), // 涨停封单量占成交量比
+        leadingCount: rank(copyStocks, "概念龙头个数", 'asc'), // 涨停封单量占成交量比
       };
       copyStocks.forEach((stock, index) => {
         stock.score =
-          weights.yoy * normalizedData.yoy[index] -
-          weights.break * normalizedData.break[index] -
+          weights.yoy * normalizedData.yoy[index] +
+          weights.break * normalizedData.break[index] +
           weights.time * normalizedData.time[index] +
           weights.limitAmount * normalizedData.limitAmount[index] +
           weights.leadingCount * normalizedData.limitAmount[index];

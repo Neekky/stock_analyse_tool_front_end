@@ -53,6 +53,7 @@ export default function Index(props) {
     }
 
     const res = await thirdParty.getQKAStockPlateData(stock, market);
+    console.log(res)
   };
 
   const get_stock_data = async (symbol: string, start_date, end_date) => {

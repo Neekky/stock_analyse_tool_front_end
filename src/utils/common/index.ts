@@ -84,15 +84,15 @@ export const rank = (data, key, sort = 'asc') => {
   const values = data.map(d => d[key]);
   
   // 创建一个映射，存储值及其排名
-  const rankedValues = [...new Set(values)] // 去重并排序
-    .sort((a, b) => {
+  const rankedValues: any = [...new Set(values)] // 去重并排序
+    .sort((a: any, b: any) => {
       if (sort === 'asc') {
         return (a - b) 
       } else {
         return (b - a)
       }
     }) // 升序排序
-    .reduce((acc, value, index) => {
+    .reduce((acc: any, value: any, index: number) => {
       acc[value] = index + 1; // 排名从1开始
       return acc;
     }, {});
