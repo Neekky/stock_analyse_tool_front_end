@@ -197,6 +197,17 @@ export default function Index(props) {
           name: "成交额",
           // 关联成交量图，最好分开展示
           position: "left",
+          axisLabel: {
+            fontSize: 10,
+            formatter: function (value) {
+              if (value >= 10000) {
+                return (value / 10000) + '万';
+              } else if (value >= 1000) {
+                return (value / 1000) + '千';
+              }
+              return value;
+            }
+          }
         },
         {
           type: "value",
