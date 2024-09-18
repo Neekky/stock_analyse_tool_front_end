@@ -326,31 +326,32 @@ export default new (class StockKline extends Axios {
       wbp2u: "|0|0|0|web",
     };
     try {
-      console.log(params, "1111122222");
-      const response = await this.get(url, { params });
+      const urlParams = queryString.stringify(params);
+      const response = await fetch(url + "?" + urlParams);
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
 
       const reader = response.body.getReader();
-   
-      while (true) {
+      const textDecoder = new TextDecoder();
+      let result = true;
+      let output = "";
+
+      while (result) {
         const { done, value } = await reader.read();
-        if (done) break;
-        console.log('Received chunk', value);
+
+        if (done) {
+          console.log("Stream ended");
+          result = false;
+          break;
+        }
+
+        const chunkText = textDecoder.decode(value);
+        output += chunkText;
+        console.log("Received chunk:", chunkText);
       }
-      const eventJson = response.data; // Assuming the response is already in JSON format
-
-      const details = eventJson.data.details;
-
-      const bigArray = details.map((item) => {
-        const [time, price, handCount, _, nature] = item.split(",");
-        return {
-          时间: time,
-          成交价: parseFloat(price),
-          手数: parseInt(handCount),
-          买卖盘性质: this.mapNature(nature),
-        };
-      });
-
-      return bigArray;
     } catch (error) {
       console.error("Error fetching data:", error);
       return [];

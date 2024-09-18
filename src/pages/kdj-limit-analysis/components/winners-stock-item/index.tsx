@@ -44,19 +44,19 @@ export default function Index(props) {
     const tradeEndTime = dayjs().hour(15).minute(0).second(0);
 
     // 如果选择日期加一天和今天日期相等，则进行轮询
-    if (chooseDay === today) {
-      // 轮询的间隔时间
-      const interval = setInterval(() => {
-        get_stock_intraday_data(data.stock_code);
-        // 非交易时间或三点之后，清除轮询
-        if (now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime)) {
-          clearInterval(interval);
-        }
-      }, 3000);
-    }
+    // if (chooseDay === today) {
+    // 轮询的间隔时间
+    const interval = setInterval(() => {
+      get_stock_intraday_data(data.stock_code);
+      // 非交易时间或三点之后，清除轮询
+      if (now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime)) {
+        clearInterval(interval);
+      }
+    }, 3000);
 
     // 清理函数，用于组件卸载时清除轮询
     return () => clearInterval(interval);
+    // }
   }, [date, data.stock_code]);
 
   const get_stock_data = async (symbol: string, start_date, end_date) => {
