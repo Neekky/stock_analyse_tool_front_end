@@ -43,17 +43,21 @@ export default function Index(props) {
     const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
     const tradeEndTime = dayjs().hour(15).minute(0).second(0);
 
-    // 轮询的间隔时间
-    const interval = setInterval(() => {
-      // 非交易时间或三点之后，清除轮询
-      // if (today !== tradeDateStr || now.isAfter(afternoonThree)) {
-      //   clearInterval(interval);
-      // }
-    }, 3000);
+    // 如果选择日期加一天和今天日期相等，则进行轮询
+    if (chooseDay === today) {
+      // 轮询的间隔时间
+      const interval = setInterval(() => {
+        get_stock_intraday_data(data.stock_code);
+        // 非交易时间或三点之后，清除轮询
+        if (now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime)) {
+          clearInterval(interval);
+        }
+      }, 3000);
+    }
 
     // 清理函数，用于组件卸载时清除轮询
     return () => clearInterval(interval);
-  }, [date]);
+  }, [date, data.stock_code]);
 
   const get_stock_data = async (symbol: string, start_date, end_date) => {
     const res = await stockklineApi.stockZhAHist(
@@ -317,7 +321,11 @@ export default function Index(props) {
             <div className="mb-2.5 text-[15px] flex justify-center">
               {data.tags.map((ele) => {
                 return (
-                  <span style={{ color: ele.color }} className="mr-2">
+                  <span
+                    key={ele.name}
+                    style={{ color: ele.color }}
+                    className="mr-2"
+                  >
                     {ele.name}
                   </span>
                 );

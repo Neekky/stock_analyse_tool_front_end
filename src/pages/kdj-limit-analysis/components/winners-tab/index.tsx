@@ -83,7 +83,6 @@ export default function Index(props) {
   // 获取每日龙虎榜数据
   const get_winners_data = async (data) => {
     const res = await thirdPartyApi.getWinnersData(data);
-    console.log(res, "21321331");
     if (res.status_msg === "success") {
       // 将1开头的股过滤
       const filterData =

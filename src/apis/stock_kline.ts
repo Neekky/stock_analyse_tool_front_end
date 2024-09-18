@@ -2,6 +2,7 @@ import { Axios } from "@/utils"; // 导入 api
 import queryString from "query-string";
 import dayjs from "dayjs";
 import { service } from "@/utils/request";
+import axios from "axios";
 
 const API_GATEWAY_FLASK = import.meta.env.VITE_APP_API_GATEWAY_FLASK;
 
@@ -311,7 +312,7 @@ export default new (class StockKline extends Axios {
      * @returns {Promise<Object[]>} - Array of stock data objects
      */
 
-    const codeIdMapEmDict = codeIdMapEM(); // Define this function to obtain the mapping
+    const codeIdMapEmDict = await codeIdMapEM(); // Define this function to obtain the mapping
     const url = "https://70.push2.eastmoney.com/api/qt/stock/details/sse";
 
     const params = {
@@ -324,9 +325,17 @@ export default new (class StockKline extends Axios {
       secid: `${codeIdMapEmDict[symbol]}.${symbol}`,
       wbp2u: "|0|0|0|web",
     };
-
     try {
+      console.log(params, "1111122222");
       const response = await this.get(url, { params });
+
+      const reader = response.body.getReader();
+   
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        console.log('Received chunk', value);
+      }
       const eventJson = response.data; // Assuming the response is already in JSON format
 
       const details = eventJson.data.details;
