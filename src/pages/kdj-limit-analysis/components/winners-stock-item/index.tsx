@@ -35,10 +35,7 @@ export default function Index(props) {
   }, [data.stock_code, date]);
 
   useEffect(() => {
-    const chooseDay = dayjs(date).add(1, "day").format("YYYY-MM-DD");
     const now = dayjs();
-
-    const today = now.format("YYYY-MM-DD");
 
     const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
     const tradeEndTime = dayjs().hour(15).minute(0).second(0);

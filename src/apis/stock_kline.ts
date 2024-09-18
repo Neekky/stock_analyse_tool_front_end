@@ -2,7 +2,6 @@ import { Axios } from "@/utils"; // 导入 api
 import queryString from "query-string";
 import dayjs from "dayjs";
 import { service } from "@/utils/request";
-import axios from "axios";
 
 const API_GATEWAY_FLASK = import.meta.env.VITE_APP_API_GATEWAY_FLASK;
 
@@ -327,7 +326,7 @@ export default new (class StockKline extends Axios {
     };
     try {
       const urlParams = queryString.stringify(params);
-      const response = await fetch(url + "?" + urlParams);
+      const response: any = await fetch(url + "?" + urlParams);
       console.log(response);
 
       if (!response.ok) {
