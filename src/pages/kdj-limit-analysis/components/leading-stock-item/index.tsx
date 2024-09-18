@@ -275,22 +275,22 @@ export default function Index(props) {
     >
       {/* 股票基本数据展示 */}
       <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
+        <div className="mb-2.5 text-[15px] flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票代码</span>{" "}
           <span className=" text-[#333]">{data.股票代码}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
+        <div className="mb-2.5 text-[15px] flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票简称</span>{" "}
           <span className=" text-[#333]">{data.股票简称}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
+        <div className="mb-2.5 text-[15px] flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">几天几板</span>{" "}
           <span className=" text-[#333]">{data.几天几板}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-1/4 flex justify-start">
+        <div className="mb-2.5 text-[15px] flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">概念龙头个数</span>{" "}
           <span className=" text-[#333]">{data.概念龙头个数}</span>
         </div>

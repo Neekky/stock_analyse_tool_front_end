@@ -45,8 +45,15 @@ export default function Index(props) {
   useEffect(() => {
     if (finishCount === leadingData.length && leadingData.length > 0 && !isFinish) {
       const copyData = deepClone(leadingData);
+
+      const filterData = copyData.filter(stock => {
+        const newestProfitYoy = stock?.financialData?.[0]?.numberYoy || 0;
+        const newestProfitValue = stock?.financialData?.[0]?.numberValue || 0;
+
+        return newestProfitYoy > 0 && newestProfitValue > 0
+      })
       // 数据转换
-      const copyLeadingData = copyData.map((ele) => {
+      const copyLeadingData = filterData.map((ele) => {
         const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
         const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
         return {

@@ -182,64 +182,182 @@ export default new (class StockKline extends Axios {
      */
     const url = "https://82.push2.eastmoney.com/api/qt/clist/get";
     const params = new URLSearchParams({
-        pn: "1",
-        pz: "50000",
-        po: "1",
-        np: "1",
-        ut: "bd1d9ddb04089700cf9c27f6f7426281",
-        fltt: "2",
-        invt: "2",
-        fid: "f3",
-        fs: "m:0 t:6,m:0 t:80,m:1 t:2,m:1 t:23,m:0 t:81 s:2048",
-        fields: "f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18," +
-                 "f20,f21,f23,f24,f25,f22,f11,f62,f128,f136,f115,f152",
-        _: "1623833739532",
+      pn: "1",
+      pz: "50000",
+      po: "1",
+      np: "1",
+      ut: "bd1d9ddb04089700cf9c27f6f7426281",
+      fltt: "2",
+      invt: "2",
+      fid: "f3",
+      fs: "m:0 t:6,m:0 t:80,m:1 t:2,m:1 t:23,m:0 t:81 s:2048",
+      fields:
+        "f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18," +
+        "f20,f21,f23,f24,f25,f22,f11,f62,f128,f136,f115,f152",
+      _: "1623833739532",
     });
 
     try {
-        const response = await this.get(`${url}?${params}`, { timeout: 15000 });
-        if (response?.data?.diff <= 0) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const dataJson = response;
+      const response = await this.get(`${url}?${params}`, { timeout: 15000 });
+      if (response?.data?.diff <= 0) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-        if (!dataJson.data.diff || dataJson.data.diff.length === 0) {
-            return [];
-        }
-        console
-        const tempArr = dataJson.data.diff.map((item) => {
-            const transformedItem = {
-                "最新价": item.f2 || 0,
-                "涨跌幅": item.f3 || 0,
-                "涨跌额": Number(item.f4) || 0,
-                "成交量": Number(item.f5) || 0,
-                "成交额": Number(item.f6) || 0,
-                "振幅": Number(item.f7) || 0,
-                "换手率": Number(item.f8) || 0,
-                "市盈率-动态": Number(item.f9) || 0,
-                "量比": Number(item.f10) || 0,
-                "5分钟涨跌": Number(item.f11) || 0,
-                "代码": item.f12 || '',
-                "名称": item.f14 || '',
-                "最高": Number(item.f15) || 0,
-                "最低": Number(item.f16) || 0,
-                "今开": Number(item.f17) || 0,
-                "昨收": Number(item.f18) || 0,
-                "总市值": Number(item.f20) || 0,
-                "流通市值": Number(item.f21) || 0,
-                "涨速": Number(item.f22) || 0,
-                "市净率": Number(item.f23) || 0,
-                "60日涨跌幅": Number(item.f24) || 0,
-                "年初至今涨跌幅": Number(item.f25) || 0,
-            };
-            return transformedItem;
-        });
-        return tempArr;
-    } catch (error) {
-        console.error('Error fetching stock data:', error);
+      const dataJson = response;
+
+      if (!dataJson.data.diff || dataJson.data.diff.length === 0) {
         return [];
+      }
+      console;
+      const tempArr = dataJson.data.diff.map((item) => {
+        const transformedItem = {
+          最新价: item.f2 || 0,
+          涨跌幅: item.f3 || 0,
+          涨跌额: Number(item.f4) || 0,
+          成交量: Number(item.f5) || 0,
+          成交额: Number(item.f6) || 0,
+          振幅: Number(item.f7) || 0,
+          换手率: Number(item.f8) || 0,
+          "市盈率-动态": Number(item.f9) || 0,
+          量比: Number(item.f10) || 0,
+          "5分钟涨跌": Number(item.f11) || 0,
+          代码: item.f12 || "",
+          名称: item.f14 || "",
+          最高: Number(item.f15) || 0,
+          最低: Number(item.f16) || 0,
+          今开: Number(item.f17) || 0,
+          昨收: Number(item.f18) || 0,
+          总市值: Number(item.f20) || 0,
+          流通市值: Number(item.f21) || 0,
+          涨速: Number(item.f22) || 0,
+          市净率: Number(item.f23) || 0,
+          "60日涨跌幅": Number(item.f24) || 0,
+          年初至今涨跌幅: Number(item.f25) || 0,
+        };
+        return transformedItem;
+      });
+      return tempArr;
+    } catch (error) {
+      console.error("Error fetching stock data:", error);
+      return [];
     }
-}
+  }
 
+  // 获取指定股票日内分钟级数据
+  async stockZhAHistPreMinEm(
+    symbol = "000001",
+    startTime = "09:00:00",
+    endTime = "15:50:00"
+  ) {
+    const codeIdDict = await codeIdMapEM(); // 假设这是一个已定义的函数，它返回对应代码字典
+    const url = "https://push2.eastmoney.com/api/qt/stock/trends2/get";
+    const params = {
+      fields1: "f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13",
+      fields2: "f51,f52,f53,f54,f55,f56,f57,f58",
+      ut: "fa5fd1943c7b386f172d6893dbfba10b",
+      ndays: "1",
+      iscr: "1",
+      iscca: "0",
+      secid: `${codeIdDict[symbol]}.${symbol}`,
+      _: Date.now(),
+    };
+
+    try {
+      const response = await this.get(url, { params, timeout: 15000 });
+      const data = response;
+      console.log(response, "response is", symbol);
+      if (!data.data || !data.data.trends) {
+        throw new Error("无效的响应数据");
+      }
+
+      const tempData = data.data.trends.map((item) => item.split(","));
+      const tempDf = tempData.map((item) => ({
+        时间: item[0],
+        开盘: parseFloat(item[1]) || null,
+        收盘: parseFloat(item[2]) || null,
+        最高: parseFloat(item[3]) || null,
+        最低: parseFloat(item[4]) || null,
+        成交量: parseFloat(item[5]) || null,
+        成交额: parseFloat(item[6]) || null,
+        最新价: parseFloat(item[7]) || null,
+      }));
+
+      const dateFormat = dayjs(tempDf[0].时间).format("YYYY-MM-DD");
+
+      const filteredData = tempDf.filter((item) => {
+        const itemTime = dayjs(item.时间);
+        const flag =
+          itemTime.isAfter(`${dateFormat} ${startTime}`) &&
+          itemTime.isBefore(`${dateFormat} ${endTime}`);
+        return flag;
+      });
+
+      // 转换为字符串时间格式
+      filteredData.forEach((item) => {
+        item.时间 = dayjs(item.时间).format("YYYY-MM-DD HH:mm:ss");
+      });
+
+      return filteredData;
+    } catch (error: any) {
+      console.error("获取股票数据失败:", error.message);
+      throw error; // 根据需要处理错误
+    }
+  }
+
+  async stockIntradayEm(symbol = "000001") {
+    /**
+     * Function to fetch intraday stock data from Eastmoney
+     * @param {string} symbol - Stock code
+     * @returns {Promise<Object[]>} - Array of stock data objects
+     */
+
+    const codeIdMapEmDict = codeIdMapEM(); // Define this function to obtain the mapping
+    const url = "https://70.push2.eastmoney.com/api/qt/stock/details/sse";
+
+    const params = {
+      fields1: "f1,f2,f3,f4",
+      fields2: "f51,f52,f53,f54,f55",
+      mpi: "2000",
+      ut: "bd1d9ddb04089700cf9c27f6f7426281",
+      fltt: "2",
+      pos: "-0",
+      secid: `${codeIdMapEmDict[symbol]}.${symbol}`,
+      wbp2u: "|0|0|0|web",
+    };
+
+    try {
+      const response = await this.get(url, { params });
+      const eventJson = response.data; // Assuming the response is already in JSON format
+
+      const details = eventJson.data.details;
+
+      const bigArray = details.map((item) => {
+        const [time, price, handCount, _, nature] = item.split(",");
+        return {
+          时间: time,
+          成交价: parseFloat(price),
+          手数: parseInt(handCount),
+          买卖盘性质: this.mapNature(nature),
+        };
+      });
+
+      return bigArray;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  }
+
+  mapNature(nature) {
+    switch (nature) {
+      case "2":
+        return "买盘";
+      case "1":
+        return "卖盘";
+      case "4":
+        return "中性盘";
+      default:
+        return "未知";
+    }
+  }
 })();

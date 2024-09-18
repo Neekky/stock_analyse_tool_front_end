@@ -21,6 +21,7 @@ export default function Index(props) {
     const stock_code: string = data.stock_code;
     const market_id: string = data.market_id;
     get_profit_data(stock_code, market_id, stock_code);
+    get_stock_realtime_data(stock_code);
   }, [data.stock_code]);
 
   useEffect(() => {
@@ -32,6 +33,27 @@ export default function Index(props) {
     const stock_code: string = data.stock_code;
     get_stock_data(stock_code, start_date, end_date);
   }, [data.stock_code, date]);
+
+  useEffect(() => {
+    const chooseDay = dayjs(date).add(1, "day").format("YYYY-MM-DD");
+    const now = dayjs();
+
+    const today = now.format("YYYY-MM-DD");
+
+    const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
+    const tradeEndTime = dayjs().hour(15).minute(0).second(0);
+
+    // 轮询的间隔时间
+    const interval = setInterval(() => {
+      // 非交易时间或三点之后，清除轮询
+      // if (today !== tradeDateStr || now.isAfter(afternoonThree)) {
+      //   clearInterval(interval);
+      // }
+    }, 3000);
+
+    // 清理函数，用于组件卸载时清除轮询
+    return () => clearInterval(interval);
+  }, [date]);
 
   const get_stock_data = async (symbol: string, start_date, end_date) => {
     const res = await stockklineApi.stockZhAHist(
@@ -69,6 +91,16 @@ export default function Index(props) {
       dispatch(finishCountIncrease());
       console.log(error, `财务数据请求报错,股票码${stockCode}`);
     }
+  };
+
+  const get_stock_realtime_data = async (stock_code) => {
+    const res = await stockklineApi.stockZhAHistPreMinEm(stock_code);
+    console.log(res, "ressss is");
+  };
+
+  const get_stock_intraday_data = async (stock_code) => {
+    const res = await stockklineApi.stockIntradayEm(stock_code);
+    console.log(res, "get_stock_intraday_data is");
   };
 
   const getOption = () => {
@@ -184,6 +216,16 @@ export default function Index(props) {
         axisPointer: {
           type: "cross",
         },
+        formatter: (params) => {
+          const { data, axisValue } = params[0];
+          return `
+                日期: ${axisValue}<br/>
+                开盘: ${data[1]}<br/>
+                最高: ${data[4]}<br/>
+                最低: ${data[3]}<br/>
+                收盘: ${data[2]}<br/>
+              `;
+        },
       },
       legend: {
         // data: ["K线", "成交额"],
@@ -252,28 +294,37 @@ export default function Index(props) {
     >
       {/* 股票基本数据展示 */}
       <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
-          <span className="text-[15px] text-[#ff2244] mr-4">股票代码</span>{" "}
-          <span className=" text-[#333]">{data.stock_code}</span>
+        <div className="mb-2.5 text-[15px] w-2/6 flex justify-start">
+          <span className="text-[15px] text-[#333] mr-4">股票代码</span>{" "}
+          <span className=" text-[#f46649]">{data.stock_code}</span>
         </div>
 
         <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
-          <span className="text-[15px] text-[#ff2244] mr-4">股票简称</span>{" "}
-          <span className=" text-[#333]">{data.stock_name}</span>
+          <span className="text-[15px] text-[#333] mr-4">股票简称</span>{" "}
+          <span className=" text-[#f46649]">{data.stock_name}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
-          <span className="text-[15px] text-[#ff2244] mr-4">净买入</span>{" "}
-          <span className=" text-[#333]">{data.net_value}</span>
+        <div className="mb-2.5 text-[15px] w-2/6 flex justify-end">
+          <span className="text-[15px] text-[#333] mr-4">净买入</span>{" "}
+          <span className=" text-[#f46649]">{data.net_value}</span>
         </div>
+      </div>
 
-        {data.tags.length > 0 ? (
-          <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
-            {data.tags.map((ele) => {
-              return <span style={{color: ele.color}} className="mr-2">{ele.name}</span>;
-            })}
-          </div>
-        ) : null}
+      <div className="stock-info-wrap">
+        <div className="mb-2.5 text-[15px] w-1/2 flex justify-start">
+          <div className="text-[15px] text-[#333] mr-4">游资</div>{" "}
+          {data.tags.length > 0 ? (
+            <div className="mb-2.5 text-[15px] flex justify-center">
+              {data.tags.map((ele) => {
+                return (
+                  <span style={{ color: ele.color }} className="mr-2">
+                    {ele.name}
+                  </span>
+                );
+              })}
+            </div>
+          ) : null}
+        </div>
       </div>
 
       {/* 归母净利润图表展示 */}

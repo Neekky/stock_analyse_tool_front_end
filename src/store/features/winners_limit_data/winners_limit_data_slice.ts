@@ -2,11 +2,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface CounterState {
   winnersData: any[];
+  winnersRealtimeList: any[];
   finishCount: number;
 }
 
 const initialState: CounterState = {
-  winnersData: [], // kdj涨停数据
+  winnersData: [], // 龙虎榜涨停数据
+  winnersRealtimeList: [], // 最新交易日的实时数据
   finishCount: 0,
 };
 
@@ -18,6 +20,19 @@ const counterSlice = createSlice({
     refreshData(state) {
       state.winnersData = [];
       state.finishCount = 0;
+    },
+
+    updateWinnersRealtimeList(state, action: PayloadAction<any>) {
+      // winnersList没数据时，才更新数据，处理useEffect的两次调用逻辑，或者定义了更新
+      if (state.winnersRealtimeList.length <= 0) {
+        // 更新数据
+        state.winnersRealtimeList = action.payload.data;
+      }
+
+      // 强制重新赋值
+      if (action.payload?.isUpdate) {
+        state.winnersRealtimeList = action.payload.data;
+      }
     },
 
     updateWinnersData(state, action: PayloadAction<any>) {
@@ -64,5 +79,6 @@ export const {
   updateDataByCode,
   finishCountIncrease,
   refreshData,
+  updateWinnersRealtimeList
 } = counterSlice.actions;
 export default counterSlice.reducer;
