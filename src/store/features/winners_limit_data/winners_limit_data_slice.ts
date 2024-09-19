@@ -23,16 +23,8 @@ const counterSlice = createSlice({
     },
 
     updateWinnersRealtimeList(state, action: PayloadAction<any>) {
-      // winnersList没数据时，才更新数据，处理useEffect的两次调用逻辑，或者定义了更新
-      if (state.winnersRealtimeList.length <= 0) {
-        // 更新数据
-        state.winnersRealtimeList = action.payload.data;
-      }
-
-      // 强制重新赋值
-      if (action.payload?.isUpdate) {
-        state.winnersRealtimeList = action.payload.data;
-      }
+      // 加入新值
+      state.winnersRealtimeList.push(action.payload)
     },
 
     updateWinnersData(state, action: PayloadAction<any>) {

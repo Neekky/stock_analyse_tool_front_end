@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { selectStockModelApi } from "@/apis";
 import { deepClone, rank } from "@/utils/common";
 import StockItem from "../stock-item";
+import { codeIdMapEM } from "@/apis/stock_kline";
 
 export default function Index(props) {
   const { date } = props;
@@ -110,10 +111,10 @@ export default function Index(props) {
       // console.log(testNormalize, 222)
       // 我的最终排序是降序排序，所以正向因子应该为升序asc，负向因子应该为降序desc
       const normalizedData = {
-        yoy: rank(copyStocks, "newestProfitYoy", 'asc'), // 同比增长,
-        break: rank(copyStocks, "涨停开板次数", 'desc'), // 涨停开板次数
-        time: rank(copyStocks, "final_limit_time_stamp", 'desc'), // 最终涨停时间
-        limitAmount: rank(copyStocks, "涨停封单量占成交量比", 'asc'), // 涨停封单量占成交量比
+        yoy: rank(copyStocks, "newestProfitYoy", "asc"), // 同比增长,
+        break: rank(copyStocks, "涨停开板次数", "desc"), // 涨停开板次数
+        time: rank(copyStocks, "final_limit_time_stamp", "desc"), // 最终涨停时间
+        limitAmount: rank(copyStocks, "涨停封单量占成交量比", "asc"), // 涨停封单量占成交量比
       };
 
       copyStocks.forEach((stock, index) => {
@@ -133,6 +134,7 @@ export default function Index(props) {
 
   // 获取每日kdj金叉涨停板数据
   const get_limit_kdj_model_data = async (data) => {
+    await codeIdMapEM();
     const res = await selectStockModelApi.get_limit_kdj_model_data(data);
     if (res.code === 200) {
       dispatch(updateKdjData({ data: res.data, isUpdate: true }));

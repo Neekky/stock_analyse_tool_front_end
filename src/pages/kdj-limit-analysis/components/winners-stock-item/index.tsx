@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import {
   finishCountIncrease,
   updateDataByCode,
+  updateWinnersRealtimeList,
 } from "@/store/features/winners_limit_data/winners_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
@@ -21,7 +22,6 @@ export default function Index(props) {
     const stock_code: string = data.stock_code;
     const market_id: string = data.market_id;
     get_profit_data(stock_code, market_id, stock_code);
-    get_stock_realtime_data(stock_code);
   }, [data.stock_code]);
 
   useEffect(() => {
@@ -45,11 +45,13 @@ export default function Index(props) {
     // 轮询的间隔时间
     const interval = setInterval(() => {
       get_stock_intraday_data(data.stock_code);
-      // 非交易时间或三点之后，清除轮询
-      if (now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime)) {
+      get_stock_realtime_data(data.stock_code);
+
+      // 非交易时间，清除轮询
+      if (!(now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime))) {
         clearInterval(interval);
       }
-    }, 3000);
+    }, 5000);
 
     // 清理函数，用于组件卸载时清除轮询
     return () => clearInterval(interval);
@@ -96,12 +98,31 @@ export default function Index(props) {
 
   const get_stock_realtime_data = async (stock_code) => {
     const res = await stockklineApi.stockZhAHistPreMinEm(stock_code);
-    console.log(res, "ressss is");
+
+    if (res?.length >= 12) {
+      const open = res[0].开盘;
+      const close = res[12].收盘;
+      const change = close - open;
+      const changeRate = (change / open) * 100;
+      // 开盘涨幅大于0的股票进行收录
+      if (changeRate > 0) {
+        dispatch(updateWinnersRealtimeList({
+          code: stock_code,
+          data: res,
+          openChange: changeRate
+        }));
+      }
+     
+    }
   };
 
   const get_stock_intraday_data = async (stock_code) => {
-    const res = await stockklineApi.stockIntradayEm(stock_code);
-    console.log(res, "get_stock_intraday_data is");
+    const res = await stockklineApi.getStockRealtimeKLine(stock_code);
+
+    if (res.code === 200) {
+      const data = JSON.parse(res.data);
+      console.log(data, "get_stock_intraday_data is", stock_code);
+    }
   };
 
   const getOption = () => {

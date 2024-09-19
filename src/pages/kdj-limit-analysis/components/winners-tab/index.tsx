@@ -2,7 +2,6 @@ import { thirdPartyApi } from "@/apis";
 import {
   refreshData,
   updateWinnersData,
-  updateWinnersRealtimeList,
 } from "@/store/features/winners_limit_data/winners_limit_data_slice";
 import { RootState } from "@/store/store";
 import dayjs from "dayjs";
@@ -38,6 +37,12 @@ export default function Index(props) {
   const finishCount = useSelector(
     (state: RootState) => state.winners_limit.finishCount
   );
+
+  const winnersRealtimeList = useSelector(
+    (state: RootState) => state.winners_limit.winnersRealtimeList
+  );
+
+  console.log(winnersRealtimeList, 'winnersRealtimeList')
 
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYY-MM-DD");
@@ -98,8 +103,6 @@ export default function Index(props) {
         }) || [];
       // 更新龙虎榜常规数据
       dispatch(updateWinnersData({ data: filterData, isUpdate: true }));
-      // 更新龙虎榜查实时交易的股票列表
-      dispatch(updateWinnersRealtimeList({ data: filterData, isUpdate: true }));
     }
   };
 
@@ -158,7 +161,13 @@ export default function Index(props) {
 
   return (
     <div>
-      {today === chooseDay ? <div>123123</div> : null}
+      {today === chooseDay && winnersRealtimeList.length > 0 ? (
+        <div>
+          {winnersRealtimeList.map((ele) => (
+            <div>{ele?.code}</div>
+          ))}
+        </div>
+      ) : null}
       {winnersData.map((ele, index) => (
         <WinnersStockItem
           key={ele.stock_code + ele.hot_money_net_value}

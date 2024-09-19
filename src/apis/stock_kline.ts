@@ -30,7 +30,7 @@ interface IGetIndexTopBottomProps {
 let codeIdMap: any = null;
 
 // akshare辅助函数，获取每个股票所对应的ID，返回一个映射符号到ID的字典
-const codeIdMapEM = async () => {
+export const codeIdMapEM = async () => {
   if (codeIdMap) return codeIdMap;
   const url = "https://80.push2.eastmoney.com/api/qt/clist/get";
 
@@ -93,6 +93,11 @@ export default new (class StockKline extends Axios {
   getStockKLine(params: IGetStockKLineProps) {
     const stringified = queryString.stringify(params);
     const url = `${API_GATEWAY_FLASK}/get_stock_k_line?${stringified}`;
+    return this.get(url);
+  }
+
+  getStockRealtimeKLine(symbol: string) {
+    const url = `${API_GATEWAY_FLASK}/get_stock_realtime_data?symbol=${symbol}`;
     return this.get(url);
   }
 
@@ -301,59 +306,6 @@ export default new (class StockKline extends Axios {
     } catch (error: any) {
       console.error("获取股票数据失败:", error.message);
       throw error; // 根据需要处理错误
-    }
-  }
-
-  async stockIntradayEm(symbol = "000001") {
-    /**
-     * Function to fetch intraday stock data from Eastmoney
-     * @param {string} symbol - Stock code
-     * @returns {Promise<Object[]>} - Array of stock data objects
-     */
-
-    const codeIdMapEmDict = await codeIdMapEM(); // Define this function to obtain the mapping
-    const url = "https://70.push2.eastmoney.com/api/qt/stock/details/sse";
-
-    const params = {
-      fields1: "f1,f2,f3,f4",
-      fields2: "f51,f52,f53,f54,f55",
-      mpi: "2000",
-      ut: "bd1d9ddb04089700cf9c27f6f7426281",
-      fltt: "2",
-      pos: "-0",
-      secid: `${codeIdMapEmDict[symbol]}.${symbol}`,
-      wbp2u: "|0|0|0|web",
-    };
-    try {
-      const urlParams = queryString.stringify(params);
-      const response: any = await fetch(url + "?" + urlParams);
-      console.log(response);
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const reader = response.body.getReader();
-      const textDecoder = new TextDecoder();
-      let result = true;
-      let output = "";
-
-      while (result) {
-        const { done, value } = await reader.read();
-
-        if (done) {
-          console.log("Stream ended");
-          result = false;
-          break;
-        }
-
-        const chunkText = textDecoder.decode(value);
-        output += chunkText;
-        console.log("Received chunk:", chunkText);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return [];
     }
   }
 
