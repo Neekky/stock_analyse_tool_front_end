@@ -1,19 +1,20 @@
 import { thirdPartyApi } from "@/apis";
-import {
-  refreshData,
-  updateWinnersData,
-} from "@/store/features/winners_limit_data/winners_limit_data_slice";
 import { RootState } from "@/store/store";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import WinnersStockItem from "../winners-stock-item";
 import { deepClone, rank } from "@/utils/common";
 import { dataConversion } from "@/utils";
+import { get_profit_data } from "../../common";
 
 export default function Index(props) {
   const { date } = props;
-  const dispatch = useDispatch();
+
+  // 获取交易日期
+  const tradeDate = useSelector(
+    (state: RootState) => state.realtime_stock.tradeDate
+  );
 
   // 各分析维度的权重配比
   const [weights] = useState({
@@ -23,87 +24,121 @@ export default function Index(props) {
 
   // 获取当前最新日期的前一日
   const [today] = useState(dayjs().format("YYYY-MM-DD"));
+
   const [chooseDay, setChooseDay] = useState(
     dayjs(date).add(1, "day").format("YYYY-MM-DD")
   );
 
-  const [isFinish, setIsfinish] = useState(false);
-
-  // 定义store相关的hooks
-  const winnersData = useSelector(
-    (state: RootState) => state.winners_limit.winnersData
-  );
-
-  const finishCount = useSelector(
-    (state: RootState) => state.winners_limit.finishCount
-  );
+  // 龙虎榜数据
+  const [winnersData, setWinnersData] = useState([]);
 
   const winnersRealtimeList = useSelector(
     (state: RootState) => state.winners_limit.winnersRealtimeList
   );
 
-  console.log(winnersRealtimeList, 'winnersRealtimeList')
-
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYY-MM-DD");
-    dispatch(refreshData());
-    setIsfinish(false);
-    get_winners_data({ date: dateStr });
+
+    // 周末不处理
+    const day = dayjs(date).day();
+    if (day === 0 || day === 6) return;
+
+    get_winners_data(dateStr, date);
 
     // 更新选中日期的转换
     setChooseDay(dayjs(date).add(1, "day").format("YYYY-MM-DD"));
   }, [date]);
 
-  useEffect(() => {
-    if (
-      finishCount === winnersData.length &&
-      winnersData.length > 0 &&
-      !isFinish
-    ) {
-      const copyData = deepClone(winnersData);
-      // 数据转换
-      const copyWinnersData = copyData.map((ele) => {
-        const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
-        const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
-        return {
-          ...ele,
-          newestProfitYoy,
-          newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
-          tagsLength: ele.tags.length || 0,
-        };
-      });
-
-      // 按各维度进行分析，计算总分
-      const analysisData = calculateWeightedScores(copyWinnersData, weights);
-      // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
-      const result = dataConversion.quickSort(analysisData, "score", "desc");
-
-      const diffData = stock_differentiation(result);
-
-      dispatch(updateWinnersData({ data: diffData, isUpdate: true }));
-      setIsfinish(true);
-    }
-  }, [finishCount, winnersData.length, isFinish]);
-
   // 获取每日龙虎榜数据
-  const get_winners_data = async (data) => {
-    const res = await thirdPartyApi.getWinnersData(data);
-    if (res.status_msg === "success") {
-      // 将1开头的股过滤
-      const filterData =
-        res.data?.items?.filter((ele) => {
-          // 排除掉3日的龙虎榜
-          const flag = ele?.tags?.findIndex((tag) => tag.name === "3日") > -1;
-          return (
-            !ele.stock_code?.startsWith("1") &&
-            ele?.net_value > 20000000 &&
-            ele?.change > 0 &&
-            !flag
-          );
-        }) || [];
-      // 更新龙虎榜常规数据
-      dispatch(updateWinnersData({ data: filterData, isUpdate: true }));
+  const get_winners_data = async (date, originDate) => {
+    try {
+      setWinnersData([]);
+      const res = await thirdPartyApi.getWinnersData({ date });
+      if (res.status_msg === "success") {
+        // 将1开头的股过滤
+        const filterData =
+          res.data?.items?.filter((ele) => {
+            // 排除掉3日的龙虎榜
+            const flag = ele?.tags?.findIndex((tag) => tag.name === "3日") > -1;
+            return (
+              !ele.stock_code?.startsWith("1") &&
+              ele?.net_value > 20000000 &&
+              ele?.change > 0 &&
+              !flag
+            );
+          }) || [];
+
+        // 更新龙虎榜常规数据
+
+        // 查询结果每个个股的各项数据
+        const results = await fetchInBatches(filterData, originDate, 5);
+
+        // 对结果做排序
+        const finalResults = rankStock(results);
+        console.log(finalResults, 'finalResults is')
+        setWinnersData(finalResults);
+      }
+    } catch (error) {
+      console.error("每日龙虎榜涨停板数据，失败：", error, "传参", date);
     }
+  };
+
+  const rankStock = (data) => {
+    const copyData = deepClone(data);
+    // 数据转换
+    const copyWinnersData = copyData.map((ele) => {
+      const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
+      const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
+      return {
+        ...ele,
+        newestProfitYoy,
+        newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
+        tagsLength: ele.tags.length || 0,
+      };
+    });
+
+    // 按各维度进行分析，计算总分
+    const analysisData = calculateWeightedScores(copyWinnersData, weights);
+    // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
+    const result = dataConversion.quickSort(analysisData, "score", "desc");
+
+    const diffData = stock_differentiation(result);
+    return diffData;
+
+  }
+
+  /**
+   * 以批处理方式异步获取给定 URLs 的数据。
+   *
+   * @param urls - 一个包含待获取数据的 URL 字符串的数组。
+   * @param batchSize - 每次请求的批处理大小。
+   * @returns 返回一个 Promise，该 Promise 在所有 URL 请求完成后解析为一个包含请求结果的数组。
+   *
+   * 请求的结果将根据 `Promise.allSettled` 返回的结构进行处理。
+   * 各个结果的状态可以是 "fulfilled" 或 "rejected"，每个结果包含状态及对应的值或原因。
+   */
+  const fetchInBatches = async (
+    data: object[],
+    date: any,
+    batchSize: number
+  ): Promise<
+    Array<{ status: "fulfilled" | "rejected"; value?: any; reason?: any }>
+  > => {
+    const results: PromiseSettledResult<any>[] = [];
+    // 起始日期为选择日期的60天前
+    const start_date = date.subtract(120, "day").format("YYYYMMDD");
+
+    // 结束日期恒定为今天
+    const end_date = dayjs(new Date()).format("YYYYMMDD");
+
+    for (let i = 0; i < data.length; i += batchSize) {
+      const batch = data.slice(i, i + batchSize);
+      const batchResults = await Promise.allSettled(
+        batch.map((item) => get_profit_data({ ...item, start_date, end_date }))
+      );
+      results.push(...batchResults);
+    }
+    return results.map((ele: any) => ele.value);
   };
 
   // 将ST、科创板、北证板股票提取出来
@@ -134,11 +169,7 @@ export default function Index(props) {
           ...ele,
         };
       });
-      // const testRank = rank(copyStocks, '涨停开板次数', 'desc');
-      // const testNormalize = normalize(copyStocks, '涨停开板次数');
-      // console.log(copyStocks)
-      // console.log(testRank, 111)
-      // console.log(testNormalize, 222)
+
       // 我的最终排序是降序排序，所以正向因子应该为升序asc，负向因子应该为降序desc
       const normalizedData = {
         net_value: rank(copyStocks, "net_value", "asc"), // 净买入,
@@ -164,16 +195,17 @@ export default function Index(props) {
       {today === chooseDay && winnersRealtimeList.length > 0 ? (
         <div>
           {winnersRealtimeList.map((ele) => (
-            <div>{ele?.code}</div>
+            <div key={ele?.code}>{ele?.code}</div>
           ))}
         </div>
       ) : null}
       {winnersData.map((ele, index) => (
         <WinnersStockItem
-          key={ele.stock_code + ele.hot_money_net_value}
+          key={ele.stock_code}
           index={index}
           data={ele}
           date={date}
+          tradeDate={tradeDate}
         />
       ))}
     </div>

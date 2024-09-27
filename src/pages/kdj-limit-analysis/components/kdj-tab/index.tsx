@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/store";
-import {
-  updateKdjData,
-  refreshData,
-} from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
 import { dataConversion } from "@/utils";
 import dayjs from "dayjs";
 import { selectStockModelApi } from "@/apis";
 import { deepClone, rank } from "@/utils/common";
-import StockItem from "../stock-item";
 import { codeIdMapEM } from "@/apis/stock_kline";
+import StockItem from "../kdj-stock-item";
+import { get_profit_data } from "../../common";
 
 export default function Index(props) {
   const { date } = props;
-  const dispatch = useDispatch();
 
   // 各分析维度的权重配比
   const [weights] = useState({
@@ -24,49 +18,18 @@ export default function Index(props) {
     limitAmount: 0.3, // 涨停封单量占成交量比
   });
 
-  const [isFinish, setIsfinish] = useState(false);
-
-  // 定义store相关的hooks
-  const kdjData = useSelector(
-    (state: RootState) => state.kdj_limit.kdjLimitData
-  );
-
-  const finishCount = useSelector(
-    (state: RootState) => state.kdj_limit.finishCount
-  );
+  // 存储结果数据
+  const [kdjData, setKdjData] = useState<any[]>([]);
 
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYYMMDD");
-    dispatch(refreshData());
-    setIsfinish(false);
-    get_limit_kdj_model_data({ date: dateStr });
+
+    // 周末不处理
+    const day = dayjs(date).day();
+    if (day === 0 || day === 6) return;
+
+    get_limit_kdj_model_data(dateStr, date);
   }, [date]);
-
-  useEffect(() => {
-    if (finishCount === kdjData.length && kdjData.length > 0 && !isFinish) {
-      const copyData = deepClone(kdjData);
-      // 数据转换
-      const copyKdjData = copyData.map((ele) => {
-        const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
-        const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
-        return {
-          ...ele,
-          newestProfitYoy,
-          newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
-        };
-      });
-
-      // 按各维度进行分析，计算总分
-      const analysisData = calculateWeightedScores(copyKdjData, weights);
-      // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
-      const result = dataConversion.quickSort(analysisData, "score", "desc");
-
-      const diffData = stock_differentiation(result);
-
-      dispatch(updateKdjData({ data: diffData, isUpdate: true }));
-      setIsfinish(true);
-    }
-  }, [finishCount, kdjData.length, isFinish]);
 
   // 将ST、科创板、北证板股票提取出来
   const stock_differentiation = (stockList) => {
@@ -81,7 +44,7 @@ export default function Index(props) {
     return isntStMore.concat(isStMore);
   };
 
-  // 2. 计算每个股票的加权总分
+  // 计算每个股票的加权总分
   const calculateWeightedScores = (stocks, weights) => {
     try {
       if (!Array.isArray(stocks) || stocks.length === 0) {
@@ -104,11 +67,7 @@ export default function Index(props) {
           final_limit_time_stamp: date.getTime(),
         };
       });
-      // const testRank = rank(copyStocks, '涨停开板次数', 'desc');
-      // const testNormalize = normalize(copyStocks, '涨停开板次数');
-      // console.log(copyStocks)
-      // console.log(testRank, 111)
-      // console.log(testNormalize, 222)
+
       // 我的最终排序是降序排序，所以正向因子应该为升序asc，负向因子应该为降序desc
       const normalizedData = {
         yoy: rank(copyStocks, "newestProfitYoy", "asc"), // 同比增长,
@@ -133,23 +92,96 @@ export default function Index(props) {
   };
 
   // 获取每日kdj金叉涨停板数据
-  const get_limit_kdj_model_data = async (data) => {
-    await codeIdMapEM();
-    const res = await selectStockModelApi.get_limit_kdj_model_data(data);
-    if (res.code === 200) {
-      dispatch(updateKdjData({ data: res.data, isUpdate: true }));
+  const get_limit_kdj_model_data = async (date, originDate) => {
+    try {
+      setKdjData([]);
+      await codeIdMapEM();
+      const res = await selectStockModelApi.get_limit_kdj_model_data({ date });
+
+      if (res.code === 200) {
+        // 查询结果每个个股的各项数据
+        const results = await fetchInBatches(res.data, originDate, 5);
+
+        // 对结果做排序
+        const finalResults = rankStock(results);
+
+        setKdjData(finalResults);
+      }
+    } catch (error) {
+      console.error("每日kdj金叉涨停板数据，失败：", error, "传参", date);
     }
+  };
+
+  /**
+   * 以批处理方式异步获取给定 URLs 的数据。
+   *
+   * @param urls - 一个包含待获取数据的 URL 字符串的数组。
+   * @param batchSize - 每次请求的批处理大小。
+   * @returns 返回一个 Promise，该 Promise 在所有 URL 请求完成后解析为一个包含请求结果的数组。
+   *
+   * 请求的结果将根据 `Promise.allSettled` 返回的结构进行处理。
+   * 各个结果的状态可以是 "fulfilled" 或 "rejected"，每个结果包含状态及对应的值或原因。
+   */
+  const fetchInBatches = async (
+    data: object[],
+    date: any,
+    batchSize: number
+  ): Promise<
+    Array<{ status: "fulfilled" | "rejected"; value?: any; reason?: any }>
+  > => {
+    const results: PromiseSettledResult<any>[] = [];
+    // 起始日期为选择日期的60天前
+    const start_date = date.subtract(120, "day").format("YYYYMMDD");
+
+    // 结束日期恒定为今天
+    const end_date = dayjs(new Date()).format("YYYYMMDD");
+
+    for (let i = 0; i < data.length; i += batchSize) {
+      const batch = data.slice(i, i + batchSize);
+      const batchResults = await Promise.allSettled(
+        batch.map((item) => {
+          const stock: string = item["股票代码"]?.split(".");
+
+          // 获取股票码
+          const stock_code = stock[0];
+
+          // 获取股票市场ID
+          const market_id = stock[1] === "SH" ? "17" : "33";
+
+          return get_profit_data({ ...item, start_date, end_date, stock_code, market_id });
+        })
+      );
+      results.push(...batchResults);
+    }
+    return results.map((ele: any) => ele.value);
+  };
+
+  // 对结果做排序
+  const rankStock = (data) => {
+    const copyData = deepClone(data);
+    // 数据转换
+    const copyKdjData = copyData.map((ele) => {
+      const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
+      const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
+      return {
+        ...ele,
+        newestProfitYoy,
+        newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
+      };
+    });
+
+    // 按各维度进行分析，计算总分
+    const analysisData = calculateWeightedScores(copyKdjData, weights);
+    // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
+    const result = dataConversion.quickSort(analysisData, "score", "desc");
+    const diffData = stock_differentiation(result);
+    return diffData;
   };
 
   return (
     <div>
       {kdjData.map((ele, index) => (
-        <StockItem
-          key={ele.code + ele["涨停封单量"]}
-          index={index}
-          data={ele}
-          date={date}
-        />
+        <StockItem key={ele.code} index={index} data={ele} date={date} />
       ))}
     </div>
   );

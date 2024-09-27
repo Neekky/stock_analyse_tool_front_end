@@ -1,19 +1,14 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/store";
-import {
-  refreshLeadingData,
-  updateLeadingData,
-} from "@/store/features/kdj_limit_data/kdj_limit_data_slice";
+
 import { dataConversion } from "@/utils";
 import dayjs from "dayjs";
 import { selectStockModelApi } from "@/apis";
 import { deepClone, rank } from "@/utils/common";
 import LeadingStockItem from "../leading-stock-item";
+import { combineLeading } from "../../common";
 
 export default function Index(props) {
   const { date } = props;
-  const dispatch = useDispatch();
 
   // 各分析维度的权重配比
   const [weights] = useState({
@@ -21,59 +16,20 @@ export default function Index(props) {
     break: 0.1, // 涨停开板次数
     time: 0.1, // 最终涨停时间
     limitAmount: 0.2, // 涨停封单量占成交量比
-    leadingCount:  0.2, // 占不同概念龙头的数量
+    leadingCount: 0.2, // 占不同概念龙头的数量
   });
 
-  const [isFinish, setIsfinish] = useState(false);
-
-  // 定义store相关的hooks
-  const leadingData = useSelector(
-    (state: RootState) => state.kdj_limit.leadingLimitData
-  );
-
-  const finishCount = useSelector(
-    (state: RootState) => state.kdj_limit.leadingFinishCount
-  );
+  const [leadingData, setLeadingData] = useState<any[]>([]);
 
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYYMMDD");
-    dispatch(refreshLeadingData());
-    setIsfinish(false);
-    get_limit_leading_model_data({ date: dateStr });
+
+    // 周末不处理
+    const day = dayjs(date).day();
+    if (day === 0 || day === 6) return;
+
+    get_limit_leading_model_data(dateStr, date);
   }, [date]);
-
-  useEffect(() => {
-    if (finishCount === leadingData.length && leadingData.length > 0 && !isFinish) {
-      const copyData = deepClone(leadingData);
-
-      const filterData = copyData.filter(stock => {
-        const newestProfitYoy = stock?.financialData?.[0]?.numberYoy || 0;
-        const newestProfitValue = stock?.financialData?.[0]?.numberValue || 0;
-
-        return newestProfitYoy > 0 && newestProfitValue > 0
-      })
-      // 数据转换
-      const copyLeadingData = filterData.map((ele) => {
-        const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
-        const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
-        return {
-          ...ele,
-          newestProfitYoy, // 最新的同比增长数值
-          newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
-        };
-      });
-
-      // 按各维度进行分析，计算总分
-      const analysisData = calculateWeightedScores(copyLeadingData, weights);
-      // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
-      const result = dataConversion.quickSort(analysisData, "score", "desc");
-
-      const diffData = stock_differentiation(result);
-
-      dispatch(updateLeadingData({ data: diffData, isUpdate: true }));
-      setIsfinish(true);
-    }
-  }, [finishCount, leadingData.length, isFinish]);
 
   // 将ST、科创板、北证板股票提取出来
   const stock_differentiation = (stockList) => {
@@ -111,13 +67,13 @@ export default function Index(props) {
           final_limit_time_stamp: date.getTime(),
         };
       });
-   
+
       const normalizedData = {
-        yoy: rank(copyStocks, "newestProfitYoy", 'asc'), // 同比增长
-        break: rank(copyStocks, "涨停开板次数", 'desc'), // 涨停开板次数
-        time: rank(copyStocks, "final_limit_time_stamp", 'desc'), // 最终涨停时间
-        limitAmount: rank(copyStocks, "涨停封单量占成交量比", 'asc'), // 涨停封单量占成交量比
-        leadingCount: rank(copyStocks, "概念龙头个数", 'asc'), // 涨停封单量占成交量比
+        yoy: rank(copyStocks, "newestProfitYoy", "asc"), // 同比增长
+        break: rank(copyStocks, "涨停开板次数", "desc"), // 涨停开板次数
+        time: rank(copyStocks, "final_limit_time_stamp", "desc"), // 最终涨停时间
+        limitAmount: rank(copyStocks, "涨停封单量占成交量比", "asc"), // 涨停封单量占成交量比
+        leadingCount: rank(copyStocks, "概念龙头个数", "asc"), // 涨停封单量占成交量比
       };
       copyStocks.forEach((stock, index) => {
         stock.score =
@@ -136,22 +92,101 @@ export default function Index(props) {
   };
 
   // 获取每日涨停概念龙头数据
-  const get_limit_leading_model_data = async (data) => {
-    const res = await selectStockModelApi.get_limit_leading_model_data(data);
-    if (res.code === 200) {
-      dispatch(updateLeadingData({ data: res.data, isUpdate: true }));
+  const get_limit_leading_model_data = async (date, originDate) => {
+    try {
+      setLeadingData([]);
+      const res = await selectStockModelApi.get_limit_leading_model_data({date});
+      if (res.code === 200) {
+        // 查询结果每个个股的各项数据
+        const results = await fetchInBatches(res.data, originDate, 5);
+
+        // 对结果做排序
+        const finalResults = rankStock(results);
+
+        setLeadingData(finalResults);
+      }
+    } catch (error) {
+      console.error("每日龙头涨停板数据查询，失败", error, "传参", date);
     }
   };
+
+  /**
+   * 以批处理方式异步获取给定 URLs 的数据。
+   *
+   * @param urls - 一个包含待获取数据的 URL 字符串的数组。
+   * @param batchSize - 每次请求的批处理大小。
+   * @returns 返回一个 Promise，该 Promise 在所有 URL 请求完成后解析为一个包含请求结果的数组。
+   *
+   * 请求的结果将根据 `Promise.allSettled` 返回的结构进行处理。
+   * 各个结果的状态可以是 "fulfilled" 或 "rejected"，每个结果包含状态及对应的值或原因。
+   */
+  const fetchInBatches = async (
+    data: object[],
+    date: any,
+    batchSize: number
+  ): Promise<
+    Array<{ status: "fulfilled" | "rejected"; value?: any; reason?: any }>
+  > => {
+    const results: PromiseSettledResult<any>[] = [];
+    // 起始日期为选择日期的60天前
+    const start_date = date.subtract(120, "day").format("YYYYMMDD");
+
+    // 结束日期恒定为今天
+    const end_date = dayjs(new Date()).format("YYYYMMDD");
+
+    for (let i = 0; i < data.length; i += batchSize) {
+      const batch = data.slice(i, i + batchSize);
+      const batchResults = await Promise.allSettled(
+        batch.map((item) => {
+          const stock: string = item["股票代码"]?.split(".");
+
+          // 获取股票码
+          const stock_code = stock[0];
+
+          // 获取股票市场ID
+          const market_id = stock[1] === "SH" ? "17" : "33";
+          return combineLeading({ ...item, start_date, end_date, stock_code, market_id })
+        })
+      );
+      results.push(...batchResults);
+    }
+    return results.map((ele: any) => ele.value);
+  };
+
+  const rankStock = (leadingData) => {
+    const copyData = deepClone(leadingData);
+
+    const filterData = copyData.filter((stock) => {
+      const newestProfitYoy = stock?.financialData?.[0]?.numberYoy || 0;
+      const newestProfitValue = stock?.financialData?.[0]?.numberValue || 0;
+
+      return newestProfitYoy > 0 && newestProfitValue > 0;
+    });
+    // 数据转换
+    const copyLeadingData = filterData.map((ele) => {
+      const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
+      const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
+      return {
+        ...ele,
+        newestProfitYoy, // 最新的同比增长数值
+        newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
+      };
+    });
+
+    // 按各维度进行分析，计算总分
+    const analysisData = calculateWeightedScores(copyLeadingData, weights);
+    // 所有股票的数据都已经获取完毕，进行归母净利润增长排序
+    const result = dataConversion.quickSort(analysisData, "score", "desc");
+
+    const diffData = stock_differentiation(result);
+
+    return diffData;
+  };
+
   return (
     <div>
       {leadingData.map((ele, index) => (
-        <LeadingStockItem
-          key={ele.code + ele["涨停封单量"]}
-          index={index}
-          data={ele}
-          date={date}
-          isFinish={isFinish}
-        />
+        <LeadingStockItem key={ele.code} index={index} data={ele} date={date} />
       ))}
     </div>
   );

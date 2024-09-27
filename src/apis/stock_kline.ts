@@ -270,7 +270,6 @@ export default new (class StockKline extends Axios {
     try {
       const response = await this.get(url, { params, timeout: 15000 });
       const data = response;
-      console.log(response, "response is", symbol);
       if (!data.data || !data.data.trends) {
         throw new Error("无效的响应数据");
       }

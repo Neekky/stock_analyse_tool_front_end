@@ -1,6 +1,6 @@
 import { Axios } from "@/utils"; // 导入 api
+import queryString from "query-string";
 const API_GATEWAY_FLASK = import.meta.env.VITE_APP_API_GATEWAY_FLASK;
-
 
 export default new (class StockInfo extends Axios {
   // 获取指数运行数据
@@ -10,8 +10,9 @@ export default new (class StockInfo extends Axios {
   }
 
   // 获取股票归母净利润的数据
-  get_profit_data(stockCode: string, marketId: string) {
-    const url = `${API_GATEWAY_FLASK}/all_info/query_profit?stockCode=${stockCode}&marketId=${marketId}`;
+  get_profit_data_and_kline(params) {
+    const query = queryString.stringify(params);
+    const url = `${API_GATEWAY_FLASK}/all_info/query_profit?${query}`;
     return this.get(url);
   }
 
@@ -46,5 +47,4 @@ export default new (class StockInfo extends Axios {
     const url = `${API_GATEWAY_FLASK}/all_info/get_trade_date`;
     return this.get(url);
   }
-  
 })();

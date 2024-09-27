@@ -1,6 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
-import "./index.less";
-import { allInfoApi, stockklineApi } from "@/apis";
+import { useEffect, useCallback, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import {
   finishCountIncrease,
@@ -9,94 +7,42 @@ import {
 } from "@/store/features/winners_limit_data/winners_limit_data_slice";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
+import { allInfoApi, stockklineApi } from "@/apis";
+import "./index.less";
 
 export default function Index(props) {
-  const { data, date } = props;
-
-  const [kLine, setKLine] = useState([]);
+  const { data, date, tradeDate } = props;
 
   // 定义store相关的hooks
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const stock_code: string = data.stock_code;
-    const market_id: string = data.market_id;
-    get_profit_data(stock_code, market_id, stock_code);
-  }, [data.stock_code]);
-
-  useEffect(() => {
-    // 起始日期为选择日期的60天前
-    const start_date = date.subtract(120, "day").format("YYYYMMDD");
-    // 结束日期恒定为今天
-    const end_date = dayjs(new Date()).format("YYYYMMDD");
-
-    const stock_code: string = data.stock_code;
-    get_stock_data(stock_code, start_date, end_date);
-  }, [data.stock_code, date]);
-
-  useEffect(() => {
     const now = dayjs();
+
+    // 今日时间格式化
+    const nowStr = date.format('YYYY-MM-DD')
 
     const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
     const tradeEndTime = dayjs().hour(15).minute(0).second(0);
 
-    // 如果选择日期加一天和今天日期相等，则进行轮询
-    // if (chooseDay === today) {
+    const isTradeDay = nowStr === tradeDate;
+
     // 轮询的间隔时间
     const interval = setInterval(() => {
       get_stock_intraday_data(data.stock_code);
-      get_stock_realtime_data(data.stock_code);
+      get_stock_realtime_data(data.stock_code, isTradeDay);
 
       // 非交易时间，清除轮询
-      if (!(now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime))) {
+      if (!(now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime)) && !isTradeDay && nowStr !== tradeDate) {
         clearInterval(interval);
       }
     }, 5000);
 
     // 清理函数，用于组件卸载时清除轮询
     return () => clearInterval(interval);
-    // }
-  }, [date, data.stock_code]);
+  }, [date, data.stock_code, tradeDate]);
 
-  const get_stock_data = async (symbol: string, start_date, end_date) => {
-    const res = await stockklineApi.stockZhAHist(
-      symbol,
-      "daily",
-      start_date,
-      end_date,
-      "qfq"
-    );
-    if (res?.length > 0) {
-      setKLine(res);
-    }
-  };
-
-  const get_profit_data = async (
-    stockCode: string,
-    marketId: string,
-    code: string
-  ) => {
-    try {
-      const res = await allInfoApi.get_profit_data(stockCode, marketId);
-      dispatch(finishCountIncrease());
-      if (res.code === 200) {
-        const transData = res.data.map((ele) => ({
-          ...ele,
-          numberYoy: Number(ele.yoy),
-          numberMom: Number(ele.mom),
-          numberValue: Number(ele.value),
-        }));
-        dispatch(updateDataByCode({ data: transData, code }));
-        // 已完成统计数量递增
-      }
-    } catch (error) {
-      // 已完成统计数量递增
-      dispatch(finishCountIncrease());
-      console.log(error, `财务数据请求报错,股票码${stockCode}`);
-    }
-  };
-
-  const get_stock_realtime_data = async (stock_code) => {
+  const get_stock_realtime_data = async (stock_code, flag) => {
     const res = await stockklineApi.stockZhAHistPreMinEm(stock_code);
 
     if (res?.length >= 12) {
@@ -105,14 +51,15 @@ export default function Index(props) {
       const change = close - open;
       const changeRate = (change / open) * 100;
       // 开盘涨幅大于0的股票进行收录
-      if (changeRate > 0) {
-        dispatch(updateWinnersRealtimeList({
-          code: stock_code,
-          data: res,
-          openChange: changeRate
-        }));
+      if (changeRate > 0 && flag) {
+        dispatch(
+          updateWinnersRealtimeList({
+            code: stock_code,
+            data: res,
+            openChange: changeRate,
+          })
+        );
       }
-     
     }
   };
 
@@ -121,7 +68,6 @@ export default function Index(props) {
 
     if (res.code === 200) {
       const data = JSON.parse(res.data);
-      console.log(data, "get_stock_intraday_data is", stock_code);
     }
   };
 
@@ -254,7 +200,7 @@ export default function Index(props) {
       },
       xAxis: {
         type: "category",
-        data: kLine.map((item) => dayjs(item["日期"]).format("YYYY-MM-DD")),
+        data: data.kline.map((item) => dayjs(item["日期"]).format("YYYY-MM-DD")),
       },
       yAxis: [
         {
@@ -282,7 +228,7 @@ export default function Index(props) {
         {
           name: "K线",
           type: "candlestick",
-          data: kLine.map((item) => [
+          data: data.kline.map((item) => [
             item["开盘"],
             item["收盘"],
             item["最低"],
@@ -300,14 +246,14 @@ export default function Index(props) {
           name: "成交额",
           type: "bar",
           yAxisIndex: 0,
-          data: kLine.map((item) => item["成交额"]),
+          data: data.kline.map((item) => item["成交额"]),
           itemStyle: {
             color: "#4b8df8",
           },
         },
       ],
     };
-  }, [kLine]);
+  }, [data.kline]);
 
   return (
     <div

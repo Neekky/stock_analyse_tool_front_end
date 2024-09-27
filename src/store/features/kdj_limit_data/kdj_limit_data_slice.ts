@@ -5,6 +5,12 @@ interface CounterState {
   leadingLimitData: any[];
   finishCount: number;
   leadingFinishCount: number;
+  hasUpdateKDJStock: {
+    [key: string]: boolean;
+  };
+  hasUpdateLeadingStock: {
+    [key: string]: boolean;
+  };
 }
 
 const initialState: CounterState = {
@@ -12,6 +18,8 @@ const initialState: CounterState = {
   leadingLimitData: [], // 龙头涨停数据
   finishCount: 0,
   leadingFinishCount: 0,
+  hasUpdateKDJStock: {},
+  hasUpdateLeadingStock: {},
 };
 
 const counterSlice = createSlice({
@@ -20,27 +28,19 @@ const counterSlice = createSlice({
   reducers: {
     // 刷新KDJ涨停数据
     refreshData(state) {
+      console.log("执行几次")
       state.kdjLimitData = [];
       state.finishCount = 0;
+      state.hasUpdateKDJStock = {};
     },
 
     // 刷新数据
     refreshLeadingData(state) {
       state.leadingLimitData = [];
       state.leadingFinishCount = 0;
+      state.hasUpdateLeadingStock = {};
     },
-    updateKdjData(state, action: PayloadAction<any>) {
-      // kdjLimitData没数据时，才更新数据，处理useEffect的两次调用逻辑，或者定义了更新
-      if (state.kdjLimitData.length <= 0) {
-        // 更新数据
-        state.kdjLimitData = action.payload.data;
-      }
 
-      // 强制重新赋值
-      if (action.payload?.isUpdate) {
-        state.kdjLimitData = action.payload.data;
-      }
-    },
     // 更新概念龙头涨停板数据
     updateLeadingData(state, action: PayloadAction<any>) {
       // leadingLimitData没数据时，才更新数据，处理useEffect的两次调用逻辑，或者定义了更新
@@ -83,11 +83,11 @@ const counterSlice = createSlice({
         code: number;
       }>
     ) {
+    
       // 根据股票代码更新对应股票的财务数据
       const stockItemIndex = state.kdjLimitData.findIndex(
         (item) => item.code === action.payload.code
       );
-
       if (stockItemIndex !== -1) {
         state.kdjLimitData[stockItemIndex] = {
           ...state.kdjLimitData[stockItemIndex],
@@ -96,18 +96,26 @@ const counterSlice = createSlice({
       }
     },
 
-    finishCountIncrease(state) {
+    finishCountIncrease(state, action) {
+      // 不重复处理
+      if (state.hasUpdateKDJStock[action.payload]) return;
+
+      // 更新过的代码，加缓存
+      state.hasUpdateKDJStock[action.payload] = true;
       state.finishCount += 1;
     },
 
-    leadingFinishCountIncrease(state) {
+    leadingFinishCountIncrease(state, action) {
+      // 不重复处理
+      if (state.hasUpdateLeadingStock[action.payload]) return;
+      // 更新过的代码，加缓存
+      state.hasUpdateLeadingStock[action.payload] = true;
       state.leadingFinishCount += 1;
     },
   },
 });
 
 export const {
-  updateKdjData,
   updateLeadingData,
   updateLeadingProfitDataByCode,
   updateDataByCode,

@@ -133,7 +133,7 @@ interface StockState {
     seven: number;
     ten: number;
   };
-  tradeDate: number;
+  tradeDate: string;
 }
 
 // 创建初始状态
@@ -168,7 +168,7 @@ const stockSlice = createSlice({
   initialState, // 设置初始状态
   reducers: {
     updateTradeDate(state, action: PayloadAction<any>) {
-      state.tradeDate = action.payload.tradeDate;
+      state.tradeDate = action.payload;
     },
   }, // 这里可以添加同步 reducer
   extraReducers: (builder) => {
