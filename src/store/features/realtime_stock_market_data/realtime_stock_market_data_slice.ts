@@ -133,7 +133,7 @@ interface StockState {
     seven: number;
     ten: number;
   };
-  tradeDate: string;
+  tradeDate: number;
 }
 
 // 创建初始状态

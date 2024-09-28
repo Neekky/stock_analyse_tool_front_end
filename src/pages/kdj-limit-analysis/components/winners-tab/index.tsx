@@ -30,7 +30,7 @@ export default function Index(props) {
   );
 
   // 龙虎榜数据
-  const [winnersData, setWinnersData] = useState([]);
+  const [winnersData, setWinnersData] = useState<any[]>([]);
 
   const [winnersRealtimeList, setWinnersRealtimeList] = useState<any[]>([]);
 
