@@ -1,4 +1,4 @@
-import { allInfoApi } from "@/apis";
+import { allInfoApi, stockklineApi } from "@/apis";
 import thirdParty from "@/apis/thirdParty";
 
 export const OFTEN = {
@@ -40,7 +40,6 @@ export const OFTEN = {
 
 // 获取财务和股票K线数据
 export const get_profit_data = async (data) => {
-
   const { start_date, end_date, market_id, stock_code } = data;
 
   try {
@@ -115,4 +114,57 @@ export const combineLeading = async (data) => {
   ]);
 
   return { ...results[0].value, ...results[1].value };
+};
+
+// 获取股票分钟级分时数据
+export const get_stock_realtime_data = async (stock_code) => {
+  try {
+    const res = await stockklineApi.stockZhAHistPreMinEm(stock_code);
+
+    if (res?.length >= 12) {
+      const open = res[0].开盘;
+      const close = res[12].收盘;
+      const change = close - open;
+      const changeRate = (change / open) * 100;
+      // 开盘涨幅大于0的股票进行收录
+      if (changeRate > 0) {
+        return { isStandards: true };
+      }
+    }
+    return { isStandards: false };
+  } catch (error) {
+    console.log("获取股票分时数据失败了", stock_code);
+    return { isStandards: false };
+  }
+};
+
+// 获取股票详细的分笔分时数据
+export const get_stock_intraday_data = async (stock_code) => {
+  try {
+    const res = await stockklineApi.getStockRealtimeKLine(stock_code);
+
+    if (res.code === 200) {
+      const data = JSON.parse(res.data);
+      return {
+        realtimeData: data,
+      };
+    }
+    return {
+      realtimeData: null,
+    };
+  } catch (error) {
+    console.log("获取股票详细分时数据失败了", stock_code);
+    return {
+      realtimeData: null,
+    };
+  }
+};
+
+export const combineRealtimeData = async (data) => {
+  const { stock_code } = data;
+  const results: any[] = await Promise.allSettled([
+    get_stock_realtime_data(stock_code),
+    get_stock_intraday_data(stock_code),
+  ]);
+  return { ...data, ...results[0].value, ...results[1].value };
 };

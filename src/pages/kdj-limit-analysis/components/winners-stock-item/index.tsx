@@ -1,75 +1,10 @@
-import { useEffect, useCallback, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
-import {
-  finishCountIncrease,
-  updateDataByCode,
-  updateWinnersRealtimeList,
-} from "@/store/features/winners_limit_data/winners_limit_data_slice";
+import { useCallback } from "react";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
-import { allInfoApi, stockklineApi } from "@/apis";
 import "./index.less";
 
 export default function Index(props) {
-  const { data, date, tradeDate } = props;
-
-  // 定义store相关的hooks
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const now = dayjs();
-
-    // 今日时间格式化
-    const nowStr = date.format('YYYY-MM-DD')
-
-    const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
-    const tradeEndTime = dayjs().hour(15).minute(0).second(0);
-
-    const isTradeDay = nowStr === tradeDate;
-
-    // 轮询的间隔时间
-    const interval = setInterval(() => {
-      get_stock_intraday_data(data.stock_code);
-      get_stock_realtime_data(data.stock_code, isTradeDay);
-
-      // 非交易时间，清除轮询
-      if (!(now.isAfter(tradeBeginTime) && now.isBefore(tradeEndTime)) && !isTradeDay && nowStr !== tradeDate) {
-        clearInterval(interval);
-      }
-    }, 5000);
-
-    // 清理函数，用于组件卸载时清除轮询
-    return () => clearInterval(interval);
-  }, [date, data.stock_code, tradeDate]);
-
-  const get_stock_realtime_data = async (stock_code, flag) => {
-    const res = await stockklineApi.stockZhAHistPreMinEm(stock_code);
-
-    if (res?.length >= 12) {
-      const open = res[0].开盘;
-      const close = res[12].收盘;
-      const change = close - open;
-      const changeRate = (change / open) * 100;
-      // 开盘涨幅大于0的股票进行收录
-      if (changeRate > 0 && flag) {
-        dispatch(
-          updateWinnersRealtimeList({
-            code: stock_code,
-            data: res,
-            openChange: changeRate,
-          })
-        );
-      }
-    }
-  };
-
-  const get_stock_intraday_data = async (stock_code) => {
-    const res = await stockklineApi.getStockRealtimeKLine(stock_code);
-
-    if (res.code === 200) {
-      const data = JSON.parse(res.data);
-    }
-  };
+  const { data } = props;
 
   const getOption = () => {
     // 数组倒置

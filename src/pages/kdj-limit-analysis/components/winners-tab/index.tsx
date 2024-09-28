@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import WinnersStockItem from "../winners-stock-item";
 import { deepClone, rank } from "@/utils/common";
 import { dataConversion } from "@/utils";
-import { get_profit_data } from "../../common";
+import { combineRealtimeData, get_profit_data } from "../../common";
 
 export default function Index(props) {
   const { date } = props;
@@ -32,10 +32,9 @@ export default function Index(props) {
   // 龙虎榜数据
   const [winnersData, setWinnersData] = useState([]);
 
-  const winnersRealtimeList = useSelector(
-    (state: RootState) => state.winners_limit.winnersRealtimeList
-  );
+  const [winnersRealtimeList, setWinnersRealtimeList] = useState<any[]>([]);
 
+  // 更新龙虎榜全量数据
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYY-MM-DD");
 
@@ -48,6 +47,43 @@ export default function Index(props) {
     // 更新选中日期的转换
     setChooseDay(dayjs(date).add(1, "day").format("YYYY-MM-DD"));
   }, [date]);
+
+  // 每日开始，计算龙虎榜最近一日的股票分时数据，算出实时的票。
+  useEffect(() => {
+    get_realtime_fn(winnersData, tradeDate)
+  }, [date, winnersData, tradeDate]);
+
+  // 交易日，在结果列表中，查找可交易标的
+  const get_realtime_fn = async (winnersData, tradeDate) => {
+    console.log(winnersData.length, "231231");
+    // 没数据时不执行
+    if (winnersData.length <= 0) return;
+    const now = dayjs();
+
+    // 今日时间格式化
+    const nowStr = now.format("YYYY-MM-DD");
+
+    // 不是最近交易日，停止
+    if (nowStr !== tradeDate) return;
+    console.log(nowStr, tradeDate)
+
+    const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
+    const tradeEndTime = dayjs().hour(15).minute(0).second(0);
+
+    // 轮询的间隔时间
+    const interval = setInterval(async () => {
+      const results = await fetchInBatchesForRealtime(winnersData, 5);
+
+      setWinnersRealtimeList(results)
+      // 非交易时间，清除轮询
+      if (now.isAfter(tradeEndTime) || now.isBefore(tradeBeginTime)) {
+        clearInterval(interval);
+      }
+    }, 5000);
+
+    // 清理函数，用于组件卸载时清除轮询
+    return () => clearInterval(interval);
+  }
 
   // 获取每日龙虎榜数据
   const get_winners_data = async (date, originDate) => {
@@ -75,7 +111,7 @@ export default function Index(props) {
 
         // 对结果做排序
         const finalResults = rankStock(results);
-        console.log(finalResults, 'finalResults is')
+        console.log(finalResults, "finalResults is");
         setWinnersData(finalResults);
       }
     } catch (error) {
@@ -104,8 +140,7 @@ export default function Index(props) {
 
     const diffData = stock_differentiation(result);
     return diffData;
-
-  }
+  };
 
   /**
    * 以批处理方式异步获取给定 URLs 的数据。
@@ -130,7 +165,7 @@ export default function Index(props) {
 
     // 结束日期恒定为今天
     const end_date = dayjs(new Date()).format("YYYYMMDD");
-
+    console.log(data, "1231321adsa");
     for (let i = 0; i < data.length; i += batchSize) {
       const batch = data.slice(i, i + batchSize);
       const batchResults = await Promise.allSettled(
@@ -138,6 +173,24 @@ export default function Index(props) {
       );
       results.push(...batchResults);
     }
+    return results.map((ele: any) => ele.value);
+  };
+
+  const fetchInBatchesForRealtime = async (
+    data: any[],
+    batchSize: number
+  ): Promise<any[]> => {
+    const results: PromiseSettledResult<any>[] = [];
+
+    for (let i = 0; i < data.length; i += batchSize) {
+      const batch = data.slice(i, i + batchSize);
+      const batchResults = await Promise.allSettled(
+        batch.map((item) => combineRealtimeData(item))
+      );
+      results.push(...batchResults);
+    }
+
+    console.log(results, "results issss");
     return results.map((ele: any) => ele.value);
   };
 
@@ -199,6 +252,10 @@ export default function Index(props) {
           ))}
         </div>
       ) : null}
+
+      {/* 早盘分时列表 */}
+
+      {/* 正常结果列表 */}
       {winnersData.map((ele, index) => (
         <WinnersStockItem
           key={ele.stock_code}
