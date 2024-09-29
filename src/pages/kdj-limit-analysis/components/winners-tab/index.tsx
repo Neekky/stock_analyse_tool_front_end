@@ -1,7 +1,7 @@
 import { thirdPartyApi } from "@/apis";
 import { RootState } from "@/store/store";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import WinnersStockItem from "../winners-stock-item";
 import { deepClone, rank } from "@/utils/common";
@@ -10,6 +10,8 @@ import { combineRealtimeData, get_profit_data } from "../../common";
 
 export default function Index(props) {
   const { date } = props;
+
+  const intervalRef = useRef<any>(null);
 
   // 获取交易日期
   const tradeDate = useSelector(
@@ -51,11 +53,17 @@ export default function Index(props) {
   // 每日开始，计算龙虎榜最近一日的股票分时数据，算出实时的票。
   useEffect(() => {
     get_realtime_fn(winnersData, tradeDate)
+
+    // 清理函数，用于组件卸载时清除轮询
+    return () => clearInterval(intervalRef.current);
   }, [date, winnersData, tradeDate]);
 
   // 交易日，在结果列表中，查找可交易标的
   const get_realtime_fn = async (winnersData, tradeDate) => {
     console.log(winnersData.length, "231231");
+    // 每次调用前，清空已有数据
+    setWinnersRealtimeList([]);
+
     // 没数据时不执行
     if (winnersData.length <= 0) return;
     const now = dayjs();
@@ -65,7 +73,6 @@ export default function Index(props) {
 
     // 不是最近交易日，停止
     if (nowStr !== tradeDate) return;
-    console.log(nowStr, tradeDate)
 
     const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
     const tradeEndTime = dayjs().hour(15).minute(0).second(0);
@@ -81,8 +88,7 @@ export default function Index(props) {
       }
     }, 5000);
 
-    // 清理函数，用于组件卸载时清除轮询
-    return () => clearInterval(interval);
+    intervalRef.current = interval;
   }
 
   // 获取每日龙虎榜数据
