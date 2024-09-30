@@ -144,7 +144,6 @@ const EarlyLimitStrategyAnalyse: React.FC = () => {
           ...ele,
           key: ele["股票简称"],
         }));
-        console.log(firstDealData, "firstDealData is");
         setLimitData(firstDealData);
       }
     } catch (error) {

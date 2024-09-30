@@ -5,7 +5,6 @@ import dayjs from "dayjs";
 
 export default function Index(props) {
   const { data } = props;
-  console.log(data, '213213dasda')
   const getOption = () => {
     // 数组倒置
     const reverseData = data?.financialData?.slice(0)?.reverse() || [];
