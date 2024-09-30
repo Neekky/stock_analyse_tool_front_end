@@ -63,7 +63,7 @@ export default function Index(props) {
     const nowStr = now.format("YYYY-MM-DD");
 
     // 不是最近交易日，停止
-    // if (nowStr !== tradeDate) return;
+    if (nowStr !== tradeDate) return;
 
     const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
     const tradeEndTime = dayjs().hour(15).minute(0).second(0);

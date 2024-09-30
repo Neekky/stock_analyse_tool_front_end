@@ -1,6 +1,5 @@
 import ReactEcharts from "echarts-for-react";
 import "./index.less";
-import dayjs from "dayjs";
 
 const StockChart = (props) => {
   const { data } = props;
