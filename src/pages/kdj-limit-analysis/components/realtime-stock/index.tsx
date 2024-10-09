@@ -41,6 +41,12 @@ const StockChart = (props) => {
           type: "value",
           name: "价格",
           position: "right",
+          min: function (value) {
+            return (value.min - (value.min * 0.03)).toFixed(10);
+          },
+          max: function (value) {
+            return value.max;
+          },
         },
       ],
       series: [

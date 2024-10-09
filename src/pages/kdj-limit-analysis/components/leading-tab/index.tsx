@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { dataConversion } from "@/utils";
 import dayjs from "dayjs";
-import { selectStockModelApi } from "@/apis";
+import { allInfoApi, selectStockModelApi } from "@/apis";
 import { deepClone, rank } from "@/utils/common";
 import LeadingStockItem from "../leading-stock-item";
 import { combineLeading } from "../../common";
@@ -16,7 +16,8 @@ export default function Index(props) {
     break: 0.1, // 涨停开板次数
     time: 0.1, // 最终涨停时间
     limitAmount: 0.2, // 涨停封单量占成交量比
-    leadingCount: 0.2, // 占不同概念龙头的数量
+    leadingCount: 0.1, // 占不同概念龙头的数量
+    hotPlate: 0.1, // 占当日热门概念数量
   });
 
   const [leadingData, setLeadingData] = useState<any[]>([]);
@@ -28,6 +29,7 @@ export default function Index(props) {
     const day = dayjs(date).day();
     if (day === 0 || day === 6) return;
 
+    // 请求今日热点涨停股票
     get_limit_leading_model_data(dateStr, date);
   }, [date]);
 
@@ -68,25 +70,44 @@ export default function Index(props) {
         };
       });
 
+      // 我的最终排序是降序排序，所以正向因子应该为升序asc，负向因子应该为降序desc
       const normalizedData = {
         yoy: rank(copyStocks, "newestProfitYoy", "asc"), // 同比增长
         break: rank(copyStocks, "涨停开板次数", "desc"), // 涨停开板次数
         time: rank(copyStocks, "final_limit_time_stamp", "desc"), // 最终涨停时间
         limitAmount: rank(copyStocks, "涨停封单量占成交量比", "asc"), // 涨停封单量占成交量比
         leadingCount: rank(copyStocks, "概念龙头个数", "asc"), // 涨停封单量占成交量比
+        hotPlate: rank(copyStocks, "hotPlateLength", "asc"), // 个股所属概念，命中当日热门概念的数量
       };
+  
       copyStocks.forEach((stock, index) => {
         stock.score =
           weights.yoy * normalizedData.yoy[index] +
           weights.break * normalizedData.break[index] +
           weights.time * normalizedData.time[index] +
           weights.limitAmount * normalizedData.limitAmount[index] +
-          weights.leadingCount * normalizedData.limitAmount[index];
+          weights.leadingCount * normalizedData.limitAmount[index] +
+          weights.hotPlate * normalizedData.hotPlate[index];
       });
-
       return copyStocks;
     } catch (error) {
       console.log("多维度加权分析报错", error);
+      return [];
+    }
+  };
+
+  // 获取每日的热点板块数据
+  const get_hot_plate_data = async (date: string) => {
+    try {
+      const res = await allInfoApi.get_hot_plate_data(date);
+      if (res.code === 200) {
+        const data = JSON.parse(res.data);
+        return data;
+      } else {
+        throw new Error("热点板块接口请求失败");
+      }
+    } catch (error) {
+      console.log("请求热点板块失败", error);
       return [];
     }
   };
@@ -95,14 +116,24 @@ export default function Index(props) {
   const get_limit_leading_model_data = async (date, originDate) => {
     try {
       setLeadingData([]);
-      const res = await selectStockModelApi.get_limit_leading_model_data({date});
-      if (res.code === 200) {
+      // 同时请求数据
+      const [res, plateRes]: [any, any] = await Promise.allSettled([
+        selectStockModelApi.get_limit_leading_model_data({
+          date,
+        }),
+        get_hot_plate_data(date),
+      ]);
+
+      if (res?.value?.code === 200) {
         // 查询结果每个个股的各项数据
-        const results = await fetchInBatches(res.data, originDate, 5);
+        const results = await fetchInBatches(res.value.data, originDate, 5);
 
         // 对结果做排序
-        const finalResults = rankStock(results);
-
+        const finalResults = rankStock(
+          results,
+          plateRes?.value || []
+        );
+        console.log(finalResults)
         setLeadingData(finalResults);
       }
     } catch (error) {
@@ -145,7 +176,13 @@ export default function Index(props) {
 
           // 获取股票市场ID
           const market_id = stock[1] === "SH" ? "17" : "33";
-          return combineLeading({ ...item, start_date, end_date, stock_code, market_id })
+          return combineLeading({
+            ...item,
+            start_date,
+            end_date,
+            stock_code,
+            market_id,
+          });
         })
       );
       results.push(...batchResults);
@@ -153,9 +190,10 @@ export default function Index(props) {
     return results.map((ele: any) => ele.value);
   };
 
-  const rankStock = (leadingData) => {
+  const rankStock = (leadingData, plateData = []) => {
     const copyData = deepClone(leadingData);
 
+    // 保留财务正增长的股票
     const filterData = copyData.filter((stock) => {
       const newestProfitYoy = stock?.financialData?.[0]?.numberYoy || 0;
       const newestProfitValue = stock?.financialData?.[0]?.numberValue || 0;
@@ -166,8 +204,21 @@ export default function Index(props) {
     const copyLeadingData = filterData.map((ele) => {
       const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
       const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
+
+      // 将个股的概念进行整合
+      const baseConcept = ele?.plateData?.gainian || [];
+      const industryConcept = ele?.plateData?.industry_l2 || null;
+
+      if (industryConcept) baseConcept.push(industryConcept);
+
+      // 计算个股概念和当日热门概念的并集
+      const intersection = baseConcept.filter((item1: any) =>
+        plateData.some((item2: any) => String(item2.code) === String(item1.code))
+      );
       return {
         ...ele,
+        hotPlate: intersection,
+        hotPlateLength: intersection?.length || 0,
         newestProfitYoy, // 最新的同比增长数值
         newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
       };

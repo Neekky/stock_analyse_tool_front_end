@@ -114,6 +114,21 @@ export default function Index(props) {
   // k线图的echarts配置
   const getKlineoOption = useCallback(() => {
     return {
+      dataZoom: [
+        {
+          type: "slider",
+          show: true,
+          xAxisIndex: 0,
+          start: 0,
+          end: 100,
+        },
+        {
+          type: "inside",
+          xAxisIndex: 0,
+          start: 0,
+          end: 100,
+        },
+      ],
       tooltip: {
         trigger: "axis",
         axisPointer: {
@@ -154,7 +169,7 @@ export default function Index(props) {
         {
           left: "5%",
           right: "5%",
-          bottom: "10%",
+          bottom: "18%",
           top: "10%",
           containLabel: true, // 适应屏幕
         },

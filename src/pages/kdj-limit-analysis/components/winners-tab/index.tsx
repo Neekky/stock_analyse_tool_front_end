@@ -8,7 +8,7 @@ import { deepClone, rank } from "@/utils/common";
 import { dataConversion } from "@/utils";
 import { combineRealtimeData, get_profit_data } from "../../common";
 import RealtimeStock from "../realtime-stock/index";
-import './index.less';
+import "./index.less";
 
 export default function Index(props) {
   const { date } = props;
@@ -67,6 +67,8 @@ export default function Index(props) {
 
     const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
     const tradeEndTime = dayjs().hour(15).minute(0).second(0);
+    // 非交易时间终止
+    if (now.isAfter(tradeEndTime) || now.isBefore(tradeBeginTime)) return;
 
     // 轮询的间隔时间
     const interval = setInterval(async () => {
