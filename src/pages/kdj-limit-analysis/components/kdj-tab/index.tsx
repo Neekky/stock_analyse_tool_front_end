@@ -159,8 +159,17 @@ export default function Index(props) {
   // 对结果做排序
   const rankStock = (data) => {
     const copyData = deepClone(data);
+
+    // 保留财务正增长的股票
+    const filterData = copyData.filter((stock) => {
+      const newestProfitYoy = stock?.financialData?.[0]?.numberYoy || 0;
+      const newestProfitValue = stock?.financialData?.[0]?.numberValue || 0;
+
+      return newestProfitYoy > 0 && newestProfitValue > 0;
+    });
+    
     // 数据转换
-    const copyKdjData = copyData.map((ele) => {
+    const copyKdjData = filterData.map((ele) => {
       const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
       const newestProfitValue = ele?.financialData?.[0]?.numberValue || 0;
       return {
