@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { dataConversion } from "@/utils";
 import dayjs from "dayjs";
-import { allInfoApi, selectStockModelApi } from "@/apis";
+import { selectStockModelApi } from "@/apis";
 import { deepClone, rank } from "@/utils/common";
 import { codeIdMapEM } from "@/apis/stock_kline";
 import StockItem from "../kdj-stock-item";
-import { combineKdj, get_profit_data } from "../../common";
+import { combineKdj } from "../../common";
 
 export default function Index(props) {
   const { date } = props;
