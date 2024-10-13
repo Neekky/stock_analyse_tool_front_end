@@ -106,6 +106,18 @@ export const get_stock_plate_data = async (data) => {
   }
 };
 
+// kdj涨停板块
+export const combineKdj = async (data) => {
+  const results: any[] = await Promise.allSettled([
+    get_profit_data(data),
+    allInfoApi.get_wencai_info(`${data['股票简称']}股东增减持`),
+  ]);
+
+  // 去除p标签
+  const desc = results[1].value?.data?.desc?.replace(/<\/?p>/g, '') || '';
+  return { ...results[0].value, incOrDecHold: desc };
+};
+
 // 领涨龙头板块
 export const combineLeading = async (data) => {
   const results: any[] = await Promise.allSettled([

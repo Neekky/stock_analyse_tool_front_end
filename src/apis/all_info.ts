@@ -16,11 +16,18 @@ export default new (class StockInfo extends Axios {
     return this.get(url);
   }
 
-  // wc的通用接口
+  // wc的通用接口-查询列表
   get_wencai_data(query: string) {
     const url = `${API_GATEWAY_FLASK}/all_info/querymoney?query=${query}`;
     return this.get(url);
   }
+
+  // wc的通用接口-查询个股信息
+  get_wencai_info(query: string) {
+    const url = `${API_GATEWAY_FLASK}/all_info/querymoney_info?query=${query}`;
+    return this.get(url);
+  }
+
   // 获取涨停板数据
   // num为连板数
   get_stock_fundamentals(name: string) {

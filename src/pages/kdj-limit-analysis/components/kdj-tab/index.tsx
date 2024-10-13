@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { dataConversion } from "@/utils";
 import dayjs from "dayjs";
-import { selectStockModelApi } from "@/apis";
+import { allInfoApi, selectStockModelApi } from "@/apis";
 import { deepClone, rank } from "@/utils/common";
 import { codeIdMapEM } from "@/apis/stock_kline";
 import StockItem from "../kdj-stock-item";
-import { get_profit_data } from "../../common";
+import { combineKdj, get_profit_data } from "../../common";
 
 export default function Index(props) {
   const { date } = props;
@@ -147,10 +147,10 @@ export default function Index(props) {
 
           // 获取股票市场ID
           const market_id = stock[1] === "SH" ? "17" : "33";
-
-          return get_profit_data({ ...item, start_date, end_date, stock_code, market_id });
+          return combineKdj({ ...item, start_date, end_date, stock_code, market_id });
         })
       );
+      console.log(batchResults, 'batchResults')
       results.push(...batchResults);
     }
     return results.map((ele: any) => ele.value);

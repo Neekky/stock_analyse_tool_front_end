@@ -108,6 +108,13 @@ export default new (class StockKline extends Axios {
     return this.get(url);
   }
 
+  // 获取ETF的K线数据
+  getETFKLine(params: { symbol: string }) {
+    const stringified = queryString.stringify(params);
+    const url = `${API_GATEWAY_FLASK}/stock_selection_model/get_etf_data?${stringified}`;
+    return this.get(url);
+  }
+
   // 获取指数的见顶见底概率
   getIndexTopBottomPercent(params: IGetIndexTopBottomProps) {
     const stringified = queryString.stringify(params);
