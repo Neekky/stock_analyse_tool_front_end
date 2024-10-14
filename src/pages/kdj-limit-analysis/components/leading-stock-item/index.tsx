@@ -124,7 +124,9 @@ export default function Index(props) {
       },
       xAxis: {
         type: "category",
-        data: data.kline.map((item) => dayjs(item["日期"]).format("YYYY-MM-DD")),
+        data: data.kline.map((item) =>
+          dayjs(item["日期"]).format("YYYY-MM-DD")
+        ),
       },
       yAxis: [
         {
@@ -209,16 +211,28 @@ export default function Index(props) {
       <div className="stock-info-wrap">
         <div className="mb-2.5 text-[15px] flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">行业板块</span>{" "}
-          <span className=" text-[#333]">{data.plateData.industry_l2.name}</span>
+          <span className=" text-[#333]">
+            {data.plateData.industry_l2.name}
+          </span>
         </div>
         <div className="mb-2.5 text-[15px] flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">行业龙头</span>{" "}
-          <span className=" text-[#333]">{data.plateData.industry_l2.leading_stock.name}</span>
+          <span className=" text-[#333]">
+            {data.plateData.industry_l2.leading_stock.name}
+          </span>
         </div>
         <div className="mb-2.5 text-[15px] flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">细分行业</span>{" "}
-          <span className=" text-[#333]">{data.plateData.industry_l3.name}</span>
+          <span className=" text-[#333]">
+            {data.plateData.industry_l3.name}
+          </span>
         </div>
+      </div>
+
+      {/* 股票事件 */}
+      <div className="mb-2">
+        <div className="text-[20px] text-[#333] font-semibold	">大事提醒</div>
+        <div className="stock-info-wrap mt-2 text-[#333]">{data.incOrDecHold}</div>
       </div>
 
       {/* 归母净利润图表展示 */}

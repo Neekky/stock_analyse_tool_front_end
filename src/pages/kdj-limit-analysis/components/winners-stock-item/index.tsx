@@ -150,7 +150,9 @@ export default function Index(props) {
       },
       xAxis: {
         type: "category",
-        data: data.kline.map((item) => dayjs(item["日期"]).format("YYYY-MM-DD")),
+        data: data.kline.map((item) =>
+          dayjs(item["日期"]).format("YYYY-MM-DD")
+        ),
       },
       yAxis: [
         {
@@ -246,6 +248,14 @@ export default function Index(props) {
               })}
             </div>
           ) : null}
+        </div>
+      </div>
+
+      {/* 股票事件 */}
+      <div className="mb-2">
+        <div className="text-[20px] text-[#333] font-semibold	">大事提醒</div>
+        <div className="stock-info-wrap mt-2 text-[#333]">
+          {data.incOrDecHold}
         </div>
       </div>
 

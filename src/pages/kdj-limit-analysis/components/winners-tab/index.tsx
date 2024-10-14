@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import WinnersStockItem from "../winners-stock-item";
 import { deepClone, rank } from "@/utils/common";
 import { dataConversion } from "@/utils";
-import { combineRealtimeData, get_profit_data } from "../../common";
+import { combineRealtimeData, combineWinners } from "../../common";
 import RealtimeStock from "../realtime-stock/index";
 import "./index.less";
 
@@ -165,7 +165,7 @@ export default function Index(props) {
     for (let i = 0; i < data.length; i += batchSize) {
       const batch = data.slice(i, i + batchSize);
       const batchResults = await Promise.allSettled(
-        batch.map((item) => get_profit_data({ ...item, start_date, end_date }))
+        batch.map((item) => combineWinners({ ...item, start_date, end_date }))
       );
       results.push(...batchResults);
     }
