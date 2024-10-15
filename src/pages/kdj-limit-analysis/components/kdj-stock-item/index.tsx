@@ -214,7 +214,7 @@ export default function Index(props) {
           yAxisIndex: 0,
           data: data.kline?.map((item) => item["成交额"]),
           itemStyle: {
-            color: "#4b8df8",
+            color: "#cffafe",
           },
         },
       ],
