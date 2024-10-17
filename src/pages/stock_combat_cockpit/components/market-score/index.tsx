@@ -7,7 +7,7 @@ const StockChart = ({ data, indexKline }) => {
   useEffect(() => {
     const chart = echarts.init(chartRef.current);
 
-    const option = {
+    const option: any = {
       title: {
         text: "大盘综合评分",
       },

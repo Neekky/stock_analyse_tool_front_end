@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 
-const StockChart = ({ data }) => {
+const StockChart = ({ data, indexKline = [] }) => {
   const chartRef = useRef(null);
 
   const chartRef2 = useRef(null);
@@ -10,7 +10,7 @@ const StockChart = ({ data }) => {
   useEffect(() => {
     const chart = echarts.init(chartRef.current);
 
-    const option = {
+    const option: any = {
       title: {
         text: "大盘涨跌家数分析",
       },
@@ -24,7 +24,7 @@ const StockChart = ({ data }) => {
         },
       },
       legend: {
-        data: ["上涨家数", "下跌家数"],
+        data: ["上涨家数", "下跌家数", "上证指数"],
       },
       xAxis: {
         type: "category",
@@ -37,6 +37,20 @@ const StockChart = ({ data }) => {
           name: "家数",
           position: "left",
         },
+        {
+          type: "value",
+          name: "上证指数",
+          position: "right",
+          axisLabel: {
+            formatter: "{value}",
+          },
+          min: function (value) {
+            return (value.min - 10).toFixed(0);
+          },
+          max: function (value) {
+            return (value.max + 10).toFixed(0);
+          },
+        },
       ],
       series: [
         {
@@ -46,6 +60,7 @@ const StockChart = ({ data }) => {
           itemStyle: {
             color: "#dc2626",
           },
+          yAxisIndex: 0,
         },
         {
           name: "下跌家数",
@@ -54,6 +69,13 @@ const StockChart = ({ data }) => {
           itemStyle: {
             color: "#16a34a",
           },
+          yAxisIndex: 0,
+        },
+        {
+          name: "上证指数",
+          type: "candlestick",
+          data: indexKline.map((item) => [item[1], item[2], item[3], item[4]]),
+          yAxisIndex: 1,
         },
       ],
       dataZoom: [
@@ -84,7 +106,7 @@ const StockChart = ({ data }) => {
   useEffect(() => {
     const chart = echarts.init(chartRef2.current);
 
-    const option = {
+    const option: any = {
       dataZoom: [
         {
           type: "slider",
@@ -132,6 +154,7 @@ const StockChart = ({ data }) => {
             return value.max;
           },
           splitNumber: 6,
+          yAxisIndex: 0,
         },
         {
           type: "value",
@@ -139,6 +162,23 @@ const StockChart = ({ data }) => {
           position: "right",
           axisLabel: {
             formatter: "{value}",
+          },
+          yAxisIndex: 1,
+        },
+        {
+          type: "value",
+          name: "上证指数",
+          position: "right",
+          axisLabel: {
+            formatter: "{value}",
+          },
+          yAxisIndex: 2,
+          offset: 50,
+          min: function (value) {
+            return (value.min - 10).toFixed(0);
+          },
+          max: function (value) {
+            return (value.max + 10).toFixed(0);
           },
         },
       ],
@@ -150,6 +190,7 @@ const StockChart = ({ data }) => {
           itemStyle: {
             color: "#dc2626",
           },
+          yAxisIndex: 0,
         },
         {
           name: "跌停家数",
@@ -158,17 +199,24 @@ const StockChart = ({ data }) => {
           itemStyle: {
             color: "#16a34a",
           },
+          yAxisIndex: 0,
         },
         {
           name: "跌停/涨停比值",
           type: "line",
-          yAxisIndex: 1,
           data: data.map((item) =>
             item.涨停数 !== 0 ? (item.跌停数 / item.涨停数).toFixed(2) : 0
           ),
           itemStyle: {
             color: "#eab308",
           },
+          yAxisIndex: 1,
+        },
+        {
+          name: "上证指数",
+          type: "candlestick",
+          data: indexKline.map((item) => [item[1], item[2], item[3], item[4]]),
+          yAxisIndex: 2,
         },
       ],
     };
