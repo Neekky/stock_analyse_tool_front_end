@@ -128,6 +128,24 @@ export default new (class StockKline extends Axios {
     return this.get(url);
   }
 
+  // # 快速获取大盘的涨跌家数数据
+  get_upward_and_downward_trend() {
+    const url = `${API_GATEWAY_FLASK}/get_upward_and_downward_trend`;
+    return this.get(url);
+  }
+
+  // # 快速获取大盘的历史评分
+  get_qkj_market_score() {
+    const url = `${API_GATEWAY_FLASK}/get_qkj_market_score`;
+    return this.get(url);
+  }
+
+  // # 快速获取大盘的历史成交额
+  get_qkj_market_volume() {
+    const url = `${API_GATEWAY_FLASK}/get_qkj_market_volume`;
+    return this.get(url);
+  }
+
   // 直接从东方财富获取股票K线
   async stockZhAHist(
     symbol = "000001",
