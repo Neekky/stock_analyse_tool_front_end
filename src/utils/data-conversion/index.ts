@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const countSubWordsWithMapping = (phrases: any[] = []) => {
   const countDict: any = {};
   const phraseMapping: any = {};
@@ -87,8 +89,46 @@ const quickSort = (arr: any[], key: string, order: 'asc' | 'desc' = 'asc') => {
   return [...quickSort(lessThanPivot, key, order), pivot, ...quickSort(greaterThanPivot, key, order)];
 }
 
+const flattenArray = (arr) => {
+  // 检查输入是否为数组
+  if (!Array.isArray(arr)) {
+    return [];
+  }
+
+  // 使用 reduce 方法递归扁平化数组
+  return arr.reduce((acc, val) => {
+    if (Array.isArray(val)) {
+      // 如果当前值是数组,递归调用 flattenArray
+      return acc.concat(flattenArray(val));
+    } else if (val !== undefined) {
+      // 只添加非 undefined 的值
+      return acc.concat(val);
+    }
+    // 忽略 undefined 值
+    return acc;
+  }, []);
+}
+
+/**
+ * 筛选出距今3个月以内的元素
+ * @param {Array} array - 包含日期属性的对象数组
+ * @param {string} dateProperty - 日期属性的名称
+ * @returns {Array} - 筛选后的数组
+ */
+const filterWithinThreeMonths = (array, dateProperty) => {
+  const threeMonthsAgo = dayjs().subtract(1, 'month');
+  const threeMonthsNext = dayjs().add(1, 'month');
+  
+  return array.filter(item => {
+    const itemDate = dayjs(item[dateProperty]);
+    return itemDate.isAfter(threeMonthsAgo) && itemDate.isBefore(threeMonthsNext);
+  });
+}
+
 export default {
+  filterWithinThreeMonths,
 	countSubWordsWithMapping,
   getExchangeByCode,
-  quickSort
+  quickSort,
+  flattenArray
 }

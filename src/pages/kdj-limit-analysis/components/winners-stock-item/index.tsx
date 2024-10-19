@@ -1,10 +1,35 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
 import "./index.less";
+import thirdParty, { eventsMapColor } from "@/apis/thirdParty";
+import { dataConversion } from "@/utils";
 
 export default function Index(props) {
   const { data } = props;
+
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const symbol = dataConversion.getExchangeByCode(data.stock_code);
+
+    getEvents(`${data.stock_code}.${symbol}`);
+  }, []);
+
+  const getEvents = async (stock: string) => {
+    const res = await thirdParty.getDfcfEventsByStock2(stock);
+
+    if (res.success) {
+      const flatData = dataConversion.flattenArray(res?.data);
+
+      const filterData = dataConversion.filterWithinThreeMonths(
+        flatData,
+        "NOTICE_DATE"
+      );
+      setEvents(filterData);
+      console.log(filterData, '龙虎榜信息', stock)
+    }
+  };
 
   const getOption = () => {
     // 数组倒置
@@ -252,12 +277,42 @@ export default function Index(props) {
       </div>
 
       {/* 股票事件 */}
-      <div className="mb-2">
-        <div className="text-[20px] text-[#333] font-semibold	">大事提醒</div>
-        <div className="stock-info-wrap mt-2 text-[#333]">
-          {data.incOrDecHold}
+      {events.length > 0 ? (
+        <div
+          className="p-2 my-2 rounded-2xl"
+          style={{ backgroundColor: data.eventsColor }}
+        >
+          <div className="text-[20px] text-[#333] font-semibold	">近一月大事提醒</div>
+          {events.map((ele: any) => (
+            <div
+              key={ele.LEVEL1_CONTENT}
+              className="stock-winner-events-wrap mt-2"
+            >
+              <div className="winner-events-date mr-1 h-5 leading-5 text-stone-700 w-24">
+                {ele.NOTICE_DATE}
+              </div>
+              <div className="events-content ">
+                <div
+                  className="text-[16px] h-5 leading-5 mb-2	font-medium"
+                  style={{ color: eventsMapColor[ele.SPECIFIC_EVENTTYPE] }}
+                >
+                  {ele.EVENT_TYPE}
+                </div>
+                {ele.LEVEL1_CONTENT ? (
+                  <div className="text-stone-700 text-[14px]">
+                    {ele.LEVEL1_CONTENT}
+                  </div>
+                ) : null}
+                {ele.LEVEL2_CONTENT ? (
+                  <div className="text-stone-700 text-[14px]">
+                    {ele.LEVEL2_CONTENT}
+                  </div>
+                ) : null}
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : null}
 
       {/* 归母净利润图表展示 */}
       <div className="h-72 md:w-full custom:w-screen mt-6 flex justify-center">

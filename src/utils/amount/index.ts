@@ -95,14 +95,16 @@ const number2text = (number: number, type = "upper") => {
  */
 const formatLargeAmount = (amount, decimalPlaces = 1) => {
   if (isNaN(amount) || amount == null) {
-    return 'Invalid amount';
+    console.warn('Invalid amount');
+    return '0';
   }
 
   // 确保金额是数字，并转换为浮点数
   const num = parseFloat(amount);
 
   if (!isFinite(num)) {
-    return 'Invalid amount';
+    console.warn('Invalid amount');
+    return '0';
   }
 
   // 定义单位和对应的数值
@@ -125,8 +127,38 @@ const formatLargeAmount = (amount, decimalPlaces = 1) => {
   return num.toFixed(decimalPlaces);
 }
 
+const convertToYi = (number) => {
+  // 检查输入是否为有效数字
+  if (typeof number !== 'number' || isNaN(number)) {
+    console.warn('Invalid input. Please provide a valid number.');
+    return '0';
+  }
+
+  // 处理负数
+  const isNegative = number < 0;
+  number = Math.abs(number);
+
+  // 转换为亿单位
+  const yi = 100000000; // 1亿
+  if (number >= yi) {
+    const result = (number / yi).toFixed(2);
+    // 去除末尾的 .00
+    const formattedResult = parseFloat(result).toString();
+    return (isNegative ? '-' : '') + formattedResult + '亿';
+  } else if (number >= 10000) {
+    // 如果数字大于等于1万，则保留两位小数
+    const result = (number / 10000).toFixed(2);
+    const formattedResult = parseFloat(result).toString();
+    return (isNegative ? '-' : '') + formattedResult + '万';
+  } else {
+    // 如果数字小于1万，则直接返回原数字
+    return (isNegative ? '-' : '') + number.toString();
+  }
+}
+
 
 export default {
   number2text,
   formatLargeAmount,
+  convertToYi
 };

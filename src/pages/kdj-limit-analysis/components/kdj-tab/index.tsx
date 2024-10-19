@@ -6,6 +6,7 @@ import { deepClone, rank } from "@/utils/common";
 import { codeIdMapEM } from "@/apis/stock_kline";
 import StockItem from "../kdj-stock-item";
 import { combineKdj } from "../../common";
+import { Flex, Spin } from "antd";
 
 export default function Index(props) {
   const { date } = props;
@@ -20,6 +21,10 @@ export default function Index(props) {
 
   // 存储结果数据
   const [kdjData, setKdjData] = useState<any[]>([]);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYYMMDD");
@@ -94,6 +99,8 @@ export default function Index(props) {
   // 获取每日kdj金叉涨停板数据
   const get_limit_kdj_model_data = async (date, originDate) => {
     try {
+      setIsLoading(true);
+      setProgress(0);
       setKdjData([]);
       await codeIdMapEM();
       const res = await selectStockModelApi.get_limit_kdj_model_data({ date });
@@ -104,7 +111,7 @@ export default function Index(props) {
 
         // 对结果做排序
         const finalResults = rankStock(results);
-
+        setIsLoading(false);
         setKdjData(finalResults);
       }
     } catch (error) {
@@ -147,11 +154,18 @@ export default function Index(props) {
 
           // 获取股票市场ID
           const market_id = stock[1] === "SH" ? "17" : "33";
-          return combineKdj({ ...item, start_date, end_date, stock_code, market_id });
+          return combineKdj({
+            ...item,
+            start_date,
+            end_date,
+            stock_code,
+            market_id,
+          });
         })
       );
-      console.log(batchResults, 'batchResults')
       results.push(...batchResults);
+
+      setProgress(Math.round((i / data.length) * 100));
     }
     return results.map((ele: any) => ele.value);
   };
@@ -167,7 +181,7 @@ export default function Index(props) {
 
     //   return newestProfitYoy > 0 && newestProfitValue > 0;
     // });
-    
+
     // 数据转换
     const copyKdjData = copyData.map((ele) => {
       const newestProfitYoy = ele?.financialData?.[0]?.numberYoy || 0;
@@ -176,6 +190,7 @@ export default function Index(props) {
         ...ele,
         newestProfitYoy,
         newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
+        eventsColor: newestProfitValue > 0 ? "#fdd2d2" : "#cdeac8",
       };
     });
 
@@ -189,6 +204,11 @@ export default function Index(props) {
 
   return (
     <div>
+      {isLoading ? (
+        <div className="w-full h-72 flex justify-center items-center">
+          <Spin size="large" percent={progress}></Spin>
+        </div>
+      ) : null}
       {kdjData.map((ele, index) => (
         <StockItem key={ele.code} index={index} data={ele} date={date} />
       ))}

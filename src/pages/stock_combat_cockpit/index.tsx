@@ -7,11 +7,13 @@ import { stockklineApi } from "@/apis";
 import UpDownTrend from "./components/up-down-trend";
 import MarketScore from "./components/market-score";
 import { safeJsonParse } from "@/utils/common";
+import MarketVolume from "./components/market-volume";
+import IndexCompilations from "./components/index-compilations";
 
 export default function Index() {
   const [trendData, setTrendData] = useState([]);
   const [scoreData, setScoreData] = useState([]);
-  const [, setVolumeData] = useState([]);
+  const [volumeData, setVolumeData] = useState([]);
 
   // 指数K线开高收低数据
   const [indexKline, setIndexKline] = useState([]);
@@ -22,8 +24,8 @@ export default function Index() {
       get_qkj_market_score(),
       getTrend(),
       get_qkj_market_volume(),
-      getIndexKLine('2024-07-29'),
-      getIndexKLine2('2024-07-17'),
+      getIndexKLine("2024-07-29"),
+      getIndexKLine2("2024-07-17"),
     ]);
     getTrend();
   }, []);
@@ -33,7 +35,7 @@ export default function Index() {
     // 获取当前时间的60天之前日期
     const res = await stockklineApi.getIndexKLine({
       startDate: date,
-      index: 'sh000001',
+      index: "sh000001",
     });
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
@@ -55,7 +57,7 @@ export default function Index() {
     // 获取当前时间的60天之前日期
     const res = await stockklineApi.getIndexKLine({
       startDate: date,
-      index: 'sh000001',
+      index: "sh000001",
     });
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
@@ -85,7 +87,6 @@ export default function Index() {
     if (res?.code === 200) {
       const parseData = JSON.parse(res.data);
       setScoreData(parseData);
-      console.log(parseData, "score");
     }
   };
 
@@ -98,12 +99,22 @@ export default function Index() {
   };
 
   return (
-    <div className="flex items-center flex-col stock-market-wrap">
+    <div className="flex items-center flex-col stock-market-wrap bg-neutral-100">
       <Header />
 
       {/* 股市实时状态 */}
       <div className="w-10/12 rounded-xl realtime-market-wrap bg-white">
-        <RealtimeMarket/>
+        <RealtimeMarket />
+      </div>
+
+      {/* 大盘状态 */}
+      <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
+        <IndexCompilations />
+      </div>
+
+      {/* 大盘历史成交 */}
+      <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
+        <MarketVolume data={volumeData} indexKline={indexKline2} />
       </div>
 
       {/* 股市的涨跌趋势 */}

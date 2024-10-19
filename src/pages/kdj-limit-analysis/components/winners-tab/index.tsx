@@ -9,6 +9,7 @@ import { dataConversion } from "@/utils";
 import { combineRealtimeData, combineWinners } from "../../common";
 import RealtimeStock from "../realtime-stock/index";
 import "./index.less";
+import { Spin } from "antd";
 
 export default function Index(props) {
   const { date } = props;
@@ -25,6 +26,10 @@ export default function Index(props) {
     net_value: 0.5, // 净买入占比
     tags: 0.5, // 游资参与家数
   });
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [progress, setProgress] = useState(0);
 
   // 龙虎榜数据
   const [winnersData, setWinnersData] = useState<any[]>([]);
@@ -86,6 +91,8 @@ export default function Index(props) {
   // 获取每日龙虎榜数据
   const get_winners_data = async (date, originDate) => {
     try {
+      setIsLoading(true);
+      setProgress(0);
       setWinnersData([]);
       const res = await thirdPartyApi.getWinnersData({ date });
       if (res.status_msg === "success") {
@@ -109,6 +116,7 @@ export default function Index(props) {
 
         // 对结果做排序
         const finalResults = rankStock(results);
+        setIsLoading(false);
         setWinnersData(finalResults);
       }
     } catch (error) {
@@ -127,6 +135,7 @@ export default function Index(props) {
         newestProfitYoy,
         newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
         tagsLength: ele.tags.length || 0,
+        eventsColor: newestProfitValue > 0 ? "#fdd2d2" : "#cdeac8",
       };
     });
 
@@ -168,6 +177,7 @@ export default function Index(props) {
         batch.map((item) => combineWinners({ ...item, start_date, end_date }))
       );
       results.push(...batchResults);
+      setProgress(Math.round((i / data.length) * 100));
     }
     return results.map((ele: any) => ele.value);
   };
@@ -240,6 +250,11 @@ export default function Index(props) {
 
   return (
     <div>
+      {isLoading ? (
+        <div className="w-full h-72 flex justify-center items-center">
+          <Spin size="large" percent={progress}></Spin>
+        </div>
+      ) : null}
       {winnersRealtimeList.length > 0 ? (
         <div className="realtime-stock-wrap">
           <div className="realtime-header">分时数据</div>

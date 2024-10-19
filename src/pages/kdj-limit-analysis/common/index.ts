@@ -59,7 +59,6 @@ export const get_profit_data = async (data) => {
         numberValue: Number(ele.value),
       }));
       const kline = JSON.parse(res.data.stock_intraday_em_data);
-
       return {
         ...data,
         financialData: transData,
@@ -109,12 +108,12 @@ export const get_stock_plate_data = async (data) => {
 export const combineKdj = async (data) => {
   const results: any[] = await Promise.allSettled([
     get_profit_data(data),
-    allInfoApi.get_wencai_info(`${data["股票简称"]}股东增减持`),
+    // allInfoApi.get_wencai_info(`${data["股票简称"]}股东增减持`),
   ]);
 
   // 去除p标签
-  const desc = results[1].value?.data?.desc?.replace(/<\/?p>/g, "") || "";
-  return { ...results[0].value, incOrDecHold: desc };
+  // const desc = results[1].value?.data?.desc?.replace(/<\/?p>/g, "") || "";
+  return { ...results[0].value };
 };
 
 // 领涨龙头板块
@@ -122,24 +121,24 @@ export const combineLeading = async (data) => {
   const results: any[] = await Promise.allSettled([
     get_profit_data(data),
     get_stock_plate_data(data),
-    allInfoApi.get_wencai_info(`${data["股票简称"]}股东增减持`),
+    // allInfoApi.get_wencai_info(`${data["股票简称"]}股东增减持`),
   ]);
 
   // 去除p标签
-  const desc = results[2].value?.data?.desc?.replace(/<\/?p>/g, "") || "";
-  return { ...results[0].value, ...results[1].value, incOrDecHold: desc };
+  // const desc = results[2].value?.data?.desc?.replace(/<\/?p>/g, "") || "";
+  return { ...results[0].value, ...results[1].value };
 };
 
 // 龙虎榜优选板块
 export const combineWinners = async (data) => {
   const results: any[] = await Promise.allSettled([
     get_profit_data(data),
-    allInfoApi.get_wencai_info(`${data["stock_name"]}股东增减持`),
+    // allInfoApi.get_wencai_info(`${data["stock_name"]}股东增减持`),
   ]);
 
   // 去除p标签
-  const desc = results[1].value?.data?.desc?.replace(/<\/?p>/g, "") || "";
-  return { ...results[0].value, incOrDecHold: desc };
+  // const desc = results[1].value?.data?.desc?.replace(/<\/?p>/g, "") || "";
+  return { ...results[0].value };
 };
 
 // 获取股票分钟级分时数据

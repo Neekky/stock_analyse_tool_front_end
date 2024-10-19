@@ -124,7 +124,6 @@ export default function Index(): any {
     pageGetLimitUpData(date);
     pageGetRateData(date);
     thirdParty.getHotPlateData().then((res) => {
-      console.log(res, 2131231)
     } );
   }, [date, num]);
 

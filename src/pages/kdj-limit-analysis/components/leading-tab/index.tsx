@@ -6,6 +6,7 @@ import { allInfoApi, selectStockModelApi } from "@/apis";
 import { deepClone, rank } from "@/utils/common";
 import LeadingStockItem from "../leading-stock-item";
 import { combineLeading } from "../../common";
+import { Spin } from "antd";
 
 export default function Index(props) {
   const { date } = props;
@@ -19,6 +20,10 @@ export default function Index(props) {
     leadingCount: 0.1, // 占不同概念龙头的数量
     hotPlate: 0.1, // 占当日热门概念数量
   });
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [progress, setProgress] = useState(0);
 
   const [leadingData, setLeadingData] = useState<any[]>([]);
 
@@ -115,6 +120,8 @@ export default function Index(props) {
   // 获取每日涨停概念龙头数据
   const get_limit_leading_model_data = async (date, originDate) => {
     try {
+      setIsLoading(true);
+      setProgress(0);
       setLeadingData([]);
       // 同时请求数据
       const [res, plateRes]: [any, any] = await Promise.allSettled([
@@ -133,7 +140,7 @@ export default function Index(props) {
           results,
           plateRes?.value || []
         );
-        console.log(finalResults)
+        setIsLoading(false);
         setLeadingData(finalResults);
       }
     } catch (error) {
@@ -186,6 +193,8 @@ export default function Index(props) {
         })
       );
       results.push(...batchResults);
+
+      setProgress(Math.round((i / data.length) * 100));
     }
     return results.map((ele: any) => ele.value);
   };
@@ -221,6 +230,7 @@ export default function Index(props) {
         hotPlateLength: intersection?.length || 0,
         newestProfitYoy, // 最新的同比增长数值
         newestProfitColor: newestProfitValue > 0 ? "#ff004417" : "#90e29f38",
+        eventsColor: newestProfitValue > 0 ? "#fdd2d2" : "#cdeac8",
       };
     });
 
@@ -236,6 +246,11 @@ export default function Index(props) {
 
   return (
     <div>
+      {isLoading ? (
+        <div className="w-full h-72 flex justify-center items-center">
+          <Spin size="large" percent={progress}></Spin>
+        </div>
+      ) : null}
       {leadingData.map((ele, index) => (
         <LeadingStockItem key={ele.code} index={index} data={ele} date={date} />
       ))}
