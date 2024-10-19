@@ -123,7 +123,7 @@ export default function Index(): any {
   useEffect(() => {
     pageGetLimitUpData(date);
     pageGetRateData(date);
-    thirdParty.getHotPlateData().then((res) => {
+    thirdParty.getHotPlateData().then(() => {
     } );
   }, [date, num]);
 

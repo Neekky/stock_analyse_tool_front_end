@@ -6,7 +6,7 @@ import { deepClone, rank } from "@/utils/common";
 import { codeIdMapEM } from "@/apis/stock_kline";
 import StockItem from "../kdj-stock-item";
 import { combineKdj } from "../../common";
-import { Flex, Spin } from "antd";
+import { Spin } from "antd";
 
 export default function Index(props) {
   const { date } = props;
