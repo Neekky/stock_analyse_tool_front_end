@@ -21,7 +21,7 @@ const StockChart = ({ data, indexKline }) => {
             backgroundColor: "#6a7985",
           },
         },
-        formatter: function(params) {
+        formatter: function (params) {
           // params 包含当前数据点的所有信息
           return `
             当日成交额: ${amount.convertToYi(params[0].value)} <br/>
@@ -32,10 +32,10 @@ const StockChart = ({ data, indexKline }) => {
             最低: ${params[2].value[3]} <br/>
             最高: ${params[2].value[4]} <br/>
           `;
-        }
+        },
       },
       legend: {
-        data: ["当日成交额", "近60日平均成交额","上证指数"],
+        data: ["当日成交额", "近60日平均成交额", "上证指数"],
       },
       xAxis: {
         type: "category",
@@ -79,6 +79,7 @@ const StockChart = ({ data, indexKline }) => {
             color: "#dc2626",
           },
           yAxisIndex: 0,
+          symbol: "none",
         },
         {
           name: "近60日平均成交额",
@@ -88,6 +89,7 @@ const StockChart = ({ data, indexKline }) => {
             color: "#2563eb",
           },
           yAxisIndex: 0,
+          symbol: "none",
         },
         {
           name: "上证指数",
@@ -123,6 +125,11 @@ const StockChart = ({ data, indexKline }) => {
   return (
     <>
       <div ref={chartRef} style={{ width: "100%", height: "400px" }} />
+      <div className="w-full">
+        <div>使用小贴士</div>
+        <div>1. 红线为沪深两市总成交额，蓝线为60日平均线</div>
+        <div>2. 观察两线的金叉、死叉情况</div>
+      </div>
     </>
   );
 };

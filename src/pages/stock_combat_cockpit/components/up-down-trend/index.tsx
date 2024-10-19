@@ -61,6 +61,7 @@ const StockChart = ({ data, indexKline = [] }) => {
             color: "#dc2626",
           },
           yAxisIndex: 0,
+          symbol: "none",
         },
         {
           name: "下跌家数",
@@ -69,6 +70,7 @@ const StockChart = ({ data, indexKline = [] }) => {
           itemStyle: {
             color: "#16a34a",
           },
+          symbol: "none",
           yAxisIndex: 0,
         },
         {
@@ -191,6 +193,7 @@ const StockChart = ({ data, indexKline = [] }) => {
             color: "#dc2626",
           },
           yAxisIndex: 0,
+          symbol: "none",
         },
         {
           name: "跌停家数",
@@ -200,6 +203,7 @@ const StockChart = ({ data, indexKline = [] }) => {
             color: "#16a34a",
           },
           yAxisIndex: 0,
+          symbol: "none",
         },
         {
           name: "跌停/涨停比值",
@@ -211,6 +215,7 @@ const StockChart = ({ data, indexKline = [] }) => {
             color: "#eab308",
           },
           yAxisIndex: 1,
+          symbol: "none",
         },
         {
           name: "上证指数",
@@ -236,6 +241,11 @@ const StockChart = ({ data, indexKline = [] }) => {
         className="mt-6"
         style={{ width: "100%", height: "400px" }}
       />
+      <div className="w-full">
+        <div>使用小贴士</div>
+        <div>1. 观察涨跌家数数据的切换，市场长期是震荡，可能为一绿一红交替，有规律。</div>
+        <div>2. 通过涨跌停的比值，判断市场的题材是否强势，资金活跃度是否高涨</div>
+      </div>
     </>
   );
 };

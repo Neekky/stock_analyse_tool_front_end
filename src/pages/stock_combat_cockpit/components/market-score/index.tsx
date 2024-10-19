@@ -58,6 +58,7 @@ const StockChart = ({ data, indexKline }) => {
             color: "#dc2626",
           },
           yAxisIndex: 0,
+          symbol: "none",
         },
         {
           name: "上证指数",
@@ -93,6 +94,10 @@ const StockChart = ({ data, indexKline }) => {
   return (
     <>
       <div ref={chartRef} style={{ width: "100%", height: "400px" }} />
+      <div className="w-full">
+        <div>使用小贴士</div>
+        <div>1. 该指标为资金面、技术面的平均分数。</div>
+      </div>
     </>
   );
 };
