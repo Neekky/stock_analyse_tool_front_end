@@ -32,8 +32,11 @@ export default function Index(props) {
   const getOption = () => {
     // 数组倒置
     const reverseData = data?.financialData?.slice(0)?.reverse() || [];
+
     const categories = reverseData.map((item) => item.report); // 获取X轴刻度
     const netProfit = reverseData.map((item) => item.numberValue); // 净利润
+    // 获取ROE数据
+    
     const yoyGrowth = reverseData.map((item) =>
       (item.numberYoy * 100).toFixed(2)
     ); // 同比增长率
@@ -132,6 +135,9 @@ export default function Index(props) {
           type: "bar",
           data: netProfit,
           barWidth: 20,
+          emphasis: {
+            focus: "series",
+          },
         },
         {
           name: "同比增长率",
@@ -274,12 +280,11 @@ export default function Index(props) {
           className="p-2 my-2 rounded-2xl"
           style={{ backgroundColor: data.eventsColor }}
         >
-          <div className="text-[20px] text-[#333] font-semibold	">近一月大事提醒</div>
+          <div className="text-[20px] text-[#333] font-semibold	">
+            近一月大事提醒
+          </div>
           {events.map((ele: any) => (
-            <div
-              key={ele.LEVEL1_CONTENT}
-              className="stock-events-wrap mt-2"
-            >
+            <div key={ele.LEVEL1_CONTENT} className="stock-events-wrap mt-2">
               <div className="events-date mr-1 h-5 leading-5 text-stone-700 w-24">
                 {ele.NOTICE_DATE}
               </div>
