@@ -35,7 +35,6 @@ export default function Index(props) {
 
     const categories = reverseData.map((item) => item.report); // 获取X轴刻度
     const netProfit = reverseData.map((item) => item.numberValue); // 净利润
-    // 获取ROE数据
     
     const yoyGrowth = reverseData.map((item) =>
       (item.numberYoy * 100).toFixed(2)
@@ -135,9 +134,6 @@ export default function Index(props) {
           type: "bar",
           data: netProfit,
           barWidth: 20,
-          emphasis: {
-            focus: "series",
-          },
         },
         {
           name: "同比增长率",
