@@ -156,9 +156,35 @@ const convertToYi = (number) => {
   }
 }
 
+const normalToSymbol = (value) => {
+  if (value >= 100000000) {
+    return value / 100000000 + "亿";
+  } else if (value >= 10000) {
+    return value / 10000 + "万";
+  } else if (value >= 1000) {
+    return value / 1000 + "千";
+  }
+  return value;
+};
+
+const profitToSymbol = (value) => {
+  const symbol = value > 0 ? "" : "-";
+  const absValue = Math.abs(value);
+  if (absValue >= 100000000) {
+    return symbol + absValue / 100000000 + "亿";
+  } else if (absValue >= 10000) {
+    return symbol + absValue / 10000 + "万";
+  } else if (absValue >= 1000) {
+    return symbol + absValue / 1000 + "千";
+  }
+  return value;
+}
+
 
 export default {
   number2text,
   formatLargeAmount,
-  convertToYi
+  convertToYi,
+  normalToSymbol,
+  profitToSymbol
 };

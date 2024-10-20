@@ -4,6 +4,7 @@ import ReactEcharts from "echarts-for-react";
 import dayjs from "dayjs";
 import thirdParty, { eventsMapColor } from "@/apis/thirdParty";
 import { dataConversion } from "@/utils";
+import amount from "@/utils/amount";
 
 export default function Index(props) {
   const { data } = props;
@@ -100,6 +101,12 @@ export default function Index(props) {
           type: "value",
           name: "净利润",
           position: "left",
+          axisLabel: {
+            fontSize: 10,
+            formatter: function (value) {
+              return amount.profitToSymbol(value);
+            },
+          },
         },
         {
           type: "value",
@@ -157,6 +164,12 @@ export default function Index(props) {
           name: "成交额",
           // 关联成交量图，最好分开展示
           position: "left",
+          axisLabel: {
+            fontSize: 10,
+            formatter: function (value) {
+              return amount.normalToSymbol(value);
+            },
+          },
         },
         {
           type: "value",
