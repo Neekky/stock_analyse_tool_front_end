@@ -36,7 +36,7 @@ export default function Index(props) {
 
     const categories = reverseData.map((item) => item.report); // 获取X轴刻度
     const netProfit = reverseData.map((item) => item.numberValue); // 净利润
-    
+
     const yoyGrowth = reverseData.map((item) =>
       (item.numberYoy * 100).toFixed(2)
     ); // 同比增长率
@@ -255,6 +255,28 @@ export default function Index(props) {
         </div>
       </div>
 
+      {/* 股票板块信息 */}
+      <div className="stock-info-wrap">
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">行业板块</span>{" "}
+          <span className=" text-[#333]">
+            {data.plateData.industry_l2.name}
+          </span>
+        </div>
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">行业龙头</span>{" "}
+          <span className=" text-[#333]">
+            {data.plateData.industry_l2.leading_stock.name}
+          </span>
+        </div>
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">细分行业</span>{" "}
+          <span className=" text-[#333]">
+            {data.plateData.industry_l3.name}
+          </span>
+        </div>
+      </div>
+
       {/* 股票事件 */}
       {events.length > 0 ? (
         <div
@@ -277,12 +299,12 @@ export default function Index(props) {
                   {ele.EVENT_TYPE}
                 </div>
                 {ele.LEVEL1_CONTENT ? (
-                  <div className="text-stone-700 text-[14px]">
+                  <div className="text-stone-800 text-[14px]">
                     {ele.LEVEL1_CONTENT}
                   </div>
                 ) : null}
                 {ele.LEVEL2_CONTENT ? (
-                  <div className="text-stone-700 text-[14px]">
+                  <div className="text-stone-500 mt-1 text-[14px]">
                     {ele.LEVEL2_CONTENT}
                   </div>
                 ) : null}

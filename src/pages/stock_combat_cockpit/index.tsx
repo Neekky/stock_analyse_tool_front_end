@@ -9,6 +9,7 @@ import MarketScore from "./components/market-score";
 import { safeJsonParse } from "@/utils/common";
 import MarketVolume from "./components/market-volume";
 import IndexCompilations from "./components/index-compilations";
+import thirdParty from "@/apis/thirdParty";
 
 export default function Index() {
   const [trendData, setTrendData] = useState([]);
@@ -19,6 +20,9 @@ export default function Index() {
   const [indexKline, setIndexKline] = useState([]);
   const [indexKline2, setIndexKline2] = useState([]);
 
+  // 市场当日评分
+  const [marketTodayScore, setMarketTodayScore] = useState<null | object>(null);
+
   useEffect(() => {
     Promise.allSettled([
       get_qkj_market_score(),
@@ -26,9 +30,20 @@ export default function Index() {
       get_qkj_market_volume(),
       getIndexKLine("2024-07-29"),
       getIndexKLine2("2024-07-17"),
+      getTodayMarketScore(),
     ]);
     getTrend();
   }, []);
+
+  // 获取同花顺大盘当日评分数据
+  const getTodayMarketScore = async () => {
+    const res = await thirdParty.getQkjTodayScore();
+    console.log(res, 23132);
+    if (res?.status_msg === "ok") {
+      const parseData = res.data;
+      setMarketTodayScore(parseData);
+    }
+  };
 
   // 获取上证指数数据
   const getIndexKLine = async (date) => {
@@ -107,6 +122,15 @@ export default function Index() {
         <RealtimeMarket />
       </div>
 
+      {/* 大盘历史评分 */}
+      <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
+        <MarketScore
+          todayScore={marketTodayScore}
+          data={scoreData}
+          indexKline={indexKline}
+        />
+      </div>
+
       {/* 大盘状态 */}
       <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
         <IndexCompilations />
@@ -120,11 +144,6 @@ export default function Index() {
       {/* 股市的涨跌趋势 */}
       <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
         <UpDownTrend data={trendData} indexKline={indexKline2} />
-      </div>
-
-      {/* 大盘历史评分 */}
-      <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
-        <MarketScore data={scoreData} indexKline={indexKline} />
       </div>
 
       <div className="flex justify-between w-10/12">

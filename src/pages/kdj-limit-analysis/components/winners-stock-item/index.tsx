@@ -28,7 +28,6 @@ export default function Index(props) {
         "NOTICE_DATE"
       );
       setEvents(filterData);
-      console.log(filterData, '龙虎榜信息', stock)
     }
   };
 
@@ -264,7 +263,31 @@ export default function Index(props) {
 
         <div className="mb-2.5 text-[15px] w-2/6 flex justify-end">
           <span className="text-[15px] text-[#333] mr-4">净买入</span>{" "}
-          <span className=" text-[#f46649]">{data.net_value}</span>
+          <span className=" text-[#f46649]">
+            {amount.formatLargeAmount(data.net_value, 4)}
+          </span>
+        </div>
+      </div>
+
+      {/* 股票板块信息 */}
+      <div className="stock-info-wrap">
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">行业板块</span>{" "}
+          <span className=" text-[#333]">
+            {data.plateData.industry_l2.name}
+          </span>
+        </div>
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">行业龙头</span>{" "}
+          <span className=" text-[#333]">
+            {data.plateData.industry_l2.leading_stock.name}
+          </span>
+        </div>
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">细分行业</span>{" "}
+          <span className=" text-[#333]">
+            {data.plateData.industry_l3.name}
+          </span>
         </div>
       </div>
 
@@ -295,7 +318,9 @@ export default function Index(props) {
           className="p-2 my-2 rounded-2xl"
           style={{ backgroundColor: data.eventsColor }}
         >
-          <div className="text-[20px] text-[#333] font-semibold	">近一月大事提醒</div>
+          <div className="text-[20px] text-[#333] font-semibold	">
+            近一月大事提醒
+          </div>
           {events.map((ele: any) => (
             <div
               key={ele.LEVEL1_CONTENT}
@@ -312,12 +337,12 @@ export default function Index(props) {
                   {ele.EVENT_TYPE}
                 </div>
                 {ele.LEVEL1_CONTENT ? (
-                  <div className="text-stone-700 text-[14px]">
+                  <div className="text-stone-800 text-[14px]">
                     {ele.LEVEL1_CONTENT}
                   </div>
                 ) : null}
                 {ele.LEVEL2_CONTENT ? (
-                  <div className="text-stone-700 text-[14px]">
+                  <div className="text-stone-500 mt-1 text-[14px]">
                     {ele.LEVEL2_CONTENT}
                   </div>
                 ) : null}

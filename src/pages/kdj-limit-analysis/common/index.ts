@@ -77,10 +77,8 @@ export const get_profit_data = async (data) => {
 };
 
 // 获取个股板块数据
-export const get_stock_plate_data = async (data) => {
+export const get_stock_plate_data = async (stock) => {
   try {
-    const stock: string = data["股票代码"]?.split(".")[0];
-
     // 计算market
     let market = "33";
     if (stock.startsWith("6")) {
@@ -107,18 +105,23 @@ export const get_stock_plate_data = async (data) => {
 
 // kdj涨停板块
 export const combineKdj = async (data) => {
+  const stock: string = data["股票代码"]?.split(".")[0];
+
   const results: any[] = await Promise.allSettled([
     get_profit_data(data),
+    get_stock_plate_data(stock),
   ]);
 
-  return { ...results[0].value };
+  return { ...results[0].value, ...results[1].value };
 };
 
 // 领涨龙头板块
 export const combineLeading = async (data) => {
+  const stock: string = data["股票代码"]?.split(".")[0];
+
   const results: any[] = await Promise.allSettled([
     get_profit_data(data),
-    get_stock_plate_data(data),
+    get_stock_plate_data(stock),
   ]);
 
   return { ...results[0].value, ...results[1].value };
@@ -126,11 +129,14 @@ export const combineLeading = async (data) => {
 
 // 龙虎榜优选板块
 export const combineWinners = async (data) => {
+  const stock: string = data["stock_code"];
   const results: any[] = await Promise.allSettled([
     get_profit_data(data),
+    get_stock_plate_data(stock),
   ]);
 
-  return { ...results[0].value };
+
+  return { ...results[0].value, ...results[1].value };
 };
 
 // 获取股票分钟级分时数据

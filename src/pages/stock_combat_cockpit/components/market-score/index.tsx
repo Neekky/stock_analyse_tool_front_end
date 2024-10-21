@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
+import "./index.less";
 
-const StockChart = ({ data, indexKline }) => {
+const StockChart = ({ data, indexKline, todayScore }) => {
   const chartRef = useRef(null);
   // 涨跌家数展示
   useEffect(() => {
@@ -93,10 +94,37 @@ const StockChart = ({ data, indexKline }) => {
 
   return (
     <>
+      {todayScore ? (
+        <div className="w-full today-score-wrap">
+          <div className="text-[18px] font-semibold	text-[#b91c1c]">
+            当日点评
+          </div>
+          <div>
+            <span className="text-[18px] text-[#292524] mr-2">
+              当日综合评分
+            </span>{" "}
+            <span className="text-[24px] text-[#b91c1c] mr-2">
+              {todayScore?.sum_socre}
+            </span>
+            <span className="text-[14px] text-[#78716c] ml-2">技术面</span>{" "}
+            <span className="text-[14px] text-[#b91c1c]">
+              {todayScore?.tech_score}
+            </span>
+            <span className="text-[14px] text-[#78716c] ml-2">资金面</span>{" "}
+            <span className="text-[14px] text-[#b91c1c]">
+              {todayScore?.money_score}
+            </span>
+          </div>
+          <div>
+            <span className="text-[18px] text-[#292524] mr-2">{todayScore?.score_title}</span>
+            <span className="text-[14px] text-[#78716c]">{todayScore?.score_content}</span>
+          </div>
+        </div>
+      ) : null}
       <div ref={chartRef} style={{ width: "100%", height: "400px" }} />
-      <div className="w-full">
-        <div>使用小贴士</div>
-        <div>1. 该指标为资金面、技术面的平均分数。</div>
+      <div className="w-full market-tip-wrap">
+        <div className="text-[18px] font-semibold	text-[#b91c1c]">使用小贴士</div>
+        <div className="text-[16px] text-[#78716c] mt-2">1. 该指标为资金面、技术面的平均分数。</div>
       </div>
     </>
   );

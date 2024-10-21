@@ -138,11 +138,11 @@ export default function IndexCompilations() {
         option={getOption()}
         style={{ width: "100%", height: "400px" }}
       />
-      <div className="w-full">
-        <div>使用小贴士</div>
-        <div>1. 折现0轴之上为上行趋势，0轴之下为下行趋势</div>
-        <div>2. 折现触底达100%后，观察指数接下来是否继续大跌，有回调时可上车</div>
-        <div>3. 折现触顶达100%后，观察指数接下来是否上涨无力，有回调时进行清仓</div>
+      <div className="w-full index-tip-wrap">
+        <div className="text-[18px] font-semibold	text-[#b91c1c]">使用小贴士</div>
+        <div className="text-[16px] text-[#78716c] mt-2">1. 折现0轴之上为上行趋势，0轴之下为下行趋势</div>
+        <div className="text-[16px] text-[#78716c] mt-2">2. 折现触底达100%后，观察指数接下来是否继续大跌，有回调时可上车</div>
+        <div className="text-[16px] text-[#78716c] mt-2">3. 折现触顶达100%后，观察指数接下来是否上涨无力，有回调时进行清仓</div>
       </div>
     </>
   );

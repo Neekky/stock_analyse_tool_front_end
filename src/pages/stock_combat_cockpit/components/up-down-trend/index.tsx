@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
+import "../market-score/index.less"
 
 const StockChart = ({ data, indexKline = [] }) => {
   const chartRef = useRef(null);
@@ -241,10 +242,10 @@ const StockChart = ({ data, indexKline = [] }) => {
         className="mt-6"
         style={{ width: "100%", height: "400px" }}
       />
-      <div className="w-full">
-        <div>使用小贴士</div>
-        <div>1. 观察涨跌家数数据的切换，市场长期是震荡，可能为一绿一红交替，有规律。</div>
-        <div>2. 通过涨跌停的比值，判断市场的题材是否强势，资金活跃度是否高涨</div>
+      <div className="w-full market-tip-wrap">
+        <div className="text-[18px] font-semibold	text-[#b91c1c]">使用小贴士</div>
+        <div className="text-[16px] text-[#78716c] mt-2">1. 观察涨跌家数数据的切换，市场长期是震荡，可能为一绿一红交替，有规律。</div>
+        <div className="text-[16px] text-[#78716c] mt-2">2. 通过涨跌停的比值，判断市场的题材是否强势，资金活跃度是否高涨</div>
       </div>
     </>
   );

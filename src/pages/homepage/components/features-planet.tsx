@@ -18,7 +18,10 @@ export default function FeaturesPlanet() {
           </div>
           {/* Grid */}
           <div className="grid overflow-hidden sm:grid-cols-2 lg:grid-cols-3 [&>*]:relative [&>*]:p-6 [&>*]:before:absolute [&>*]:before:bg-gray-800 [&>*]:before:[block-size:100vh] [&>*]:before:[inline-size:1px] [&>*]:before:[inset-block-start:0] [&>*]:before:[inset-inline-start:-1px] [&>*]:after:absolute [&>*]:after:bg-gray-800 [&>*]:after:[block-size:1px] [&>*]:after:[inline-size:100vw] [&>*]:after:[inset-block-start:-1px] [&>*]:after:[inset-inline-start:0] md:[&>*]:p-10">
-            <article className="cursor-pointer hover:bg-blue-900" onClick={() => toPage("/home/limitup-analyse")}>
+            <article
+              className="cursor-pointer hover:bg-blue-900"
+              onClick={() => toPage("/home/limitup-analyse")}
+            >
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -28,15 +31,16 @@ export default function FeaturesPlanet() {
                 >
                   <path d="M2 4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4Zm2-4a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4a4 4 0 0 0-4-4H4Zm1 10a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2H5Z" />
                 </svg>
-                <span>涨停板分析</span>
+                <span>涨跌停分析</span>
               </h3>
               <p className="text-[15px] text-gray-400">
-                Collect essential insights about how visitors are using your
-                site with in-depth page view metrics like pages, referring
-                sites, and more.
+                股市风向标,尽在涨跌停。我们的每日分析报告,为您解读市场情绪,揭示热点演变。从宏观到微观,全方位剖析涨跌停现象,助您在波动中捕捉确定性机会
               </p>
             </article>
-            <article className="cursor-pointer hover:bg-blue-900" onClick={() => toPage("/kdj-limit-analysis")}>
+            <article
+              className="cursor-pointer hover:bg-blue-900"
+              onClick={() => toPage("/kdj-limit-analysis")}
+            >
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -50,12 +54,13 @@ export default function FeaturesPlanet() {
               </h3>
               <p className="text-[15px] text-gray-400">
                 本功能以每日涨停数据为基础，结合多维度因子分析，对个股进行深度挖掘。
-                <br />
-                系统将根据设定的参数，对筛选出的个股进行多维度量化评估，并提供可视化排名，
-                快速锁定投资机会，抢占市场先机。
+                对筛选个股进行多维度量化评估，提供可视化排名，快速锁定投资机会，抢占市场先机。
               </p>
             </article>
-            <article className="cursor-pointer hover:bg-blue-900" onClick={() => toPage("/stock-combat-cockpit")}>
+            <article
+              className="cursor-pointer hover:bg-blue-900"
+              onClick={() => toPage("/stock-combat-cockpit")}
+            >
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -72,9 +77,7 @@ export default function FeaturesPlanet() {
                 <span>股市实时监控</span>
               </h3>
               <p className="text-[15px] text-gray-400">
-                Collect essential insights about how visitors are using your
-                site with in-depth page view metrics like pages, referring
-                sites, and more.
+                实时掌握市场脉搏，智能分析涨跌趋势。独家市场评分系统，助您洞悉投资机会。让每一次交易都建立在精准市场洞察之上，提升您的投资决策能力
               </p>
             </article>
             <article>

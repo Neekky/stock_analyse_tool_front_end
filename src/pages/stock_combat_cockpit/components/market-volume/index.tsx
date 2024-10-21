@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 import amount from "@/utils/amount";
+import "../market-score/index.less"
 
 const StockChart = ({ data, indexKline }) => {
   const chartRef = useRef(null);
@@ -125,10 +126,10 @@ const StockChart = ({ data, indexKline }) => {
   return (
     <>
       <div ref={chartRef} style={{ width: "100%", height: "400px" }} />
-      <div className="w-full">
-        <div>使用小贴士</div>
-        <div>1. 红线为沪深两市总成交额，蓝线为60日平均线</div>
-        <div>2. 观察两线的金叉、死叉情况</div>
+      <div className="w-full market-tip-wrap">
+        <div className="text-[18px] font-semibold	text-[#b91c1c]">使用小贴士</div>
+        <div className="text-[16px] text-[#78716c] mt-2">1. 红线为沪深两市总成交额，蓝线为60日平均线</div>
+        <div className="text-[16px] text-[#78716c] mt-2">2. 观察两线的金叉、死叉情况</div>
       </div>
     </>
   );

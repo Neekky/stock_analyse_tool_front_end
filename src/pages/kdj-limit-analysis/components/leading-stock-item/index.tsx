@@ -288,12 +288,12 @@ export default function Index(props) {
                   {ele.EVENT_TYPE}
                 </div>
                 {ele.LEVEL1_CONTENT ? (
-                  <div className="text-stone-700 text-[14px]">
+                  <div className="text-stone-800 text-[14px]">
                     {ele.LEVEL1_CONTENT}
                   </div>
                 ) : null}
                 {ele.LEVEL2_CONTENT ? (
-                  <div className="text-stone-700 text-[14px]">
+                  <div className="text-stone-500 mt-1 text-[14px]">
                     {ele.LEVEL2_CONTENT}
                   </div>
                 ) : null}

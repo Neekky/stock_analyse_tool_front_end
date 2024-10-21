@@ -12,13 +12,13 @@ export default function Index() {
           <h1
             className="mb-6 border-y text-5xl font-bold [border-image:linear-gradient(to_right,transparent,theme(colors.slate.300/.8),transparent)1] md:text-6xl"
           >
-            多指数趋势洞察
+            市场实时监控
           </h1>
           <div className="mx-auto max-w-3xl">
             <p
               className="mb-8 text-lg text-gray-700"
             >
-              跟踪各行业板块指数的涨跌情况，及时捕捉行业轮动机会，帮助投资者把握市场热点。
+              实时跟踪大盘走势，深度解读市场情绪，为您呈现最全面、最直观的市场全景图。
             </p>
           </div>
         </div>
