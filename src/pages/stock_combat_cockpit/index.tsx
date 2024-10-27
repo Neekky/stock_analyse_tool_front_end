@@ -38,7 +38,6 @@ export default function Index() {
   // 获取同花顺大盘当日评分数据
   const getTodayMarketScore = async () => {
     const res = await thirdParty.getQkjTodayScore();
-    console.log(res, 23132);
     if (res?.status_msg === "ok") {
       const parseData = res.data;
       setMarketTodayScore(parseData);

@@ -352,4 +352,24 @@ export default new (class EastMoney extends Axios {
     const url = `https://dq.10jqka.com.cn/fuyao/market_analysis_api/score/v1/get_market_score`;
     return this.get(url);
   }
+
+  // 同花顺获取强势股连板
+  getConnectingPlate(date: string) {
+    const url = `https://data.10jqka.com.cn/mobileapi/hotspot_focus/stock_pool/v1/get_tab_info?date=${date}`;
+    return this.get(url);
+  }
+
+  // 同花顺获取两日涨停板的比较情况
+  getLimitTowDayCompare(date: string) {
+    const url = `https://data.10jqka.com.cn/mobileapi/hotspot_focus/limit_up_compare/v1/two_days_compare?date=${date}`;
+    return this.get(url);
+  }
+
+  // 同花顺获取最近30日的两连板及以上数据的情况
+  getHotspotFocus(date: string) {
+    const url = `https://data.10jqka.com.cn/mobileapi/hotspot_focus/limit_up_compare/v1/range_compare?`;
+    return this.get(url);
+  }
+  
+  
 })();
