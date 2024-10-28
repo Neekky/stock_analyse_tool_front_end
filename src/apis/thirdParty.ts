@@ -366,7 +366,7 @@ export default new (class EastMoney extends Axios {
   }
 
   // 同花顺获取最近30日的两连板及以上数据的情况
-  getHotspotFocus(date: string) {
+  getHotspotFocus() {
     const url = `https://data.10jqka.com.cn/mobileapi/hotspot_focus/limit_up_compare/v1/range_compare?`;
     return this.get(url);
   }

@@ -22,7 +22,7 @@ export default function IndexCompilations() {
   // 指数K线见顶见底概率数据
   const [indexTBPercent, setIndexTBPercent] = useState([]);
 
-  const [connectingPlate, setConnectingPlate] = useState([]);
+  const [, setConnectingPlate] = useState([]);
 
   // 初始进入，更新为交易日期
   useEffect(() => {
