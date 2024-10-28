@@ -370,6 +370,11 @@ export default new (class EastMoney extends Axios {
     const url = `https://data.10jqka.com.cn/mobileapi/hotspot_focus/limit_up_compare/v1/range_compare?`;
     return this.get(url);
   }
-  
+
+  // 同花顺获取涨停强度-连板池的数据
+  getLimitPower(date: string) {
+    const url = `https://data.10jqka.com.cn/dataapi/limit_up/continuous_limit_pool?page=1&limit=15&field=199112,10,330329,330325,133971,133970,1968584,3475914,3541450,9004&filter=HS,GEM2STAR&order_field=330329&order_type=0&date=${date}`;
+    return this.get(url);
+  }
   
 })();

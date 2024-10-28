@@ -6,8 +6,6 @@ import dayjs from "dayjs";
 import { RangePickerProps } from "antd/es/date-picker";
 import "dayjs/locale/zh-cn";
 
-import "./index.less";
-
 import type { TabsProps } from "antd";
 import KdjTab from "./components/kdj-tab";
 import LeadingTab from "./components/leading-tab";
@@ -15,6 +13,7 @@ import WinnersTab from "./components/winners-tab";
 import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { thirdPartyApi } from "@/apis";
+import "./index.less";
 
 dayjs.locale("zh-cn");
 
@@ -103,14 +102,15 @@ export default function Index() {
           {twoDayCompareData?.board_list?.map((ele) => {
             return (
               <div className="flex w-full my-2">
-                <div className="w-1/2 bg-gray-200 p-2 rounded-md mr-2">
+                {/* 昨日连板 */}
+                <div className="w-1/2 bg-gray-200 py-2 px-8 rounded-md mr-2">
                   <div className="text-neutral-700 text-lg font-medium">
-                    昨日{ele.yesterday_board}板({ele.yesterday_list.length})
+                    昨日{ele.yesterday_board}板 ( {ele.yesterday_list.length} )
                   </div>
                   <div className="flex flex-wrap">
                     {ele.yesterday_list.map((item) => (
                       <div className="w-1/3 mt-2">
-                        <span className="text-stone-800 mr-2">
+                        <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
                         </span>
                         <span
@@ -122,20 +122,35 @@ export default function Index() {
                           }}
                           className="text-stone-800 mr-2 font-medium"
                         >
-                          {item.rate}%
+                          {Number(item.rate).toFixed(2)}%
                         </span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="w-1/2 bg-red-200 p-2 rounded-md">
+
+                {/* 箭头 */}
+                <div className="kdj-limit-arrow" />
+
+                {/* 今日连板 */}
+                <div className="w-1/2 bg-red-200 py-2 px-8 rounded-md">
                   <div className="text-red-500 text-lg font-medium	">
-                    今日{ele.today_board}板({ele.today_list.length})
+                    今日{ele.today_board}板 ( {ele.today_list.length} )
+                    <span className="ml-2 text-[#493f3f] text-base">
+                      晋级率
+                    </span>{" "}
+                    <span className="text-[#493f3f] text-base">
+                      {Math.round(
+                        (ele.today_list.length / ele.yesterday_list.length) *
+                          100
+                      )}
+                      %
+                    </span>
                   </div>
                   <div className="flex flex-wrap">
                     {ele.today_list.map((item) => (
                       <div className="w-1/3 mt-2">
-                        <span className="text-stone-800 mr-2">
+                        <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
                         </span>
                         <span
@@ -147,7 +162,7 @@ export default function Index() {
                           }}
                           className="text-stone-800 mr-2 font-medium"
                         >
-                          {item.rate}%
+                          {Number(item.rate).toFixed(2)}%
                         </span>
                       </div>
                     ))}
