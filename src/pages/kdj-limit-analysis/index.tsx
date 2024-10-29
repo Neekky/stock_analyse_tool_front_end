@@ -108,7 +108,7 @@ export default function Index() {
                     昨日{ele.yesterday_board}板 ( {ele.yesterday_list?.length || 0} )
                   </div>
                   <div className="flex flex-wrap">
-                    {ele.yesterday_list.map((item) => (
+                    {ele.yesterday_list?.map((item) => (
                       <div className="w-1/3 mt-2">
                         <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
@@ -148,7 +148,7 @@ export default function Index() {
                     </span>
                   </div>
                   <div className="flex flex-wrap">
-                    {ele.today_list.map((item) => (
+                    {ele.today_list?.map((item) => (
                       <div className="w-1/3 mt-2">
                         <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
