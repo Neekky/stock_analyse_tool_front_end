@@ -78,7 +78,7 @@ export default function Index() {
   ];
 
   return (
-    <div className="flex items-center	flex-col ">
+    <div className="flex items-center	flex-col">
       <Header />
 
       {/* 日期选择 */}

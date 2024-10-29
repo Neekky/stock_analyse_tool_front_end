@@ -146,6 +146,12 @@ export default new (class StockKline extends Axios {
     return this.get(url);
   }
 
+  // # 快速获取A股龙虎榜各路资金明细数据
+  get_winner_volume_detail() {
+    const url = `${API_GATEWAY_FLASK}/get_winner_volume_detail`;
+    return this.get(url);
+  }
+
   // 直接从东方财富获取股票K线
   async stockZhAHist(
     symbol = "000001",

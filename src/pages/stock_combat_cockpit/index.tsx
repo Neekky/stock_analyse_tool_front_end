@@ -9,6 +9,7 @@ import MarketScore from "./components/market-score";
 import { safeJsonParse } from "@/utils/common";
 import MarketVolume from "./components/market-volume";
 import IndexCompilations from "./components/index-compilations";
+import WinnersVolumDetail from "./components/winners-volume-detail";
 import thirdParty from "@/apis/thirdParty";
 
 export default function Index() {
@@ -16,9 +17,11 @@ export default function Index() {
   const [scoreData, setScoreData] = useState([]);
   const [volumeData, setVolumeData] = useState([]);
 
+  // 龙虎榜资金各路明细数据
+  const [winnersVolDetail, setWinnersVolDetail] = useState([]);
+
   // 指数K线开高收低数据
   const [indexKline, setIndexKline] = useState([]);
-  const [indexKline2, setIndexKline2] = useState([]);
 
   // 市场当日评分
   const [marketTodayScore, setMarketTodayScore] = useState<null | object>(null);
@@ -28,12 +31,21 @@ export default function Index() {
       get_qkj_market_score(),
       getTrend(),
       get_qkj_market_volume(),
-      getIndexKLine("2024-07-29"),
-      getIndexKLine2("2024-07-17"),
+      getIndexKLine("2023-10-30"),
       getTodayMarketScore(),
+      get_winner_volume_detail()
     ]);
-    getTrend();
   }, []);
+
+  // 获取龙虎榜资金各路明细数据
+  const get_winner_volume_detail = async () => {
+    const res = await stockklineApi.get_winner_volume_detail();
+    if (res?.code === 200) {
+      const parseData = JSON.parse(res.data);
+      console.log(parseData, 'parseData')
+      setWinnersVolDetail(parseData);
+    }
+  }
 
   // 获取同花顺大盘当日评分数据
   const getTodayMarketScore = async () => {
@@ -61,30 +73,7 @@ export default function Index() {
         times.push(candle_end_time);
         return kitem;
       });
-
       setIndexKline(kdata);
-    }
-  };
-
-  // 获取上证指数数据
-  const getIndexKLine2 = async (date) => {
-    // 获取当前时间的60天之前日期
-    const res = await stockklineApi.getIndexKLine({
-      startDate: date,
-      index: "sh000001",
-    });
-    if (res.code === 200) {
-      const data = safeJsonParse(res.data, []);
-      const times: string[] = [];
-      // 处理K线数据，按照[开盘价, 收盘价, 最低价, 最高价]的顺序。
-      const kdata = data.map((ele) => {
-        const { open, close, low, high, candle_end_time } = ele;
-        const kitem = [candle_end_time, open, close, low, high];
-        times.push(candle_end_time);
-        return kitem;
-      });
-
-      setIndexKline2(kdata);
     }
   };
 
@@ -126,7 +115,7 @@ export default function Index() {
         <MarketScore
           todayScore={marketTodayScore}
           data={scoreData}
-          indexKline={indexKline}
+          indexKline={indexKline.slice(182)}
         />
       </div>
 
@@ -137,12 +126,17 @@ export default function Index() {
 
       {/* 大盘历史成交 */}
       <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
-        <MarketVolume data={volumeData} indexKline={indexKline2} />
+        <MarketVolume data={volumeData} indexKline={indexKline.slice(174)} />
       </div>
 
       {/* 股市的涨跌趋势 */}
       <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
-        <UpDownTrend data={trendData} indexKline={indexKline2} />
+        <UpDownTrend data={trendData} indexKline={indexKline.slice(174)} />
+      </div>
+
+       {/* 龙虎榜各路资金历史成交 */}
+       <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
+        <WinnersVolumDetail data={winnersVolDetail} indexKline={indexKline} />
       </div>
 
       <div className="flex justify-between w-10/12">

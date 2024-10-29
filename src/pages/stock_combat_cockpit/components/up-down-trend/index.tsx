@@ -1,10 +1,9 @@
 import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
-import "../market-score/index.less"
+import "../market-score/index.less";
 
 const StockChart = ({ data, indexKline = [] }) => {
   const chartRef = useRef(null);
-
   const chartRef2 = useRef(null);
 
   // 涨跌家数展示
@@ -138,7 +137,7 @@ const StockChart = ({ data, indexKline = [] }) => {
         },
       },
       legend: {
-        data: ["涨停家数", "跌停家数", "跌停/涨停比值"],
+        data: ["涨停家数", "跌停家数", "涨停/跌停比值"],
       },
       xAxis: {
         type: "category",
@@ -151,10 +150,10 @@ const StockChart = ({ data, indexKline = [] }) => {
           name: "家数",
           position: "left",
           min: function (value) {
-            return value.min;
+            return value.min - 30;
           },
           max: function (value) {
-            return value.max;
+            return value.max + 30;
           },
           splitNumber: 6,
           yAxisIndex: 0,
@@ -165,6 +164,12 @@ const StockChart = ({ data, indexKline = [] }) => {
           position: "right",
           axisLabel: {
             formatter: "{value}",
+          },
+          min: function (value) {
+            return value.min - 15;
+          },
+          max: function (value) {
+            return value.max + 15;
           },
           yAxisIndex: 1,
         },
@@ -178,10 +183,10 @@ const StockChart = ({ data, indexKline = [] }) => {
           yAxisIndex: 2,
           offset: 50,
           min: function (value) {
-            return (value.min - 10).toFixed(0);
+            return (value.min - 100).toFixed(0);
           },
           max: function (value) {
-            return (value.max + 10).toFixed(0);
+            return (value.max + 100).toFixed(0);
           },
         },
       ],
@@ -210,7 +215,7 @@ const StockChart = ({ data, indexKline = [] }) => {
           name: "涨停/跌停比值",
           type: "line",
           data: data.map((item) =>
-            item.涨停数 !== 0 && item.跌停数 !== 0 ? (item.涨停数 / item.跌停数).toFixed(2) : 0
+            ((item.涨停数 || 1) / (item.跌停数 || 1)).toFixed(2)
           ),
           itemStyle: {
             color: "#eab308",
@@ -243,9 +248,16 @@ const StockChart = ({ data, indexKline = [] }) => {
         style={{ width: "100%", height: "400px" }}
       />
       <div className="w-full market-tip-wrap">
-        <div className="text-[18px] font-semibold	text-[#b91c1c]">使用小贴士</div>
-        <div className="text-[16px] text-[#78716c] mt-2">1. 观察涨跌家数数据的切换，市场长期是震荡，可能为一绿一红交替，有规律。</div>
-        <div className="text-[16px] text-[#78716c] mt-2">2. 通过涨跌停的比值，判断市场的题材是否强势，资金活跃度是否高涨</div>
+        <div className="text-[18px] font-semibold	text-[#b91c1c]">
+          使用小贴士
+        </div>
+        <div className="text-[16px] text-[#78716c] mt-2">
+          1.
+          观察涨跌家数数据的切换，市场长期是震荡，可能为一绿一红交替，有规律。
+        </div>
+        <div className="text-[16px] text-[#78716c] mt-2">
+          2. 通过涨跌停的比值，判断市场的题材是否强势，资金活跃度是否高涨
+        </div>
       </div>
     </>
   );
