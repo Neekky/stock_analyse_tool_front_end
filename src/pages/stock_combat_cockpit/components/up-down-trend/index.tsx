@@ -207,10 +207,10 @@ const StockChart = ({ data, indexKline = [] }) => {
           symbol: "none",
         },
         {
-          name: "跌停/涨停比值",
+          name: "涨停/跌停比值",
           type: "line",
           data: data.map((item) =>
-            item.涨停数 !== 0 ? (item.跌停数 / item.涨停数).toFixed(2) : 0
+            item.涨停数 !== 0 && item.跌停数 !== 0 ? (item.涨停数 / item.跌停数).toFixed(2) : 0
           ),
           itemStyle: {
             color: "#eab308",
