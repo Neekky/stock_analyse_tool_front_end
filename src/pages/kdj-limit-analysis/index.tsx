@@ -105,7 +105,7 @@ export default function Index() {
                 {/* 昨日连板 */}
                 <div className="w-1/2 bg-gray-200 py-2 px-8 rounded-md mr-2">
                   <div className="text-neutral-700 text-lg font-medium">
-                    昨日{ele.yesterday_board}板 ( {ele.yesterday_list.length} )
+                    昨日{ele.yesterday_board}板 ( {ele.yesterday_list?.length || 0} )
                   </div>
                   <div className="flex flex-wrap">
                     {ele.yesterday_list.map((item) => (
@@ -135,13 +135,13 @@ export default function Index() {
                 {/* 今日连板 */}
                 <div className="w-1/2 bg-red-200 py-2 px-8 rounded-md">
                   <div className="text-red-500 text-lg font-medium	">
-                    今日{ele.today_board}板 ( {ele.today_list.length} )
+                    今日{ele.today_board}板 ( {ele.today_list?.length || 0} )
                     <span className="ml-2 text-[#493f3f] text-base">
                       晋级率
                     </span>{" "}
                     <span className="text-[#493f3f] text-base">
                       {Math.round(
-                        (ele.today_list.length / ele.yesterday_list.length) *
+                        ((ele.today_list?.length || 0) / (ele.yesterday_list?.length || 0)) *
                           100
                       )}
                       %
