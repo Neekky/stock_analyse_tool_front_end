@@ -296,12 +296,6 @@ export default new (class EastMoney extends Axios {
     return this.get(url);
   }
 
-  // 同花顺-获取当日热点板块数据
-  getHotPlateData() {
-    const url = `https://eq.10jqka.com.cn/open/api/hot_list/v1/hot_plate/concept/data.txt`;
-    return this.get(url);
-  }
-
   // 同花顺的股票相关板块数据，包含是否为龙头，各板块当前人气股，market：沪市-17；深市-33；北证-151
   getQKAStockPlateData(code, market) {
     const url = `https://dq.10jqka.com.cn/fuyao/thsweb_quote/fund/v1/get_list_obj?code=${code}&market=${market}`;
@@ -376,5 +370,22 @@ export default new (class EastMoney extends Axios {
     const url = `https://data.10jqka.com.cn/dataapi/limit_up/continuous_limit_pool?page=1&limit=15&field=199112,10,330329,330325,133971,133970,1968584,3475914,3541450,9004&filter=HS,GEM2STAR&order_field=330329&order_type=0&date=${date}`;
     return this.get(url);
   }
-  
+
+  // 同花顺获取热股热榜
+  getHotStockHotList() {
+    const url = `https://eq.10jqka.com.cn/open/api/hot_list/v1/hot_stock/a/hour/data.txt`;
+    return this.get(url);
+  }
+
+  // 同花顺-获取当日热点概念板块数据
+  getHotPlateData() {
+    const url = `https://eq.10jqka.com.cn/open/api/hot_list/v1/hot_plate/concept/data.txt`;
+    return this.get(url);
+  }
+
+  // 同花顺-获取当日热点行业板块数据
+  getHotIndustryPlateData() {
+    const url = `https://eq.10jqka.com.cn/open/api/hot_list/v1/hot_plate/industry/data.txt`;
+    return this.get(url);
+  }
 })();
