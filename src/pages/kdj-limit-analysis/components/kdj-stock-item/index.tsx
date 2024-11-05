@@ -277,6 +277,15 @@ export default function Index(props) {
         </div>
       </div>
 
+      <div className="stock-info-wrap">
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">股票市值</span>{" "}
+          <span className=" text-[#333]">
+            {amount.convertToYi(data['a股市值(不含限售股)'])}
+          </span>
+        </div>
+      </div>
+
       {/* 股票事件 */}
       {events.length > 0 ? (
         <div

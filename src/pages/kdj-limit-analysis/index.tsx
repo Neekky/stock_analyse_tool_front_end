@@ -56,7 +56,7 @@ export default function Index() {
         // thirdPartyApi.getHotIndustryPlateData(),
       ]
     );
-    console.log(hotStock, hotConcept, "123321231");
+
     if (hotStock?.value?.status_msg === "success") {
       setHotStockList(hotStock.value?.data?.stock_list || []);
     }
@@ -69,7 +69,6 @@ export default function Index() {
     //   setHotIndustryList(hotIndustry.value?.data?.plate_list || []);
     // }
 
-    console.log();
   };
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
@@ -133,7 +132,7 @@ export default function Index() {
         <div className="w-10/12">
           {twoDayCompareData?.board_list?.map((ele) => {
             return (
-              <div className="flex w-full my-2">
+              <div key={ele.today_board} className="flex w-full my-2">
                 {/* 昨日连板 */}
                 <div className="w-1/2 bg-gray-200 py-2 px-8 rounded-md mr-2">
                   <div className="text-neutral-700 text-lg font-medium">
@@ -142,7 +141,7 @@ export default function Index() {
                   </div>
                   <div className="flex flex-wrap">
                     {ele.yesterday_list?.map((item) => (
-                      <div className="w-1/3 mt-2">
+                      <div key={item.stock_name} className="w-1/3 mt-2">
                         <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
                         </span>
@@ -183,7 +182,7 @@ export default function Index() {
                   </div>
                   <div className="flex flex-wrap">
                     {ele.today_list?.map((item) => (
-                      <div className="w-1/3 mt-2">
+                      <div key={item.stock_name} className="w-1/3 mt-2">
                         <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
                         </span>
@@ -234,7 +233,7 @@ export default function Index() {
                       ) : null}
                       {ele?.tag?.concept_tag?.length > 0
                         ? ele.tag?.concept_tag?.map((tagitem) => (
-                            <div className="plate-tag-b pr-2">{tagitem}</div>
+                            <div key={tagitem} className="plate-tag-b pr-2">{tagitem}</div>
                           ))
                         : null}
                     </div>

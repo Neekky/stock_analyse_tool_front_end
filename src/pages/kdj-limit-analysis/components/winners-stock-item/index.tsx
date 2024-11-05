@@ -8,7 +8,6 @@ import amount from "@/utils/amount";
 
 export default function Index(props) {
   const { data } = props;
-
   const [events, setEvents] = useState([]);
 
   useEffect(() => {

@@ -88,6 +88,15 @@ export default function Index(props) {
     intervalRef.current = interval;
   };
 
+  // 计算数组小于0的元素
+  const countNegatives = (arr) => {
+    if (!Array.isArray(arr)) return 0;
+    return arr.reduce((count, num) => {
+      const value = Number(num.value);
+      return count + (value < 0 && Number.isFinite(value) ? 1 : 0)
+    }, 0);
+  }
+
   // 获取每日龙虎榜数据
   const get_winners_data = async (date, originDate) => {
     try {
@@ -104,7 +113,7 @@ export default function Index(props) {
             return (
               !ele.stock_code?.startsWith("1") &&
               ele?.net_value > 20000000 &&
-              ele?.change > 0 &&
+              ele?.change > 0.08 &&
               !flag
             );
           }) || [];
@@ -112,10 +121,17 @@ export default function Index(props) {
         // 更新龙虎榜常规数据
 
         // 查询结果每个个股的各项数据
-        const results = await fetchInBatches(filterData, originDate, 5);
+        const results:any = await fetchInBatches(filterData, originDate, 5);
+
+        // 再次进行数据过滤，将财务数据不达标的过滤掉
+
+        const filterResults = results.filter(stock => {
+          const count = countNegatives(stock.financialData)
+          return count <= 7
+        })
 
         // 对结果做排序
-        const finalResults = rankStock(results);
+        const finalResults = rankStock(filterResults);
         setIsLoading(false);
         setWinnersData(finalResults);
       }

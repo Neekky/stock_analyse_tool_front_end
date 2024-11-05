@@ -8,7 +8,6 @@ import amount from "@/utils/amount";
 
 export default function Index(props) {
   const { data } = props;
-
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -265,13 +264,24 @@ export default function Index(props) {
         </div>
       </div>
 
+      <div className="stock-info-wrap">
+        <div className="mb-2.5 text-[15px] flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">股票市值</span>{" "}
+          <span className=" text-[#333]">
+            {amount.convertToYi(data["a股市值(不含限售股)"])}
+          </span>
+        </div>
+      </div>
+
       {/* 股票事件 */}
       {events.length > 0 ? (
         <div
           className="p-2 my-2 rounded-2xl"
           style={{ backgroundColor: data.eventsColor }}
         >
-          <div className="text-[20px] text-[#333] font-semibold	">近一月大事提醒</div>
+          <div className="text-[20px] text-[#333] font-semibold	">
+            近一月大事提醒
+          </div>
           {events.map((ele: any) => (
             <div
               key={ele.LEVEL1_CONTENT}
