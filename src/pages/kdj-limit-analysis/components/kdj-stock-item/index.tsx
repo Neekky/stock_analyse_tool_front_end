@@ -91,6 +91,13 @@ export default function Index(props) {
         axisPointer: {
           type: "cross",
         },
+        formatter: (params) => {
+          return `
+                净利润：${amount.convertToYi(params[0].value)}<br/>
+                同比增长率：${params[1].value}%<br/>
+                环比增长率：${params[2].value}%<br/>
+              `;
+        },
       },
       legend: {
         data: ["净利润", "同比增长率", "环比增长率"],
