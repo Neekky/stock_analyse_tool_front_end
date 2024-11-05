@@ -246,48 +246,48 @@ export default function Index(props) {
     >
       {/* 股票基本数据展示 */}
       <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+        <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票代码</span>{" "}
-          <span className=" text-[#333]">{data.股票代码}</span>
+          <span className="text-[#333]">{data.股票代码}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+        <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票简称</span>{" "}
-          <span className=" text-[#333]">{data.股票简称}</span>
+          <span className="text-[#333]">{data.股票简称}</span>
         </div>
 
-        <div className="mb-2.5 text-[15px] w-2/6 flex justify-center">
+        <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">几天几板</span>{" "}
-          <span className=" text-[#333]">{data.几天几板}</span>
+          <span className="text-[#333]">{data.几天几板}</span>
         </div>
       </div>
 
       {/* 股票板块信息 */}
       <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] flex justify-start">
+        <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">行业板块</span>{" "}
-          <span className=" text-[#333]">
+          <span className="text-[#333]">
             {data.plateData.industry_l2.name}
           </span>
         </div>
-        <div className="mb-2.5 text-[15px] flex justify-start">
+        <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">行业龙头</span>{" "}
-          <span className=" text-[#333]">
+          <span className="text-[#333]">
             {data.plateData.industry_l2.leading_stock.name}
           </span>
         </div>
-        <div className="mb-2.5 text-[15px] flex justify-start">
+        <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">细分行业</span>{" "}
-          <span className=" text-[#333]">
+          <span className="text-[#333]">
             {data.plateData.industry_l3.name}
           </span>
         </div>
       </div>
 
       <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] flex justify-start">
+        <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票市值</span>{" "}
-          <span className=" text-[#333]">
+          <span className="text-[#333]">
             {amount.convertToYi(data['a股市值(不含限售股)'])}
           </span>
         </div>
