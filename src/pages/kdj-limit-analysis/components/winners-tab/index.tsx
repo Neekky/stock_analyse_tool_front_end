@@ -88,15 +88,6 @@ export default function Index(props) {
     intervalRef.current = interval;
   };
 
-  // 计算数组小于0的元素
-  const countNegatives = (arr) => {
-    if (!Array.isArray(arr)) return 0;
-    return arr.reduce((count, num) => {
-      const value = Number(num.value);
-      return count + (value < 0 && Number.isFinite(value) ? 1 : 0)
-    }, 0);
-  }
-
   // 获取每日龙虎榜数据
   const get_winners_data = async (date, originDate) => {
     try {
@@ -124,9 +115,8 @@ export default function Index(props) {
         const results:any = await fetchInBatches(filterData, originDate, 5);
 
         // 再次进行数据过滤，将财务数据不达标的过滤掉
-
         const filterResults = results.filter(stock => {
-          const count = countNegatives(stock.financialData)
+          const count = dataConversion.countNegatives(stock.financialData)
           return count <= 7
         })
 
@@ -270,7 +260,7 @@ export default function Index(props) {
         <div className="w-full h-72 flex justify-center items-center">
           <Spin size="large" percent={progress}></Spin>
         </div>
-      ) : null}
+      ) : <div>数量：{winnersData.length + 1}</div>}
       {winnersRealtimeList.length > 0 ? (
         <div className="realtime-stock-wrap">
           <div className="realtime-header">分时数据</div>

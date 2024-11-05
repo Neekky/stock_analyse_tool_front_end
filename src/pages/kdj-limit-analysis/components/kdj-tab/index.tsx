@@ -108,10 +108,16 @@ export default function Index(props) {
 
       if (res.code === 200) {
         // 查询结果每个个股的各项数据
-        const results = await fetchInBatches(res.data, originDate, 5);
+        const results: any = await fetchInBatches(res.data, originDate, 5);
+
+        // 再次进行数据过滤，将财务数据不达标的过滤掉
+        const filterResults = results.filter((stock) => {
+          const count = dataConversion.countNegatives(stock.financialData);
+          return count <= 7;
+        });
 
         // 对结果做排序
-        const finalResults = rankStock(results);
+        const finalResults = rankStock(filterResults);
         setIsLoading(false);
         setKdjData(finalResults);
       }
@@ -209,7 +215,10 @@ export default function Index(props) {
         <div className="w-full h-72 flex justify-center items-center">
           <Spin size="large" percent={progress}></Spin>
         </div>
-      ) : null}
+      ) : (
+        <div>数量：{kdjData.length + 1}</div>
+      )}
+
       {kdjData.map((ele, index) => (
         <StockItem key={ele.code} index={index} data={ele} date={date} />
       ))}

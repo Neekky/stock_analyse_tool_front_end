@@ -85,7 +85,7 @@ export default function Index(props) {
         leadingCount: rank(copyStocks, "概念龙头个数", "asc"), // 涨停封单量占成交量比
         hotPlate: rank(copyStocks, "hotPlateLength", "asc"), // 个股所属概念，命中当日热门概念的数量
       };
-  
+
       copyStocks.forEach((stock, index) => {
         stock.score =
           weights.yoy * normalizedData.yoy[index] +
@@ -134,13 +134,16 @@ export default function Index(props) {
 
       if (res?.value?.code === 200) {
         // 查询结果每个个股的各项数据
-        const results = await fetchInBatches(res.value.data, originDate, 5);
+        const results: any = await fetchInBatches(res.value.data, originDate, 5);
 
+        // 再次进行数据过滤，将财务数据不达标的过滤掉
+        const filterResults = results.filter((stock) => {
+          const count = dataConversion.countNegatives(stock.financialData);
+          return count <= 7;
+        });
+      
         // 对结果做排序
-        const finalResults = rankStock(
-          results,
-          plateRes?.value || []
-        );
+        const finalResults = rankStock(filterResults, plateRes?.value || []);
         setIsLoading(false);
         setLeadingData(finalResults);
       }
@@ -223,7 +226,9 @@ export default function Index(props) {
 
       // 计算个股概念和当日热门概念的并集
       const intersection = baseConcept.filter((item1: any) =>
-        plateData.some((item2: any) => String(item2.code) === String(item1.code))
+        plateData.some(
+          (item2: any) => String(item2.code) === String(item1.code)
+        )
       );
       return {
         ...ele,
@@ -251,7 +256,7 @@ export default function Index(props) {
         <div className="w-full h-72 flex justify-center items-center">
           <Spin size="large" percent={progress}></Spin>
         </div>
-      ) : null}
+      ) : <div>数量：{leadingData.length + 1}</div>}
       {leadingData.map((ele, index) => (
         <LeadingStockItem key={ele.code} index={index} data={ele} date={date} />
       ))}
