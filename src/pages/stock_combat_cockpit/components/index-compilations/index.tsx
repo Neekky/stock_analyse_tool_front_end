@@ -93,8 +93,11 @@ export default function IndexCompilations() {
       trigger: "axis",
       formatter: (params) => {
         const { data, axisValue } = params[0];
+        const { value } = params[1];
+        
         return `
               日期: ${axisValue}<br/>
+              概率: ${value}%<br/>
               开盘: ${data[1]}<br/>
               最高: ${data[4]}<br/>
               最低: ${data[3]}<br/>

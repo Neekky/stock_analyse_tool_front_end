@@ -9,7 +9,6 @@ import amount from "@/utils/amount";
 
 export default function Index(props) {
   const { data } = props;
-
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -266,9 +265,7 @@ export default function Index(props) {
       <div className="stock-info-wrap">
         <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">行业板块</span>{" "}
-          <span className="text-[#333]">
-            {data.plateData.industry_l2.name}
-          </span>
+          <span className="text-[#333]">{data.plateData.industry_l2.name}</span>
         </div>
         <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">行业龙头</span>{" "}
@@ -278,9 +275,7 @@ export default function Index(props) {
         </div>
         <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">细分行业</span>{" "}
-          <span className="text-[#333]">
-            {data.plateData.industry_l3.name}
-          </span>
+          <span className="text-[#333]">{data.plateData.industry_l3.name}</span>
         </div>
       </div>
 
@@ -288,8 +283,30 @@ export default function Index(props) {
         <div className="mb-2.5 text-[15px] w-2/6 shrink-0 grow-0 pl-4 flex justify-start">
           <span className="text-[15px] text-[#ff2244] mr-4">股票市值</span>{" "}
           <span className="text-[#333]">
-            {amount.convertToYi(data['a股市值(不含限售股)'])}
+            {amount.convertToYi(data["a股市值(不含限售股)"])}
           </span>
+        </div>
+
+        <div className="mb-2.5 text-[15px] w-4/6 shrink-0 grow-0 pl-4 flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">涨停原因</span>{" "}
+          <span className="text-[#333]">
+            {data["涨停原因类别"]?.replaceAll('+', '、')}
+          </span>
+        </div>
+
+      </div>
+
+      <div className="stock-plate-info pl-4">
+        <div className="text-[15px] text-[#ff2244] mr-4 mb-2">板块信息</div>
+        <div className="flex flex-wrap">
+          {data.plateData?.gainian?.map((ele) => (
+            <div className="plate-item" key={ele.code}>
+              <div className="text-[#7c2d12]">{ele.name}</div>
+              {ele?.leading_stock ? (
+                <div className="text-[#d43d3f] font-medium">{ele.leading_stock?.name}</div>
+              ) : null}
+            </div>
+          ))}
         </div>
       </div>
 

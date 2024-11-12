@@ -9,6 +9,7 @@ import amount from "@/utils/amount";
 export default function Index(props) {
   const { data } = props;
   const [events, setEvents] = useState([]);
+  console.log(data, "1321313");
 
   useEffect(() => {
     const symbol = dataConversion.getExchangeByCode(data.stock_code);
@@ -297,8 +298,8 @@ export default function Index(props) {
         </div>
       </div>
 
-      <div className="stock-info-wrap">
-        <div className="mb-2.5 text-[15px] w-1/2 flex justify-start">
+      <div className="stock-info-wrap w-full">
+        <div className="mb-2.5 text-[15px] w-1/2 flex shrink-0 grow-0 justify-start">
           <div className="text-[15px] text-[#333] mr-4">游资</div>{" "}
           {data.tags.length > 0 ? (
             <div className="mb-2.5 text-[15px] flex justify-center">
@@ -315,6 +316,28 @@ export default function Index(props) {
               })}
             </div>
           ) : null}
+        </div>
+        <div className="mb-2.5 text-[15px] w-1/2 shrink-0 grow-0 flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">涨停原因</span>{" "}
+          <span className="text-[#333]">
+            {data?.["limit_reason"]?.replaceAll("+", "、")}
+          </span>
+        </div>
+      </div>
+
+      <div className="stock-plate-info">
+        <div className="text-[15px] text-[#ff2244] mr-4 mb-2">板块信息</div>
+        <div className="flex flex-wrap">
+          {data.plateData?.gainian?.map((ele) => (
+            <div className="plate-item" key={ele.code}>
+              <div className="text-[#7c2d12]">{ele.name}</div>
+              {ele?.leading_stock ? (
+                <div className="text-[#d43d3f] font-medium">
+                  {ele.leading_stock?.name}
+                </div>
+              ) : null}
+            </div>
+          ))}
         </div>
       </div>
 

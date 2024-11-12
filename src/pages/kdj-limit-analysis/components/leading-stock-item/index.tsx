@@ -278,6 +278,27 @@ export default function Index(props) {
             {amount.convertToYi(data["a股市值(不含限售股)"])}
           </span>
         </div>
+
+        <div className="mb-2.5 text-[15px] w-4/6 shrink-0 grow-0 pl-4 flex justify-start">
+          <span className="text-[15px] text-[#ff2244] mr-4">涨停原因</span>{" "}
+          <span className="text-[#333]">
+            {data?.["涨停原因类别"]?.replaceAll('+', '、')}
+          </span>
+        </div>
+      </div>
+
+      <div className="stock-plate-info">
+        <div className="text-[15px] text-[#ff2244] mr-4 mb-2">板块信息</div>
+        <div className="flex flex-wrap">
+          {data.plateData?.gainian?.map((ele) => (
+            <div className="plate-item" key={ele.code}>
+              <div className="text-[#7c2d12]">{ele.name}</div>
+              {ele?.leading_stock ? (
+                <div className="text-[#d43d3f] font-medium">{ele.leading_stock?.name}</div>
+              ) : null}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 股票事件 */}
