@@ -45,6 +45,7 @@ export default function Index(props) {
       value.股票简称.includes("st") ||
       value.股票代码.startsWith("688") ||
       value.股票代码.startsWith("4") ||
+      value.股票代码.startsWith("9") ||
       value.股票代码.startsWith("8");
 
     const isStMore = stockList.filter((ele) => condition(ele));

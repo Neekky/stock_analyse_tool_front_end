@@ -3,7 +3,7 @@ import Header from "./components/header";
 import IndexCompilations from "./components/index-compilations";
 import SubIndexCompilations from "./components/sub-index-compilations";
 import { allInfoApi } from "@/apis";
-import { INDEX_NAME_MAP } from "@/utils/common";
+import { INDEX_CSV_NAME_MAP, INDEX_NAME_MAP } from "@/utils/common";
 import './index.less';
 
 export default function Index() {
@@ -13,12 +13,14 @@ export default function Index() {
   useEffect(() => {
     const indexList = [
       "sh000001",
-      "sz399001",
-      "sz399006",
-      "sh000016",
-      "sh000300",
-      "sh000905",
-      "sh000852",
+      "hkHSI",
+      "us.DJI"
+      // "sz399001",
+      // "sz399006",
+      // "sh000016",
+      // "sh000300",
+      // "sh000905",
+      // "sh000852",
     ];
     const fetchData = async () => {
       // 创建请求数组
@@ -33,7 +35,7 @@ export default function Index() {
         const filteredData = data.filter((item) => item !== null);
         setIndexData(filteredData);
         // 在这里可以继续执行后续的操作
-        console.log("所有请求完成", responses, filteredData);
+        console.log("所有请求完成", filteredData);
       } catch (error) {
         console.error("请求失败:", error);
       }
@@ -60,6 +62,8 @@ export default function Index() {
         // 指数名称
         copyData.indexName = INDEX_NAME_MAP[res.data.index];
 
+        copyData.csvName = INDEX_CSV_NAME_MAP[res.data.index];
+
         copyData.upDaysColor =
           res.data?.consecutive_up_days > 0 ? "#f46649" : "#2aa491";
         return copyData;
@@ -73,12 +77,14 @@ export default function Index() {
   return (
     <div className="relative hero-home-wrap mx-auto bg-[#eaecf1]">
       <Header />
-      <IndexCompilations indexData={indexData[0]} />
-      <div className="sub-index-warp">
+      <IndexCompilations key={indexData?.[0]?.indexName} indexData={indexData[0]} />
+      <IndexCompilations key={indexData?.[1]?.indexName} indexData={indexData[1]} />
+      <IndexCompilations key={indexData?.[2]?.indexName} indexData={indexData[2]} />
+      {/* <div className="sub-index-warp">
         {indexData.slice(1).map((ele, index) => (
           <SubIndexCompilations key={index} indexData={ele} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }

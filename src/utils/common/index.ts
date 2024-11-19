@@ -30,6 +30,14 @@ export const INDEX_NAME_MAP = {
   sh000905: "中证500",
   sh000906: "中证800",
   sh000852: "中证1000",
+  hkHSI: "恒生指数",
+  'us.DJI': "道琼斯指数"
+};
+
+export const INDEX_CSV_NAME_MAP = {
+  sh000001: "/index_top_bottom_percent.csv",
+  hkHSI: "/hk_hsi_top_bottom_percent.csv",
+  'us.DJI': "/us_dji_top_bottom_percent.csv"
 };
 
 /**

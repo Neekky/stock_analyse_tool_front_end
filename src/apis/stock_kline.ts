@@ -123,8 +123,9 @@ export default new (class StockKline extends Axios {
   }
 
   // 快速获取上证指数的见顶见底概率
-  getSzTopBottomPercent() {
-    const url = `${API_GATEWAY_FLASK}/get_sz_top_bottom_percent`;
+  getSzTopBottomPercent(params: { csv_name: string }) {
+    const stringified = queryString.stringify(params);
+    const url = `${API_GATEWAY_FLASK}/get_sz_top_bottom_percent?${stringified}`;
     return this.get(url);
   }
 

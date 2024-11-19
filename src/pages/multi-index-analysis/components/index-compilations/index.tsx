@@ -26,7 +26,7 @@ export default function IndexCompilations(props) {
       startDate: '2018-01-01',
       index: indexData.index,
     });
-
+    console.log(indexData, 'indexData.index')
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
       const times: string[] = [];
@@ -42,7 +42,9 @@ export default function IndexCompilations(props) {
   };
 
   const getIndexTopBottomPercent = async () => {
-    const res = await stockklineApi.getSzTopBottomPercent();
+    const res = await stockklineApi.getSzTopBottomPercent({
+      csv_name: indexData.csvName
+    });
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
 

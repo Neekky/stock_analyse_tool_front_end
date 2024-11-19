@@ -211,6 +211,8 @@ export default function Index(props) {
       value.stock_name.includes("ST") ||
       value.stock_name.includes("st") ||
       value.stock_code.startsWith("688") ||
+      value.stock_code.startsWith("4") ||
+      value.stock_code.startsWith("9") ||
       value.stock_code.startsWith("8");
 
     const isStMore = stockList.filter((ele) => condition(ele));
