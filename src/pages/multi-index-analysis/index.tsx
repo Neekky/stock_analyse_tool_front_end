@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "./components/header";
 import IndexCompilations from "./components/index-compilations";
-import SubIndexCompilations from "./components/sub-index-compilations";
+// import SubIndexCompilations from "./components/sub-index-compilations";
 import { allInfoApi } from "@/apis";
 import { INDEX_CSV_NAME_MAP, INDEX_NAME_MAP } from "@/utils/common";
 import './index.less';
