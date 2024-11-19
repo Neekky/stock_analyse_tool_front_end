@@ -89,7 +89,7 @@ export default function IndexCompilations(props) {
       // },
     },
     legend: {
-      data: ['K线图', '顶底概率', 'EMA5', 'EMA10']
+      data: ['K线图', '顶底概率', 'EMA5', 'EMA20']
     },
     xAxis: {
       type: "category",
@@ -144,9 +144,9 @@ export default function IndexCompilations(props) {
         }
       },
       {
-        name: 'EMA10',
+        name: 'EMA20',
         type: 'line',
-        data: calculateEMA(indexKline, 10),
+        data: calculateEMA(indexKline, 20),
         smooth: true,
         symbol: "none",
         yAxisIndex: 0,
