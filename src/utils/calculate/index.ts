@@ -65,7 +65,49 @@ export function myToFixed(num, digits) {
   return sign + rounded.toFixed(digits);
 }
 
+// chartUtils.js
+
+/**
+ * 计算EMA (指数移动平均线)
+ * @param {Array} data - 原始数据数组，每个元素应该是一个包含收盘价的对象
+ * @param {number} period - EMA周期
+ * @param {string} [priceKey='close'] - 价格在数据对象中的键名
+ * @returns {Array} - 包含EMA值的数组
+ */
+export function calculateEMA(data, period, priceKey = '2') {
+  if (!Array.isArray(data) || data.length === 0 || period <= 0) {
+    return [];
+  }
+  const ema = new Array(period - 1).fill(null);  // 填充初始值
+  const k = 2 / (period + 1);
+  
+  // 计算第一个EMA值
+  let sum = 0;
+  for (let i = 0; i < period; i++) {
+    if (data[i] && typeof data[i][priceKey] === 'number') {
+      sum += data[i][priceKey];
+    } else {
+      return [];  // 如果数据无效，返回空数组
+    }
+  }
+  ema.push(sum / period);
+
+  // 计算剩余的EMA值
+  for (let i = period; i < data.length; i++) {
+    if (typeof data[i][priceKey] === 'number') {
+      const newEma = (data[i][priceKey] - ema[ema.length - 1]) * k + ema[ema.length - 1];
+      ema.push(newEma);
+    } else {
+      ema.push(ema[ema.length - 1]);  // 如果遇到无效数据，使用前一个EMA值
+    }
+  }
+  return ema;
+}
+
+
+
 export default {
+  calculateEMA,
   myToFixed,
   splitData,
   calculateMA,

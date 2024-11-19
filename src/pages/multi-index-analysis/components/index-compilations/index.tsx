@@ -4,7 +4,7 @@ import { renderTrendWord } from "@/utils/render-func";
 import ReactEcharts from "echarts-for-react";
 import { useEffect, useState } from "react";
 import "./index.less";
-import { myToFixed } from "@/utils/calculate";
+import { calculateEMA, myToFixed } from "@/utils/calculate";
 
 export default function IndexCompilations(props) {
   const { indexData = {} } = props;
@@ -60,24 +60,55 @@ export default function IndexCompilations(props) {
     }
   };
 
+  const calculateMA = (dayCount: number) => {
+    const data: any = indexKline;
+    const result: any[] = [];
+    for (let i = 0, len = data.length; i < len; i++) {
+      if (i < dayCount) {
+        result.push('-');
+        continue;
+      }
+      let sum: number = 0;
+      for (let j = 0; j < dayCount; j++) {
+        sum += +data[i - j][1];
+      }
+      result.push({value: sum / dayCount});
+    }
+
+    console.log(result, 'result is')
+    return result;
+  }
+
   // 配置图表的选项
   const getOption = () => ({
     animation: true,
     tooltip: {
       trigger: "axis",
-      formatter: (params) => {
-        const { data, axisValue } = params[0];
-        const { value } = params[1];
+      formatter: function (params) {
+        // params 包含当前数据点的所有信息
+        const paramsList: any[] = params.map(ele => {
+          if (ele?.seriesName === "K线图") return `${ele?.seriesName}: <br /> 开${ele?.value[1]} <br /> 收${ele?.value[2]} <br /> 低${ele?.value[3]} <br /> 高${ele?.value[4]}`;
 
-        return `
-              日期: ${axisValue}<br/>
-              概率: ${value}%<br/>
-              开盘: ${data[1]}<br/>
-              最高: ${data[4]}<br/>
-              最低: ${data[3]}<br/>
-              收盘: ${data[2]}<br/>
-            `;
+          return `<div>${ele?.seriesName}: ${Number(ele?.value)?.toFixed(2)} <div/>`
+        })
+        return paramsList.join('');
       },
+      // formatter: (params) => {
+      //   const { data, axisValue } = params[0];
+      //   const { value } = params[1];
+
+      //   return `
+      //         日期: ${axisValue}<br/>
+      //         概率: ${value}%<br/>
+      //         开盘: ${data[1]}<br/>
+      //         最高: ${data[4]}<br/>
+      //         最低: ${data[3]}<br/>
+      //         收盘: ${data[2]}<br/>
+      //       `;
+      // },
+    },
+    legend: {
+      data: ['K线图', '顶底概率', 'EMA5', 'EMA10']
     },
     xAxis: {
       type: "category",
@@ -97,7 +128,7 @@ export default function IndexCompilations(props) {
       },
       {
         type: "value",
-        name: "见顶见底概率",
+        name: "顶底概率",
         axisLine: { onZero: false },
         min: -100,
         max: 100,
@@ -111,7 +142,7 @@ export default function IndexCompilations(props) {
         data: indexKline.map((item) => [item[1], item[2], item[3], item[4]]),
       },
       {
-        name: "见顶见底概率",
+        name: "顶底概率",
         type: "line",
         data: indexTBPercent.map((item) => ({
           value: item[1],
@@ -119,6 +150,28 @@ export default function IndexCompilations(props) {
         yAxisIndex: 1,
         smooth: true,
         symbol: "none",
+      },
+      {
+        name: 'EMA5',
+        type: 'line',
+        data: calculateEMA(indexKline, 5),
+        smooth: true,
+        symbol: "none",
+        yAxisIndex: 0,
+        lineStyle: {
+          color: '#b91c1c'
+        }
+      },
+      {
+        name: 'EMA10',
+        type: 'line',
+        data: calculateEMA(indexKline, 10),
+        smooth: true,
+        symbol: "none",
+        yAxisIndex: 0,
+        lineStyle: {
+          color: '#4d7c0f'
+        }
       },
     ],
     dataZoom: [
