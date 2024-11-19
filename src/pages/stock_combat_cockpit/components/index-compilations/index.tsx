@@ -67,7 +67,9 @@ export default function IndexCompilations() {
   };
 
   const getIndexTopBottomPercent = async () => {
-    const res = await stockklineApi.getSzTopBottomPercent();
+    const res = await stockklineApi.getSzTopBottomPercent({
+      csv_name: "/index_top_bottom_percent.csv"
+    });
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
 
