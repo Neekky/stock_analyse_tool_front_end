@@ -60,25 +60,6 @@ export default function IndexCompilations(props) {
     }
   };
 
-  const calculateMA = (dayCount: number) => {
-    const data: any = indexKline;
-    const result: any[] = [];
-    for (let i = 0, len = data.length; i < len; i++) {
-      if (i < dayCount) {
-        result.push('-');
-        continue;
-      }
-      let sum: number = 0;
-      for (let j = 0; j < dayCount; j++) {
-        sum += +data[i - j][1];
-      }
-      result.push({value: sum / dayCount});
-    }
-
-    console.log(result, 'result is')
-    return result;
-  }
-
   // 配置图表的选项
   const getOption = () => ({
     animation: true,
