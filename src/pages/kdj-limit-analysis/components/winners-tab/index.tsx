@@ -1,20 +1,17 @@
 import { thirdPartyApi } from "@/apis";
 import { RootState } from "@/store/store";
 import dayjs from "dayjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import WinnersStockItem from "../winners-stock-item";
 import { deepClone, rank } from "@/utils/common";
 import { dataConversion } from "@/utils";
-import { combineRealtimeData, combineWinners } from "../../common";
-import RealtimeStock from "../realtime-stock/index";
+import { combineWinners } from "../../common";
 import "./index.less";
 import { Spin } from "antd";
 
 export default function Index(props) {
   const { date } = props;
-
-  const intervalRef = useRef<any>(null);
 
   // 获取交易日期
   const tradeDate = useSelector(
@@ -34,8 +31,6 @@ export default function Index(props) {
   // 龙虎榜数据
   const [winnersData, setWinnersData] = useState<any[]>([]);
 
-  const [winnersRealtimeList, setWinnersRealtimeList] = useState<any[]>([]);
-
   // 更新龙虎榜全量数据
   useEffect(() => {
     const dateStr = dayjs(date).format("YYYY-MM-DD");
@@ -46,47 +41,6 @@ export default function Index(props) {
 
     get_winners_data(dateStr, date);
   }, [date]);
-
-  // 每日开始，计算龙虎榜最近一日的股票分时数据，算出实时的票。
-  useEffect(() => {
-    get_realtime_fn(winnersData, tradeDate);
-
-    // 清理函数，用于组件卸载时清除轮询
-    return () => clearInterval(intervalRef.current);
-  }, [date, winnersData, tradeDate]);
-
-  // 交易日，在结果列表中，查找可交易标的
-  const get_realtime_fn = async (winnersData, tradeDate) => {
-    // 每次调用前，清空已有数据
-    setWinnersRealtimeList([]);
-
-    // 没数据时不执行
-    if (winnersData.length <= 0) return;
-    const now = dayjs();
-
-    // 今日时间格式化
-    const nowStr = now.format("YYYY-MM-DD");
-
-    // 不是最近交易日，停止
-    if (nowStr !== tradeDate) return;
-
-    const tradeBeginTime = dayjs().hour(9).minute(15).second(0);
-    const tradeEndTime = dayjs().hour(15).minute(0).second(0);
-    // 非交易时间终止
-    if (now.isAfter(tradeEndTime) || now.isBefore(tradeBeginTime)) return;
-
-    // 轮询的间隔时间
-    const interval = setInterval(async () => {
-      const results = await fetchInBatchesForRealtime(winnersData, 5);
-      setWinnersRealtimeList(results);
-      // 非交易时间，清除轮询
-      if (now.isAfter(tradeEndTime) || now.isBefore(tradeBeginTime)) {
-        clearInterval(interval);
-      }
-    }, 5000);
-
-    intervalRef.current = interval;
-  };
 
   // 获取每日龙虎榜数据
   const get_winners_data = async (date, originDate) => {
@@ -188,23 +142,6 @@ export default function Index(props) {
     return results.map((ele: any) => ele.value);
   };
 
-  const fetchInBatchesForRealtime = async (
-    data: any[],
-    batchSize: number
-  ): Promise<any[]> => {
-    const results: PromiseSettledResult<any>[] = [];
-
-    for (let i = 0; i < data.length; i += batchSize) {
-      const batch = data.slice(i, i + batchSize);
-      const batchResults = await Promise.allSettled(
-        batch.map((item) => combineRealtimeData(item))
-      );
-      results.push(...batchResults);
-    }
-
-    return results.map((ele: any) => ele.value);
-  };
-
   // 将ST、科创板、北证板股票提取出来
   const stock_differentiation = (stockList) => {
     const condition = (value) =>
@@ -263,18 +200,6 @@ export default function Index(props) {
           <Spin size="large" percent={progress}></Spin>
         </div>
       ) : <div>数量：{winnersData.length + 1}</div>}
-      {winnersRealtimeList.length > 0 ? (
-        <div className="realtime-stock-wrap">
-          <div className="realtime-header">分时数据</div>
-
-          <div>
-            {winnersRealtimeList.map((ele) => (
-              <RealtimeStock key={ele?.stock_name} data={ele} />
-            ))}
-          </div>
-        </div>
-      ) : null}
-      {/* 早盘分时列表 */}
 
       {/* 正常结果列表 */}
       {winnersData.map((ele, index) => (

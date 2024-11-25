@@ -26,7 +26,7 @@ const StockChart = ({ data, indexKline }) => {
           // params 包含当前数据点的所有信息
           const paramsList: any[] = params.map(ele => {
             if (ele?.seriesName === "上证指数") return `${ele?.seriesName} 开${ele?.value[1]} 收${ele?.value[2]} 低${ele?.value[3]} 高${ele?.value[4]}`;
-
+            
             return `<div>${ele?.seriesName}: ${amount.convertToYi(ele?.value)} <span style="color: ${ele.color}; font-weight: bold">——</span> <div/>`
           })
           return paramsList.join('');
@@ -163,7 +163,7 @@ const StockChart = ({ data, indexKline }) => {
 
   return (
     <>
-      <div ref={chartRef} style={{ width: "100%", height: "400px" }} />
+      <div ref={chartRef} style={{ width: "100%", height: "700px" }} />
       <div className="w-full market-tip-wrap">
         <div className="text-[18px] font-semibold	text-[#b91c1c]">使用小贴士</div>
         <div className="text-[16px] text-[#78716c] mt-2">1. 红线为沪深两市总成交额，蓝线为60日平均线</div>

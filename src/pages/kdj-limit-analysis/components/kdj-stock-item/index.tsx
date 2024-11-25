@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import thirdParty, { eventsMapColor } from "@/apis/thirdParty";
 import { dataConversion } from "@/utils";
 import amount from "@/utils/amount";
+import { calculateEMA } from "@/utils/calculate";
 
 export default function Index(props) {
   const { data } = props;
@@ -151,7 +152,29 @@ export default function Index(props) {
 
   // k线图的echarts配置
   const getKlineoOption = useCallback(() => {
+    const klineData = data.kline.map((item) => [
+      item["日期"],
+      item["开盘"],
+      item["收盘"],
+      item["最低"],
+      item["最高"],
+    ]);
     return {
+      dataZoom: [
+        {
+          type: "slider",
+          show: true,
+          xAxisIndex: 0,
+          start: 50,
+          end: 100,
+        },
+        {
+          type: "inside",
+          xAxisIndex: 0,
+          start: 50,
+          end: 100,
+        },
+      ],
       tooltip: {
         trigger: "axis",
         axisPointer: {
@@ -194,6 +217,12 @@ export default function Index(props) {
           type: "value",
           name: "K线",
           position: "right",
+          min: function (value) {
+            return (value.min * 0.99).toFixed(0);
+          },
+          max: function (value) {
+            return (value.max * 1.01).toFixed(0);
+          },
         },
       ],
       grid: [
@@ -230,6 +259,28 @@ export default function Index(props) {
           data: data.kline?.map((item) => item["成交额"]),
           itemStyle: {
             color: "#c4b5fd",
+          },
+        },
+        {
+          name: "EMA5",
+          type: "line",
+          data: calculateEMA(klineData, 5),
+          smooth: true,
+          symbol: "none",
+          yAxisIndex: 1,
+          lineStyle: {
+            color: "#b91c1c",
+          },
+        },
+        {
+          name: "EMA20",
+          type: "line",
+          data: calculateEMA(klineData, 20),
+          smooth: true,
+          symbol: "none",
+          yAxisIndex: 1,
+          lineStyle: {
+            color: "#4d7c0f",
           },
         },
       ],
