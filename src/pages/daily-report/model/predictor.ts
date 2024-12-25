@@ -10,10 +10,10 @@ export class StockTrendPredictor {
       throw new Error("Invalid historical data");
     }
 
-    return data.sort((a, b) => new Date(a.date) - new Date(b.date));
+    return data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
-  calculateRatio(upCount, downCount) {
+  calculateRatio(upCount: number, downCount: number): number {
     const total = upCount + downCount;
     return total === 0 ? 0 : upCount / total;
   }
@@ -101,7 +101,7 @@ const validateAndSortData = (data) => {
   );
 
   // 按日期排序
-  return validData.sort((a, b) => new Date(a.date) - new Date(b.date));
+  return validData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 };
 
 const getConsecutiveUpDays = (data) => {

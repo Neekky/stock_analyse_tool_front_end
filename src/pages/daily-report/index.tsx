@@ -14,15 +14,6 @@ interface PlateData {
   // 添加其他需要的属性
 }
 
-interface PlateStockDetail {
-  plate_code: string;
-  stocks: Array<{
-    name: string;
-    code: string;
-    change_rate: number;
-  }>;
-}
-
 export default function DailyReport() {
   // 市场实时涨跌家数行情
   const market_situation = useSelector(
