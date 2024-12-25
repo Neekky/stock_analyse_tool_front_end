@@ -72,7 +72,7 @@ export default function IndexCompilations(props) {
 
           return `<div>${ele?.seriesName}: ${Number(ele?.value)?.toFixed(2)} <div/>`
         })
-        return paramsList.join('');
+        return paramsList.join('') + params[0].axisValueLabel;
       },
     },
     legend: {

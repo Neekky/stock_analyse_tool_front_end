@@ -80,7 +80,10 @@ export default function FeaturesPlanet() {
                 实时掌握市场脉搏，智能分析涨跌趋势。独家市场评分系统，助您洞悉投资机会。让每一次交易都建立在精准市场洞察之上，提升您的投资决策能力
               </p>
             </article>
-            <article>
+            <article
+              className="cursor-pointer hover:bg-blue-900"
+              onClick={() => toPage("/daily-report")}
+            >
               <h3 className="mb-2 flex items-center space-x-2 font-medium text-gray-200">
                 <svg
                   className="fill-blue-500"
@@ -90,12 +93,10 @@ export default function FeaturesPlanet() {
                 >
                   <path d="M8 0a1 1 0 0 1 1 1v14a1 1 0 1 1-2 0V1a1 1 0 0 1 1-1Zm6 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1a1 1 0 1 1 0 2h-1a3 3 0 0 1-3-3V4a3 3 0 0 1 3-3h1a1 1 0 1 1 0 2h-1ZM1 1a1 1 0 0 0 0 2h1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 1 0 0 2h1a3 3 0 0 0 3-3V4a3 3 0 0 0-3-3H1Z" />
                 </svg>
-                <span>Custom Code</span>
+                <span>今日市场日报</span>
               </h3>
               <p className="text-[15px] text-gray-400">
-                Collect essential insights about how visitors are using your
-                site with in-depth page view metrics like pages, referring
-                sites, and more.
+                将海量市场数据转化为简明扼要的投资建议，助您把握市场脉搏,洞悉投资机会。让数据speak for itself，助您在纷繁复杂的市场中做出明智抉择。
               </p>
             </article>
             <article>

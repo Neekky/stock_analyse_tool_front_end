@@ -12,6 +12,7 @@ import LeadingTrendAnalysis from "@/pages/old-home/leading-trend-analysis";
 import KdjLimitAnalysis from "@/pages/kdj-limit-analysis";
 import MultiIndexAnalysis from "@/pages/multi-index-analysis";
 import StockCombatCockpit from "@/pages/stock_combat_cockpit";
+import DailyReport from "@/pages/daily-report";
 
 export const router = createBrowserRouter([
     {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
     {
         path: '/stock-combat-cockpit',
         element: <StockCombatCockpit />,
+    },
+    {
+        path: '/daily-report',
+        element: <DailyReport />,
     },
     {
         path: "/home",

@@ -205,10 +205,10 @@ export default function Index(props) {
           name: "K线",
           position: "right",
           min: function (value) {
-            return (value.min * 0.99).toFixed(0);
+            return (value.min - 0.2).toFixed(0);
           },
           max: function (value) {
-            return (value.max * 1.01).toFixed(0);
+            return (value.max + 0.2).toFixed(0);
           },
         },
       ],

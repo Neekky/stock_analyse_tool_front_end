@@ -102,7 +102,7 @@ export default function Index() {
   };
 
   return (
-    <div className="flex items-center flex-col stock-market-wrap bg-neutral-100">
+    <div className="flex items-center flex-col stock-market-wrap">
       <Header />
 
       {/* 股市实时状态 */}

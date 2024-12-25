@@ -282,6 +282,44 @@ export const eventsMapColor = {
   违规处罚: Color.green,
 };
 
+// Types for the API request
+interface CodeSelector {
+  type: string;
+  values: string[];
+}
+
+interface IndexAttribute {
+  win_size?: number;
+}
+
+interface Index {
+  index_id: string;
+  time_type?: string;
+  timestamp?: string;
+  attribute?: IndexAttribute;
+  title?: string;
+}
+
+interface PageInfo {
+  page_begin: number;
+  page_size: number;
+  code_begin: number;
+}
+
+interface SortInfo {
+  idx: number;
+  type: 'ASC' | 'DESC';
+}
+
+interface SpecificDataRequest {
+  code_selectors: {
+    intersection: CodeSelector[];
+  };
+  indexes: Index[];
+  page_info: PageInfo;
+  sort: SortInfo[];
+}
+
 export default new (class EastMoney extends Axios {
   // 东方财富-获取股票板块数据
   getStockPlateData(prefix: string, code: string) {
@@ -387,5 +425,102 @@ export default new (class EastMoney extends Axios {
   getHotIndustryPlateData() {
     const url = `https://eq.10jqka.com.cn/open/api/hot_list/v1/hot_plate/industry/data.txt`;
     return this.get(url);
+  }
+
+  /**
+   * 获取同花顺特定数据
+   * @param params - 可选参数来覆盖默认请求配置
+   * @param params.pageSize - 每页数据量，默认20
+   * @param params.pageBegin - 起始页码，默认0
+   * @param params.sortIdx - 排序字段索引，默认1
+   * @param params.sortType - 排序方式，默认DESC
+   * @returns Promise with the API response
+   */
+  getSpecificData(params?: {
+    pageSize?: number;
+    pageBegin?: number;
+    sortIdx?: number;
+    sortType?: 'ASC' | 'DESC';
+  }) {
+    const defaultRequest: SpecificDataRequest = {
+      code_selectors: {
+        intersection: [{
+          type: "tag",
+          values: ["cn_concept"]
+        }]
+      },
+      indexes: [{
+        index_id: "security_name"
+      }, {
+        index_id: "inr-main_capital_net_inflow-sum",
+        time_type: "DAY_1",
+        timestamp: "0",
+        attribute: {
+          win_size: 1
+        }
+      }, {
+        index_id: "inr-price_change_ratio_pct-sum",
+        time_type: "DAY_1",
+        timestamp: "0",
+        attribute: {
+          win_size: 1
+        }
+      }, {
+        index_id: "big_volume_net_ratio",
+        time_type: "DAY_1",
+        timestamp: "0"
+      }, {
+        index_id: "inr-main_capital_inflow-sum",
+        time_type: "DAY_1",
+        timestamp: "0",
+        attribute: {
+          win_size: 1
+        }
+      }, {
+        index_id: "inr-main_capital_outflow-sum",
+        time_type: "DAY_1",
+        timestamp: "0",
+        attribute: {
+          win_size: 1
+        }
+      }, {
+        index_id: "inr-price_change_ratio_pct-sum",
+        attribute: {
+          win_size: 5
+        },
+        time_type: "DAY_1",
+        timestamp: "0",
+        title: "5日涨幅"
+      }, {
+        index_id: "inr-price_change_ratio_pct-sum",
+        attribute: {
+          win_size: 10
+        },
+        time_type: "DAY_1",
+        timestamp: "0",
+        title: "10日涨幅"
+      }, {
+        index_id: "inr-total_share_cnt-sum",
+        time_type: "DAY_1",
+        timestamp: "0",
+        attribute: {
+          win_size: 1
+        }
+      }, {
+        index_id: "turnover"
+      }],
+      page_info: {
+        page_begin: params?.pageBegin ?? 0,
+        page_size: params?.pageSize ?? 20,
+        code_begin: 0
+      },
+      sort: [{
+        idx: params?.sortIdx ?? 1,
+        type: params?.sortType ?? 'DESC'
+      }]
+    };
+
+    const url = 'https://dataq.10jqka.com.cn/fetch-data-server/fetch/v1/specific_data';
+    return this.post(url, defaultRequest);
   }
 })();

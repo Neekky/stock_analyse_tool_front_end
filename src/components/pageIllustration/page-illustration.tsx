@@ -72,6 +72,34 @@ export default function PageIllustration() {
       >
         <div className="h-80 w-80 rounded-full bg-gradient-to-tr from-blue-500 to-gray-900 opacity-50 blur-[160px]" />
       </div>
+
+      <div
+        className="pointer-events-none absolute left-1/2 top-[2140px] -ml-[100px] -translate-x-1/2"
+        aria-hidden="true"
+      >
+        <div className="h-120 w-80 rounded-full bg-gradient-to-tr from-blue-500 to-gray-900 opacity-50 blur-[180px]" />
+      </div>
+
+      <div
+        className="pointer-events-none absolute left-1/2 top-[2440px] -ml-[50px] -translate-x-1/2"
+        aria-hidden="true"
+      >
+        <div className="h-120 w-120 rounded-full bg-gradient-to-tr from-blue-500 to-gray-900 opacity-50 blur-[180px]" />
+      </div>
+
+      <div
+        className="pointer-events-none absolute left-1/2 top-[2740px] -ml-[70px] -translate-x-1/2"
+        aria-hidden="true"
+      >
+        <div className="h-90 w-80 rounded-full bg-gradient-to-tr from-blue-500 to-gray-900 opacity-50 blur-[140px]" />
+      </div>
+
+      <div
+        className="pointer-events-none absolute top-[1740px] left-1/2 ml-[580px] -translate-x-1/2"
+        aria-hidden="true"
+      >
+        <div className="h-80 w-80 rounded-full bg-gradient-to-tr from-blue-500 opacity-50 blur-[160px]" />
+      </div>
     </>
   );
 }
