@@ -1,6 +1,5 @@
 import { Axios } from "@/utils"; // 导入 api
 import dayjs from "dayjs";
-const API_GATEWAY_FLASK = import.meta.env.VITE_APP_API_GATEWAY_FLASK;
 const API_GATEWAY_KOA2 = import.meta.env.VITE_APP_API_GATEWAY_KOA2;
 
 // 东方财富大事提醒事件列表
