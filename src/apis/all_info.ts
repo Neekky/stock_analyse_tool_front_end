@@ -54,4 +54,9 @@ export default new (class StockInfo extends Axios {
     const url = `${API_GATEWAY_FLASK}/all_info/get_trade_date`;
     return this.get(url);
   }
+
+  get_stock_ebs_lg() {
+    const url = `${API_GATEWAY_FLASK}/all_info/get_stock_ebs_lg`;
+    return this.get(url);
+  }
 })();

@@ -1,9 +1,8 @@
 import Header from "./components/header";
 import RealtimeMarket from "./components/realtime-market";
 import EtfCompilations from "./components/etf-compilations";
-import "./index.less";
 import { useEffect, useState } from "react";
-import { stockklineApi } from "@/apis";
+import { allInfoApi, stockklineApi } from "@/apis";
 import UpDownTrend from "./components/up-down-trend";
 import MarketScore from "./components/market-score";
 import { safeJsonParse } from "@/utils/common";
@@ -11,11 +10,15 @@ import MarketVolume from "./components/market-volume";
 import IndexCompilations from "./components/index-compilations";
 import WinnersVolumDetail from "./components/winners-volume-detail";
 import thirdParty from "@/apis/thirdParty";
+import "./index.less";
+import StockEbsLg from "./components/stock-ebs-lg";
+import dayjs from 'dayjs';
 
 export default function Index() {
   const [trendData, setTrendData] = useState([]);
   const [scoreData, setScoreData] = useState([]);
   const [volumeData, setVolumeData] = useState([]);
+  const [stockEbsLgData, setStockEbsLgData] = useState([]);
 
   // 龙虎榜资金各路明细数据
   const [winnersVolDetail, setWinnersVolDetail] = useState([]);
@@ -23,6 +26,8 @@ export default function Index() {
   // 指数K线开高收低数据
   const [indexKline, setIndexKline] = useState([]);
 
+  // 上证指数K线开高收低数据供股债利差使用
+  const [indexKlineForEbsLg, setIndexKlineForEbsLg] = useState([]);
   // 市场当日评分
   const [marketTodayScore, setMarketTodayScore] = useState<null | object>(null);
 
@@ -33,7 +38,9 @@ export default function Index() {
       get_qkj_market_volume(),
       getIndexKLine("2023-10-30"),
       getTodayMarketScore(),
-      get_winner_volume_detail()
+      get_winner_volume_detail(),
+      getStockEbsLgData(),
+      getIndexKLineForEbsLg()
     ]);
   }, []);
 
@@ -77,6 +84,27 @@ export default function Index() {
     }
   };
 
+  // 获取上证指数数据供股债利差使用
+  const getIndexKLineForEbsLg = async () => {
+    // 获取当前时间的60天之前日期
+    const res = await stockklineApi.getIndexKLine({
+      startDate: '2005-04-08',
+      index: "sh000001",
+    });
+    if (res.code === 200) {
+      const data = safeJsonParse(res.data, []);
+      const times: string[] = [];
+      // 处理K线数据，按照[开盘价, 收盘价, 最低价, 最高价]的顺序。
+      const kdata = data.map((ele) => {
+        const { open, close, low, high, candle_end_time } = ele;
+        const kitem = [candle_end_time, open, close, low, high];
+        times.push(candle_end_time);
+        return kitem;
+      });
+      setIndexKlineForEbsLg(kdata);
+    }
+  };
+
   const getTrend = async () => {
     const res: any = await stockklineApi.get_upward_and_downward_trend();
     if (res?.code === 200) {
@@ -101,6 +129,21 @@ export default function Index() {
     }
   };
 
+  // 获取股债利差数据
+  const getStockEbsLgData = async () => {
+    const res = await allInfoApi.get_stock_ebs_lg();
+    if (res?.code === 200) {
+      const parseData = JSON.parse(res.data);
+      // 将时间戳转换为 YYYY-MM-DD 格式
+      const data = parseData.map((item) => ({
+        ...item,
+        日期: dayjs(item.日期).format('YYYY-MM-DD')
+      }));
+      console.log(data, 'data')
+      setStockEbsLgData(data);
+    }
+  }
+
   return (
     <div className="flex items-center flex-col stock-market-wrap">
       <Header />
@@ -108,6 +151,14 @@ export default function Index() {
       {/* 股市实时状态 */}
       <div className="w-10/12 rounded-xl realtime-market-wrap bg-white">
         <RealtimeMarket />
+      </div>
+
+      {/* 股债利差 */}
+      <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
+        <StockEbsLg
+          indexKline={indexKlineForEbsLg}
+          data={stockEbsLgData}
+        />
       </div>
 
       {/* 大盘历史评分 */}
