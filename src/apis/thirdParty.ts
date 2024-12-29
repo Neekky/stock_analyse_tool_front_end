@@ -1,5 +1,7 @@
 import { Axios } from "@/utils"; // 导入 api
 import dayjs from "dayjs";
+const API_GATEWAY_FLASK = import.meta.env.VITE_APP_API_GATEWAY_FLASK;
+const API_GATEWAY_KOA2 = import.meta.env.VITE_APP_API_GATEWAY_KOA2;
 
 // 东方财富大事提醒事件列表
 export const events = [
@@ -430,12 +432,19 @@ export default new (class EastMoney extends Axios {
   // 同花顺-获取当日资金流入板块
   getInflowPlateData() {
     const url = `https://eq.10jqka.com.cn/pick/block/block_hotspot/hotspot/v1/recent_hot_block?type=con&field=zljlr&days=1`;
-    return this.get(url);
+    return this.get(url, {
+        withCredentials: true
+    });
   }
 
   // 同花顺-获取当日涨幅前三板块
   getZFPlateData() {
-    const url = `https://eq.10jqka.com.cn/pick/block/block_hotspot/hotspot/v1/recent_hot_block?type=con&field=zf&days=1`;
+    const url = `${API_GATEWAY_KOA2}/thirdApi/zf_plate`;
+    return this.get(url);
+  }
+
+  get_inflow_plate_data() {
+    const url = `${API_GATEWAY_KOA2}/thirdApi/inflow_plate`;
     return this.get(url);
   }
 

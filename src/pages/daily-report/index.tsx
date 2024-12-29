@@ -125,8 +125,9 @@ export default function DailyReport() {
   // 获取今日前三资金流入板块
   const getTopThreeInflowPlates = async () => {
     try {
-      const res = await thirdPartyApi.getInflowPlateData();
-      console.log(res, 321321321);
+      const originresult = await thirdPartyApi.get_inflow_plate_data();
+      const res = originresult.data;
+
       // 如果获取失败，或者数据为空，则终止
       if (res?.status_msg !== 'ok' || !res?.data?.data_list?.length) {
         console.warn('获取前三资金流入板块数据失败或数据为空');
@@ -181,7 +182,8 @@ export default function DailyReport() {
   // 获取今日的涨幅排名板块
   const getRecentHotBlock = async () => {
     try {
-      const res = await thirdPartyApi.getZFPlateData();
+      const originresult = await thirdPartyApi.getZFPlateData();
+      const res = originresult.data;
       if (res?.status_msg !== 'ok' || !res?.data?.data_list?.length) {
         console.warn('获取今日的涨幅排名板块数据失败或数据为空');
         return;
@@ -206,18 +208,18 @@ export default function DailyReport() {
           result.status === 'fulfilled' && result.value ? result.value : null
         )
         .filter(Boolean);
-     
-        if (plateDetails.length > 0) {
-          const copyRecentHotBlock = [...recentHotBlock];
-          plateDetails.forEach(ele => {
-            const index = copyRecentHotBlock.findIndex(item => item.code === ele.plate_code);
-            if (index !== -1) {
-              copyRecentHotBlock[index].stocks = ele.stocks;
-            }
-          });
-          setRecentHotBlock(copyRecentHotBlock);
-        }
-      
+
+      if (plateDetails.length > 0) {
+        const copyRecentHotBlock = [...recentHotBlock];
+        plateDetails.forEach(ele => {
+          const index = copyRecentHotBlock.findIndex(item => item.code === ele.plate_code);
+          if (index !== -1) {
+            copyRecentHotBlock[index].stocks = ele.stocks;
+          }
+        });
+        setRecentHotBlock(copyRecentHotBlock);
+      }
+
     } catch (error) {
       console.error("获取今日的涨幅排名板块数据失败:", error);
     }

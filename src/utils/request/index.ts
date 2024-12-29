@@ -77,6 +77,7 @@ service.interceptors.request.use(
       config.params = {};
       config.url = url;
     }
+    
     return config;
   },
   (error) => {
