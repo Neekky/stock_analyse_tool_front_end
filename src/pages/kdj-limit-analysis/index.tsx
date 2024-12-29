@@ -14,6 +14,7 @@ import { RootState } from "@/store/store";
 import { useSelector } from "react-redux";
 import { thirdPartyApi } from "@/apis";
 import "./index.less";
+import { dataConversion } from "@/utils";
 
 dayjs.locale("zh-cn");
 
@@ -53,7 +54,6 @@ export default function Index() {
       [
         thirdPartyApi.getHotStockHotList(),
         thirdPartyApi.getHotPlateData(),
-        // thirdPartyApi.getHotIndustryPlateData(),
       ]
     );
 
@@ -108,6 +108,12 @@ export default function Index() {
     },
   ];
 
+  // 处理热板点击,跳转至东方财富
+  const handleHotStockClick = (code: string) => () => {
+    const exchange = dataConversion.getExchangeByCode(code);
+    window.open(`https://quote.eastmoney.com/${exchange}${code}.html`);
+  };
+
   return (
     <div className="flex items-center	flex-col absolute">
       <Header />
@@ -141,7 +147,7 @@ export default function Index() {
                   </div>
                   <div className="flex flex-wrap">
                     {ele.yesterday_list?.map((item) => (
-                      <div key={item.stock_name} className="w-1/3 mt-2">
+                      <div onClick={handleHotStockClick(item.stock_code)} key={item.stock_name} className="w-1/3 mt-2 cursor-pointer">
                         <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
                         </span>
@@ -182,7 +188,7 @@ export default function Index() {
                   </div>
                   <div className="flex flex-wrap">
                     {ele.today_list?.map((item) => (
-                      <div key={item.stock_name} className="w-1/3 mt-2">
+                      <div onClick={handleHotStockClick(item.stock_code)} key={item.stock_name} className="w-1/3 mt-2 cursor-pointer">
                         <span className="text-stone-800 inline-block mr-2 min-w-16">
                           {item.stock_name}
                         </span>
@@ -218,7 +224,7 @@ export default function Index() {
           <div className="w-1/2 px-4 rounded-3xl	">
             {hotStockList.slice(0, 20).map((ele) => {
               return (
-                <div key={ele.code} className="h-10 mb-2">
+                <div onClick={handleHotStockClick(ele.code)} key={ele.code} className="h-10 mb-2 cursor-pointer">
                   {/* 基础信息 */}
                   <div className="flex items-center	">
                     {ele.order}

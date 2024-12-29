@@ -427,6 +427,18 @@ export default new (class EastMoney extends Axios {
     return this.get(url);
   }
 
+  // 同花顺-获取当日资金流入板块
+  getInflowPlateData() {
+    const url = `https://eq.10jqka.com.cn/pick/block/block_hotspot/hotspot/v1/recent_hot_block?type=con&field=zljlr&days=1`;
+    return this.get(url);
+  }
+
+  // 同花顺-获取当日涨幅前三板块
+  getZFPlateData() {
+    const url = `https://eq.10jqka.com.cn/pick/block/block_hotspot/hotspot/v1/recent_hot_block?type=con&field=zf&days=1`;
+    return this.get(url);
+  }
+
   /**
    * 获取同花顺特定数据
    * @param params - 可选参数来覆盖默认请求配置

@@ -35,11 +35,14 @@ export default function DailyReport() {
   // 今日前三资金流入板块
   const [topThreeInflowPlates, setTopThreeInflowPlates] = useState<any>([]);
 
+  const [recentHotBlock, setRecentHotBlock] = useState<any>([]);
+
   useEffect(() => {
     getTrend();
     getTwoDayCompare(dayjs(tradeDate));
     getHotPlate();
     getTopThreeInflowPlates();
+    getRecentHotBlock();
   }, []);
 
   // 获取涨跌数据
@@ -74,7 +77,6 @@ export default function DailyReport() {
       }
 
       const topThreePlates = res.data.plate_list.slice(0, 3);
-      setHotPlateData(topThreePlates);
 
       // 请求热门板块下的龙头股
       const plateDetailsPromises = topThreePlates.map(async (plate: PlateData) => {
@@ -112,7 +114,6 @@ export default function DailyReport() {
         });
 
         setHotPlateData(copyHotPlateData);
-        console.log(copyHotPlateData, 321321321);
       }
     } catch (error) {
       console.error("获取热点板块数据失败:", error);
@@ -124,26 +125,27 @@ export default function DailyReport() {
   // 获取今日前三资金流入板块
   const getTopThreeInflowPlates = async () => {
     try {
-      const res = await thirdPartyApi.getSpecificData();
-      console.log(res, '查看前三资金流入板块数据')
-      if (res?.status_msg !== 'success' || !res?.data?.data?.length) {
+      const res = await thirdPartyApi.getInflowPlateData();
+      console.log(res, 321321321);
+      // 如果获取失败，或者数据为空，则终止
+      if (res?.status_msg !== 'ok' || !res?.data?.data_list?.length) {
         console.warn('获取前三资金流入板块数据失败或数据为空');
         return;
       }
-      const topThreeInflowPlates = res.data.data.slice(0, 3);
-      setTopThreeInflowPlates(topThreeInflowPlates);
 
+      // 获取前三资金流入板块
+      const topThreeInflowPlates = res.data.data_list.slice(0, 3);
+      console.log(topThreeInflowPlates, '查看明细');
       // 获取板块下的龙头股
       const plateDetailsPromises = topThreeInflowPlates.map(async (plate) => {
         try {
-          const plateCode = plate.code.split(':')[1];
+          const plateCode = plate.code;
 
           const detail = await allInfoApi.get_hot_plate_stock_data(plateCode);
-          console.log(detail, '查看板块代码')
 
           return {
             plate_code: plateCode,
-            plate_name: plate.values[0].value,
+            plate_name: plate.name,
             stocks: detail?.data || []
           };
         } catch (error) {
@@ -152,6 +154,8 @@ export default function DailyReport() {
         }
       });
       const results = await Promise.allSettled(plateDetailsPromises);
+
+      // 取出结果
       const plateDetails = results
         .map(result =>
           result.status === 'fulfilled' && result.value ? result.value : null
@@ -162,21 +166,63 @@ export default function DailyReport() {
       if (plateDetails.length > 0) {
         const copyTopThreeInflowPlates = [...topThreeInflowPlates];
         plateDetails.forEach(ele => {
-          const index = copyTopThreeInflowPlates.findIndex(item => item.plate_code === ele.plate_code);
+          const index = copyTopThreeInflowPlates.findIndex(item => item.name === ele.plate_name);
           if (index !== -1) {
             copyTopThreeInflowPlates[index].stocks = ele.stocks;
           }
         });
         setTopThreeInflowPlates(copyTopThreeInflowPlates);
-        console.log(copyTopThreeInflowPlates, '查看板块详情结果')
-
       }
     } catch (error) {
       console.error("获取前三资金流入板块数据失败:", error);
     }
   }
 
-  console.log(market_situation, 3213);
+  // 获取今日的涨幅排名板块
+  const getRecentHotBlock = async () => {
+    try {
+      const res = await thirdPartyApi.getZFPlateData();
+      if (res?.status_msg !== 'ok' || !res?.data?.data_list?.length) {
+        console.warn('获取今日的涨幅排名板块数据失败或数据为空');
+        return;
+      }
+      const recentHotBlock = res.data.data_list.slice(0, 3);
+      // 获取板块下的龙头股
+      const plateDetailsPromises = recentHotBlock.map(async (plate) => {
+        const plateCode = plate.code;
+        const detail = await allInfoApi.get_hot_plate_stock_data(plateCode);
+        return {
+          plate_code: plateCode,
+          plate_name: plate.name,
+          stocks: detail?.data || []
+        };
+      });
+
+      const results = await Promise.allSettled(plateDetailsPromises);
+
+      // 取出结果
+      const plateDetails = results
+        .map(result =>
+          result.status === 'fulfilled' && result.value ? result.value : null
+        )
+        .filter(Boolean);
+     
+        if (plateDetails.length > 0) {
+          const copyRecentHotBlock = [...recentHotBlock];
+          plateDetails.forEach(ele => {
+            const index = copyRecentHotBlock.findIndex(item => item.code === ele.plate_code);
+            if (index !== -1) {
+              copyRecentHotBlock[index].stocks = ele.stocks;
+            }
+          });
+          setRecentHotBlock(copyRecentHotBlock);
+        }
+      
+    } catch (error) {
+      console.error("获取今日的涨幅排名板块数据失败:", error);
+    }
+  }
+
   return (
     <div className="w-full flex items-center flex-col absolute">
       <Header />
@@ -260,7 +306,35 @@ export default function DailyReport() {
             今日前三资金流入板块：
             {topThreeInflowPlates?.map((ele) => (
               <div className="flex flex-row mt-2" key={ele.code}>
-                <div className="text-zinc-600 mr-2">{ele.values[0].value}：</div>
+                <div className="text-zinc-600 mr-2">{ele.name}：</div>
+                <div className="flex flex-row">
+                  {ele?.stocks?.lead?.map((stock) => (
+                    <div key={stock.stockName} className="text-zinc-600 mr-2">
+                      {stock.stockName}
+                      <span className="mx-2 text-red-600">{stock?.days || `人气龙头${stock?.lead}`}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
+        {/* 今日的涨幅排名板块 */}
+        {recentHotBlock?.length > 0 ? (
+          <div className="text-lg mt-2">
+            今日的涨幅前三板块：
+            {recentHotBlock?.map((ele) => (
+              <div className="flex flex-row mt-2" key={ele.code}>
+                <div className="text-zinc-600 mr-2">{ele.name}：</div>
+                <div className="flex flex-row">
+                  {ele?.stocks?.lead?.map((stock) => (
+                    <div key={stock.stockName} className="text-zinc-600 mr-2">
+                      {stock.stockName}
+                      <span className="mx-2 text-red-600">{stock?.days || `人气龙头${stock?.lead}`}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
