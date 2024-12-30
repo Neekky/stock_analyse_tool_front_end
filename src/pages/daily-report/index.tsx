@@ -262,7 +262,7 @@ export default function DailyReport() {
           <p className="text-xl my-3">
             当前市场最高板 {highPerformeData[0].today_board} 板
           </p>
-        ) : null}
+        ) : <p className="text-xl my-3">当前市场最高板未超过4板</p>}
 
         <div className="text-lg">
           {highPerformeData?.map((ele) => (

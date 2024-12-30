@@ -543,4 +543,17 @@ export default new (class EastMoney extends Axios {
     const url = 'https://dataq.10jqka.com.cn/fetch-data-server/fetch/v1/specific_data';
     return this.post(url, defaultRequest);
   }
+
+  /**
+   * 获取同花顺微盘股指数数据
+   * @returns Promise with the API response
+   */
+  getMicroStockIndex() {
+    const url = 'https://d.10jqka.com.cn/v6/line/48_883418/01/last1800.js';
+    return this.get(url, {
+      params: {
+        'hexin-v': 'AyAZWrxUUxIO5-8WEROv3SQn9yX3KQT1pg1Y95ox7DvOlc4bQjnUg_YdKJHp'
+      }
+    });
+  }
 })();

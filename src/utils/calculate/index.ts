@@ -104,7 +104,43 @@ export function calculateEMA(data, period, priceKey = '2') {
   return ema;
 }
 
+/**
+ * 计算 KDJ 指标
+ * @param {Array} data - 包含 OHLC 数据的数组，按日期升序排列
+ * @param {number} n - RSV 计算周期，常用 9
+ * @param {number} m - %D 计算周期，常用 3
+ * @returns {Array} - 原数据数组中新增 %K, %D, %J
+ */
+export function calculateKDJ(data, n = 9, m = 3) {
+  let K = 50; // 初始 K 值
+  let D = 50; // 初始 D 值
 
+  return data.map((current, index, arr) => {
+      if (index < n - 1) {
+          // 不足 N 天的数据，无法计算 KDJ
+          return { ...current, K: null, D: null, J: null };
+      }
+
+      // 获取最近 N 天的数据
+      const slice = arr.slice(index - n + 1, index + 1);
+      const lowN = Math.min(...slice.map(item => item.low));
+      const highN = Math.max(...slice.map(item => item.high));
+
+      // 计算 RSV
+      const rsv = highN === lowN ? 0 : ((current.close - lowN) / (highN - lowN)) * 100;
+
+      // 计算 K
+      K = (2 / 3) * K + (1 / 3) * rsv;
+
+      // 计算 D
+      D = (2 / 3) * D + (1 / 3) * K;
+
+      // 计算 J
+      const J = 3 * K - 2 * D;
+
+      return { ...current, K: K.toFixed(2), D: D.toFixed(2), J: J.toFixed(2) };
+  });
+}
 
 export default {
   calculateEMA,
@@ -112,4 +148,5 @@ export default {
   splitData,
   calculateMA,
   sortAndAddIndex,
+  calculateKDJ
 };

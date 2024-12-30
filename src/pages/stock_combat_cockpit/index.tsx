@@ -13,12 +13,24 @@ import thirdParty from "@/apis/thirdParty";
 import "./index.less";
 import StockEbsLg from "./components/stock-ebs-lg";
 import dayjs from 'dayjs';
+import { calculateKDJ } from "@/utils/calculate";
+import KdjKValueDiffLineChart from "./components/kdj-k-value-diff-line-chart";
 
 export default function Index() {
   const [trendData, setTrendData] = useState([]);
   const [scoreData, setScoreData] = useState([]);
   const [volumeData, setVolumeData] = useState([]);
   const [stockEbsLgData, setStockEbsLgData] = useState([]);
+
+  // 沪深300的日期
+  const [hs300Date, setHs300Date] = useState([]);
+
+  // kdj的k值差
+  const [kdjKValueDiff, setKdjKValueDiff] = useState([]);
+
+  // 沪深300、微盘股各自的收盘价
+  const [hs300ClosePrice, setHs300ClosePrice] = useState([]);
+  const [microStockClosePrice, setMicroStockClosePrice] = useState([]);
 
   // 龙虎榜资金各路明细数据
   const [winnersVolDetail, setWinnersVolDetail] = useState([]);
@@ -32,17 +44,125 @@ export default function Index() {
   const [marketTodayScore, setMarketTodayScore] = useState<null | object>(null);
 
   useEffect(() => {
-    Promise.allSettled([
-      get_qkj_market_score(),
-      getTrend(),
-      get_qkj_market_volume(),
-      getIndexKLine("2023-10-30"),
-      getTodayMarketScore(),
-      get_winner_volume_detail(),
-      getStockEbsLgData(),
-      getIndexKLineForEbsLg()
-    ]);
+      // 获取市场当日评分
+      get_qkj_market_score();
+
+      // 获取股市的涨跌趋势
+      getTrend();
+
+      // 获取市场当日成交
+      get_qkj_market_volume();
+
+      // 获取上证指数K线开高收低数据供股债利差使用
+      getIndexKLine("2023-10-30");
+
+      // 获取市场当日评分
+      getTodayMarketScore();
+
+      // 获取龙虎榜资金各路明细数据
+      get_winner_volume_detail();
+
+      // 获取股债利差数据
+      getStockEbsLgData();
+
+      // 获取上证指数K线开高收低数据供股债利差使用
+      getIndexKLineForEbsLg();
+
+      // 获取沪深300数据
+      getMicroStockIndex();
+
+      // 获取沪深300、尾盘股数据，并求kdj的k值差
+      getHs300AndMicroStockKdjKValueDiff()
   }, []);
+
+  // 获取沪深300、尾盘股数据，并求kdj的k值差
+  const getHs300AndMicroStockKdjKValueDiff = async () => {
+    const [hs300Data, microStockData] = await Promise.allSettled([
+      getHs300Data(),
+      getMicroStockIndex(),
+    ]);
+
+    // 如果两个数据都获取成功，则计算kdj的k值差
+    if (hs300Data.status === 'fulfilled' && microStockData.status === 'fulfilled') {
+      const hs300KdjKValue = calculateKDJ(hs300Data.value);
+      const microStockKdjKValue = calculateKDJ(microStockData.value);
+
+      // 计算kdj的k值差
+      const kdjKValueDiff = hs300KdjKValue.map((item, index) => item.K - microStockKdjKValue[index].K);
+      // 获取沪深300、微盘股各自的收盘价
+      const hs300ClosePrice = hs300Data.value.map(item => item.close);
+      const microStockClosePrice = microStockData.value.map(item => item.close);
+
+      // 获取沪深300的日期
+      const hs300Date = hs300Data.value.map(item => dayjs(item.date).format('YYYY-MM-DD'));
+
+      console.log(hs300KdjKValue, microStockKdjKValue, 'hs300Date')
+      // 存储kdj的k值差、沪深300、微盘股各自的收盘价
+      setKdjKValueDiff(kdjKValueDiff);
+      setHs300ClosePrice(hs300ClosePrice);
+      setMicroStockClosePrice(microStockClosePrice);
+
+      setHs300Date(hs300Date);
+    }
+  }
+
+
+  // 获取沪深300数据
+  const getHs300Data = async () => {
+    const res = await stockklineApi.getIndexKLine({
+      startDate: '2023-07-05',
+      index: 'sh000300',
+    });
+    if (res.code === 200) {
+      const data = safeJsonParse(res.data, []);
+      return data;
+    }
+  }
+
+  // 获取同花顺微盘股指数数据
+  const getMicroStockIndex = async () => {
+    const res = await thirdParty.getMicroStockIndex();
+
+    // 1. 移除函数调用的包装
+    const jsonStr = res.replace(/^quotebridge_v6_line_48_883418_01_last1800\((.*)\)$/, '$1');
+
+    // 2. 解析JSON
+    const data = JSON.parse(jsonStr);
+
+    // 3. 解析K线数据
+    const klineData = data.data.split(';').map(item => {
+      if (!item) return null;
+
+      const [
+        date,          // 日期
+        open,          // 开盘价
+        high,          // 最高价
+        low,           // 最低价
+        close,         // 收盘价
+        volume,        // 成交量
+        amount,        // 成交额
+      ] = item.split(',');
+
+      return {
+        date,
+        open: parseFloat(open),
+        high: parseFloat(high),
+        low: parseFloat(low),
+        close: parseFloat(close),
+        volume: parseFloat(volume),
+        amount: parseFloat(amount)
+      };
+    }).filter(Boolean); // 过滤掉空值
+
+    console.log({
+      tradingTime: data.rt,          // 交易时间
+      stockName: data.name,          // 股票名称
+      issuePrice: data.issuePrice,   // 发行价
+      klineData                      // K线数据
+    }, 'res')
+
+    return klineData;
+  }
 
   // 获取龙虎榜资金各路明细数据
   const get_winner_volume_detail = async () => {
@@ -161,6 +281,15 @@ export default function Index() {
         />
       </div>
 
+      {/* 沪深300、微盘股各自的收盘价以及kdj的k值差折线图 */}
+      <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
+        <KdjKValueDiffLineChart
+          kdjKValueDiff={kdjKValueDiff}
+          hs300ClosePrice={hs300ClosePrice}
+          microStockClosePrice={microStockClosePrice}
+          hs300Date={hs300Date}
+        />
+      </div>
       {/* 大盘历史评分 */}
       <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
         <MarketScore
@@ -185,8 +314,8 @@ export default function Index() {
         <UpDownTrend data={trendData} indexKline={indexKline.slice(174)} />
       </div>
 
-       {/* 龙虎榜各路资金历史成交 */}
-       <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
+      {/* 龙虎榜各路资金历史成交 */}
+      <div className="w-10/12 mt-6 p-6 rounded-xl realtime-market-wrap bg-white">
         <WinnersVolumDetail data={winnersVolDetail} indexKline={indexKline} />
       </div>
 
