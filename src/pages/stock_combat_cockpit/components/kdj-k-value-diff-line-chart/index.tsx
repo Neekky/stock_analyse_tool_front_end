@@ -33,11 +33,26 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
       yAxis: [
         {
           type: "value",
-          name: "收盘价",
+          name: "沪深300",
           position: "left",
           axisLabel: {
             formatter: "{value}",
           },
+          min: function (value) {
+            return (value.min - 10).toFixed(0);
+          },
+          max: function (value) {
+            return (value.max + 10).toFixed(0);
+          },
+        },
+        {
+          type: "value",
+          name: "微盘股",
+          position: "right",
+          axisLabel: {
+            formatter: "{value}",
+          },
+          offset: 50,
           min: function (value) {
             return (value.min - 10).toFixed(0);
           },
@@ -72,7 +87,7 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
           itemStyle: {
             color: "#6366f1",
           },
-          yAxisIndex: 0,
+          yAxisIndex: 1,
           symbol: "none",
         },
         {
@@ -82,7 +97,7 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
           itemStyle: {
             color: "#0284c7",
           },
-          yAxisIndex: 1,
+          yAxisIndex: 2,
           symbol: "none",
         },
       ],

@@ -16,6 +16,9 @@ import dayjs from 'dayjs';
 import { calculateKDJ } from "@/utils/calculate";
 import KdjKValueDiffLineChart from "./components/kdj-k-value-diff-line-chart";
 
+// 硬编码的日期应该提取为配置
+const DEFAULT_START_DATE = '2023-10-30';
+
 export default function Index() {
   const [trendData, setTrendData] = useState([]);
   const [scoreData, setScoreData] = useState([]);
@@ -54,7 +57,7 @@ export default function Index() {
       get_qkj_market_volume();
 
       // 获取上证指数K线开高收低数据供股债利差使用
-      getIndexKLine("2023-10-30");
+      getIndexKLine(DEFAULT_START_DATE);
 
       // 获取市场当日评分
       getTodayMarketScore();

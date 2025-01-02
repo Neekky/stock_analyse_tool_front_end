@@ -102,7 +102,28 @@ const StockChart = ({ data, indexKline = [] }) => {
     return () => {
       chart.dispose();
     };
-  }, [data]);
+  }, [data, indexKline]);
+
+  // 添加容器尺寸监听
+  useEffect(() => {
+    const chart = echarts.init(chartRef.current);
+
+    // 监听容器尺寸变化
+    const resizeHandler = () => {
+      chart.resize();
+    };
+    window.addEventListener("resize", resizeHandler);
+
+    // 确保容器已经渲染
+    setTimeout(() => {
+      chart.resize();
+    }, 0);
+
+    return () => {
+      window.removeEventListener("resize", resizeHandler);
+      chart.dispose();
+    };
+  }, []);
 
   // 涨跌停家数展示，及比值
   useEffect(() => {
