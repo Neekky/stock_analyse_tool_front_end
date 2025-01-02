@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 import "../market-score/index.less";
 
-const StockChart = ({ data, indexKline = [] }) => {
+const StockChart = ({ data, indexKline = [] }: { data: any, indexKline: any[] }) => {
   const chartRef = useRef(null);
   const chartRef2 = useRef(null);
 

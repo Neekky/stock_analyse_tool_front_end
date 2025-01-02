@@ -557,5 +557,17 @@ export default new (class EastMoney extends Axios {
     });
   }
 
-  
+  /**
+   * 获取同花顺微盘股最新一天的指数数据
+   * @returns Promise with the API response
+   */
+  getMicroStockLatestDay() {
+    const url = 'https://d.10jqka.com.cn/v6/line/48_883418/01/today.js';
+    return this.get(url, {
+      params: {
+        'hexin-v': 'AyUc1dFfrlIF5coONWRieoFMMupaYtnxIxa9SCcK4dxrPksU77LpxLNmzQC0'
+      }
+    });
+  }
+
 })();

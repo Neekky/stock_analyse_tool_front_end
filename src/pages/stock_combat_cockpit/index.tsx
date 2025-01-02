@@ -19,6 +19,17 @@ import KdjKValueDiffLineChart from "./components/kdj-k-value-diff-line-chart";
 // 硬编码的日期应该提取为配置
 const DEFAULT_START_DATE = '2023-10-30';
 
+// 定义数据接口
+interface StockData {
+  date: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  amount: number;
+}
+
 export default function Index() {
   const [trendData, setTrendData] = useState([]);
   const [scoreData, setScoreData] = useState([]);
@@ -32,17 +43,17 @@ export default function Index() {
   const [kdjKValueDiff, setKdjKValueDiff] = useState<number[]>([]);
 
   // 沪深300、微盘股各自的收盘价
-  const [hs300ClosePrice, setHs300ClosePrice] = useState([]);
-  const [microStockClosePrice, setMicroStockClosePrice] = useState([]);
+  const [hs300ClosePrice, setHs300ClosePrice] = useState<number[]>([]);
+  const [microStockClosePrice, setMicroStockClosePrice] = useState<number[]>([]);
 
   // 龙虎榜资金各路明细数据
-  const [winnersVolDetail, setWinnersVolDetail] = useState([]);
+  const [winnersVolDetail, setWinnersVolDetail] = useState<any[]>([]);
 
   // 指数K线开高收低数据
-  const [indexKline, setIndexKline] = useState([]);
+  const [indexKline, setIndexKline] = useState<any[]>([]);
 
   // 上证指数K线开高收低数据供股债利差使用
-  const [indexKlineForEbsLg, setIndexKlineForEbsLg] = useState([]);
+  const [indexKlineForEbsLg, setIndexKlineForEbsLg] = useState<any[]>([]);
   // 市场当日评分
   const [marketTodayScore, setMarketTodayScore] = useState<null | object>(null);
 
@@ -80,31 +91,51 @@ export default function Index() {
 
   // 获取沪深300、尾盘股数据，并求kdj的k值差
   const getHs300AndMicroStockKdjKValueDiff = async () => {
-    const [hs300Data, microStockData] = await Promise.allSettled([
+    const [hs300Data, microStockData, latestMicroStockData] = await Promise.allSettled([
       getHs300Data(),
       getMicroStockIndex(),
+      getMicroStockLatestDay(),
     ]);
 
-    // 如果两个数据都获取成功，则计算kdj的k值差
-    if (hs300Data.status === 'fulfilled' && microStockData.status === 'fulfilled') {
+    // 如果所有数据都获取成功，则计算kdj的k值差
+    if (hs300Data.status === 'fulfilled' && 
+        microStockData.status === 'fulfilled' && 
+        latestMicroStockData.status === 'fulfilled') {
+      
+      // 更新微盘股数据，替换最后一天的数据
+      const updatedMicroStockData = [...microStockData.value];
+
+      if (updatedMicroStockData.length > 0 && latestMicroStockData.value) {
+        const lastDataDate = updatedMicroStockData[updatedMicroStockData.length - 1].date;
+        const latestDate = latestMicroStockData.value.date;
+        
+        // 只有当日期相同时才替换数据
+        if (lastDataDate === latestDate) {
+          updatedMicroStockData[updatedMicroStockData.length - 1] = latestMicroStockData.value;
+        }
+      }
+
       const hs300KdjKValue = calculateKDJ(hs300Data.value);
-      const microStockKdjKValue = calculateKDJ(microStockData.value);
+      const microStockKdjKValue = calculateKDJ(updatedMicroStockData);
+
+      console.log(hs300KdjKValue, microStockKdjKValue, 'hs300KdjKValue')
 
       // 计算kdj的k值差
-      const kdjKValueDiff = hs300KdjKValue.map((item, index) => Number(item.K) - Number(microStockKdjKValue[index].K));
+      const kdjKValueDiff = hs300KdjKValue.map((item, index) => 
+        Number(item.K) - Number(microStockKdjKValue[index].K));
       // 获取沪深300、微盘股各自的收盘价
       const hs300ClosePrice = hs300Data.value.map(item => item.close);
-      const microStockClosePrice = microStockData.value.map(item => item.close);
+      const microStockClosePrice = updatedMicroStockData.map(item => item.close);
 
       // 获取沪深300的日期
-      const hs300Date = hs300Data.value.map(item => dayjs(item.date).format('YYYY-MM-DD'));
+      const hs300Date = hs300Data.value.map(item => 
+        dayjs(item.date).format('YYYY-MM-DD'));
 
-      console.log(hs300KdjKValue, microStockKdjKValue, 'hs300Date')
+      
       // 存储kdj的k值差、沪深300、微盘股各自的收盘价
       setKdjKValueDiff(kdjKValueDiff);
       setHs300ClosePrice(hs300ClosePrice);
       setMicroStockClosePrice(microStockClosePrice);
-
       setHs300Date(hs300Date);
     }
   }
@@ -167,12 +198,41 @@ export default function Index() {
     return klineData;
   }
 
+  // 获取同花顺微盘股最新一天的指数数据
+  const getMicroStockLatestDay = async (): Promise<StockData | null> => {
+    const res = await thirdParty.getMicroStockLatestDay();
+    
+    if (res) {
+      // 1. 移除函数调用的包装
+      const jsonStr = res.replace(/^quotebridge_v6_line_48_883418_01_today\((.*)\)$/, '$1');
+      
+      // 2. 解析JSON
+      const data = JSON.parse(jsonStr);
+      
+      // 3. 从 48_883418 对象中提取数据并格式化
+      const stockData = data['48_883418'];
+      
+      // 4. 构造与其他K线数据格式一致的对象
+      const formattedData = {
+        date: stockData['1'],         // 日期
+        open: parseFloat(stockData['7']),    // 开盘价
+        high: parseFloat(stockData['8']),    // 最高价
+        low: parseFloat(stockData['9']),     // 最低价
+        close: parseFloat(stockData['11']),  // 收盘价
+        volume: parseFloat(stockData['13']), // 成交量
+        amount: parseFloat(stockData['19'])  // 成交额
+      };
+
+      return formattedData;
+    }
+    return null;
+  }
+
   // 获取龙虎榜资金各路明细数据
   const get_winner_volume_detail = async () => {
     const res = await stockklineApi.get_winner_volume_detail();
     if (res?.code === 200) {
       const parseData = JSON.parse(res.data);
-      console.log(parseData, 'parseData')
       setWinnersVolDetail(parseData);
     }
   }
@@ -262,7 +322,6 @@ export default function Index() {
         ...item,
         日期: dayjs(item.日期).format('YYYY-MM-DD')
       }));
-      console.log(data, 'data')
       setStockEbsLgData(data);
     }
   }
