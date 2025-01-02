@@ -258,7 +258,7 @@ const StockChart = ({ data, indexKline = [] }) => {
     return () => {
       chart.dispose();
     };
-  }, [data]);
+  }, [data, indexKline]);
 
   return (
     <>
