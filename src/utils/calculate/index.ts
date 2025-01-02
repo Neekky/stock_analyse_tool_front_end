@@ -111,7 +111,7 @@ export function calculateEMA(data, period, priceKey = '2') {
  * @param {number} m - %D 计算周期，常用 3
  * @returns {Array} - 原数据数组中新增 %K, %D, %J
  */
-export function calculateKDJ(data, n = 9, m = 3) {
+export function calculateKDJ(data, n = 9) {
   let K = 50; // 初始 K 值
   let D = 50; // 初始 D 值
 
