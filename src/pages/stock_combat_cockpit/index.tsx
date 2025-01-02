@@ -29,7 +29,7 @@ export default function Index() {
   const [hs300Date, setHs300Date] = useState([]);
 
   // kdj的k值差
-  const [kdjKValueDiff, setKdjKValueDiff] = useState([]);
+  const [kdjKValueDiff, setKdjKValueDiff] = useState<number[]>([]);
 
   // 沪深300、微盘股各自的收盘价
   const [hs300ClosePrice, setHs300ClosePrice] = useState([]);
@@ -91,7 +91,7 @@ export default function Index() {
       const microStockKdjKValue = calculateKDJ(microStockData.value);
 
       // 计算kdj的k值差
-      const kdjKValueDiff = hs300KdjKValue.map((item, index) => item.K - microStockKdjKValue[index].K);
+      const kdjKValueDiff = hs300KdjKValue.map((item, index) => Number(item.K) - Number(microStockKdjKValue[index].K));
       // 获取沪深300、微盘股各自的收盘价
       const hs300ClosePrice = hs300Data.value.map(item => item.close);
       const microStockClosePrice = microStockData.value.map(item => item.close);

@@ -552,8 +552,10 @@ export default new (class EastMoney extends Axios {
     const url = 'https://d.10jqka.com.cn/v6/line/48_883418/01/last1800.js';
     return this.get(url, {
       params: {
-        'hexin-v': 'AyAZWrxUUxIO5-8WEROv3SQn9yX3KQT1pg1Y95ox7DvOlc4bQjnUg_YdKJHp'
+        'hexin-v': 'A463kJ4yZY8CYNGrcsAZdyYp2W9VD1IFZNMG7bjX-hFMGyDRIJ-iGTRjVuqL'
       }
     });
   }
+
+  
 })();
