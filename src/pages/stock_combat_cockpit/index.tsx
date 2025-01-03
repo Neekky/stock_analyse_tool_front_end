@@ -112,6 +112,9 @@ export default function Index() {
         // 只有当日期相同时才替换数据
         if (lastDataDate === latestDate) {
           updatedMicroStockData[updatedMicroStockData.length - 1] = latestMicroStockData.value;
+        } else {
+          // 如果日期不同，则push进去
+          updatedMicroStockData.push(latestMicroStockData.value)
         }
       }
 
