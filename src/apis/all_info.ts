@@ -59,4 +59,10 @@ export default new (class StockInfo extends Axios {
     const url = `${API_GATEWAY_FLASK}/all_info/get_stock_ebs_lg`;
     return this.get(url);
   }
+
+  // 获取指数日线数据
+  get_stock_zh_index_daily(symbol) {
+    const url = `${API_GATEWAY_FLASK}/all_info/stock_zh_index_daily?symbol=${symbol}`;
+    return this.get(url);
+  }
 })();
