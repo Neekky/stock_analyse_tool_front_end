@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import * as echarts from "echarts";
 import "./index.less";
 
-const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs300Date }) => {
+const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, zzClosePrice, hs300Date }) => {
 
   const chartRef = useRef(null);
   // 涨跌家数展示
@@ -23,7 +23,7 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
         },
       },
       legend: {
-        data: ["沪深300收盘价", "微盘股收盘价", "KDJ的K值差"],
+        data: ["沪深300收盘价", "中证2000收盘价", "KDJ的K值差"],
       },
       xAxis: {
         type: "category",
@@ -47,7 +47,7 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
         },
         {
           type: "value",
-          name: "微盘股",
+          name: "中证2000",
           position: "right",
           axisLabel: {
             formatter: "{value}",
@@ -81,9 +81,9 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
           symbol: "none",
         },
         {
-          name: "微盘股收盘价",
+          name: "中证2000收盘价",
           type: "line",
-          data: microStockClosePrice,
+          data: zzClosePrice,
           itemStyle: {
             color: "#6366f1",
           },
@@ -106,13 +106,13 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
           type: "slider",
           show: true,
           xAxisIndex: 0,
-          start: 20,
+          start: 60,
           end: 100,
         },
         {
           type: "inside",
           xAxisIndex: 0,
-          start: 20,
+          start: 60,
           end: 100,
         },
       ],
@@ -123,7 +123,7 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
     return () => {
       chart.dispose();
     };
-  }, [kdjKValueDiff, hs300ClosePrice, microStockClosePrice]);
+  }, [kdjKValueDiff, hs300ClosePrice, zzClosePrice]);
 
   return (
     <>
@@ -132,6 +132,8 @@ const StockEbsLg = ({ kdjKValueDiff, hs300ClosePrice, microStockClosePrice, hs30
         <div className="text-[18px] font-semibold	text-[#b91c1c]">使用小贴士</div>
         <div className="text-[16px] text-[#78716c] mt-2">沪深300(kdj-k值)-微盘股(kdj-k值)。</div>
         <div className="text-[16px] text-[#78716c] mt-2">1. 当折现数值从小到大时，价值股占优。当数值从大到小时，小盘股占优。</div>
+        <div className="text-[16px] text-[#78716c] mt-2">2. 折现的变化，需要看两指数各自的走势，可能同涨同跌，也会导致折线转向。</div>
+        <div className="text-[16px] text-[#78716c] mt-2">3. 折现的数值，可以用来判断市场的风格，当折现数值为正时，市场风格偏向价值股，当折现数值为负时，市场风格偏向小盘股。</div>
       </div>
     </>
   );

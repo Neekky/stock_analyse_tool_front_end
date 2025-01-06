@@ -570,4 +570,32 @@ export default new (class EastMoney extends Axios {
     });
   }
 
+  /**
+   * 获取美联储利率历史数据
+   * @returns Promise<{
+   *   keys: Array<{ name: string; unit: string }>;
+   *   values: Record<string, [number | null, number | null, number | null]>
+   * }>
+   * 
+   * 返回数据说明：
+   * keys: [
+   *   { name: "今值", unit: "%" },
+   *   { name: "预测值", unit: "%" },
+   *   { name: "前值", unit: "%" }
+   * ]
+   * values: {
+   *   "2024-01-30": [4.5, 4.5, 4.75] // [今值, 预测值, 前值]
+   * }
+   */
+  getUsaRateHistory() {
+    const url = `https://cdn.jin10.com/data_center/reports/usa_rate.json?_=1736173568893`;
+    
+    return this.get(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache'
+      }
+    });
+  }
+
 })();

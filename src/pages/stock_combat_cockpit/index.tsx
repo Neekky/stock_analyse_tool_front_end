@@ -43,7 +43,7 @@ export default function Index() {
 
   // 上证指数K线开高收低数据供股债利差使用
   const [indexKlineForEbsLg, setIndexKlineForEbsLg] = useState<any[]>([]);
-  
+
   // 市场当日评分
   const [marketTodayScore, setMarketTodayScore] = useState<null | object>(null);
 
@@ -73,7 +73,7 @@ export default function Index() {
       getIndexKLineForEbsLg();
 
       // 获取沪深300、中证2000数据，并求kdj的k值差
-      getHs300AndZZ2000KdjKValueDiff()
+      getHs300AndZZ2000KdjKValueDiff();
   }, []);
 
   // 获取沪深300、中证2000数据，并求kdj的k值差
@@ -130,6 +130,8 @@ export default function Index() {
   // 获取中证2000数据
   const getZz2000Data = async () => {
     const res = await allInfoApi.get_stock_zh_index_daily('csi932000');
+    const res2 = await thirdParty.getUsaRateHistory();
+    console.log(res2, '查看利率数据');
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
       return data;
@@ -256,7 +258,7 @@ export default function Index() {
         <KdjKValueDiffLineChart
           kdjKValueDiff={kdjKValueDiff}
           hs300ClosePrice={hs300ClosePrice}
-          microStockClosePrice={zzClosePrice}
+          zzClosePrice={zzClosePrice}
           hs300Date={hs300Date}
         />
       </div>
