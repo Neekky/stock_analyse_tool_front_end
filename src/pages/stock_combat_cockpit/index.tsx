@@ -130,8 +130,8 @@ export default function Index() {
   // 获取中证2000数据
   const getZz2000Data = async () => {
     const res = await allInfoApi.get_stock_zh_index_daily('csi932000');
-    const res2 = await thirdParty.getUsaRateHistory();
-    console.log(res2, '查看利率数据');
+    // const res2 = await thirdParty.getUsaRateHistory();
+    // console.log(res2, '查看利率数据');
     if (res.code === 200) {
       const data = safeJsonParse(res.data, []);
       return data;
